@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
+
 	"github.com/IBM/sds-go-sdk/sdsaasv1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -51,7 +52,7 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 
 		// Variables to hold link values
 		hostIDLink      string
-		volumeIDLink    string
+		volumeIDLinkOne string
 		volumeIDLinkTwo string
 	)
 
@@ -117,11 +118,11 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			volumeCreateOptions.SetHostnqnstring("nqn.2014-06.org:9345")
 			volumeCreateOptions.SetName("my-volume-one")
 
-			volume, response, err := sdsaasService.VolumeCreate(volumeCreateOptions)
-			if err != nil {
-				panic(err)
+			volumeOne, responseOne, errOne := sdsaasService.VolumeCreate(volumeCreateOptions)
+			if errOne != nil {
+				panic(errOne)
 			}
-			b, _ := json.MarshalIndent(volume, "", "  ")
+			b, _ := json.MarshalIndent(volumeOne, "", "  ")
 			fmt.Println(string(b))
 
 			// Create a second volume for additional host operations
@@ -131,22 +132,27 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			volumeCreateOptionsTwo.SetHostnqnstring("nqn.2014-06.org:9345")
 			volumeCreateOptionsTwo.SetName("my-volume-two")
 
-			volumeTwo, response, err := sdsaasService.VolumeCreate(volumeCreateOptionsTwo)
-			if err != nil {
-				panic(err)
+			volumeTwo, responseTwo, errTwo := sdsaasService.VolumeCreate(volumeCreateOptionsTwo)
+			if errTwo != nil {
+				panic(errTwo)
 			}
 
 			// end-volume_create
 
 			time.Sleep(8 * time.Second)
 
-			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(201))
-			Expect(volume).ToNot(BeNil())
+			Expect(errOne).To(BeNil())
+			Expect(responseOne.StatusCode).To(Equal(201))
+			Expect(volumeOne).ToNot(BeNil())
 
-			volumeIDLink = *volume.ID
+			Expect(errTwo).To(BeNil())
+			Expect(responseTwo.StatusCode).To(Equal(201))
+			Expect(volumeTwo).ToNot(BeNil())
+
+			volumeIDLinkOne = *volumeOne.ID
 			volumeIDLinkTwo = *volumeTwo.ID
-			fmt.Fprintf(GinkgoWriter, "Saved volumeIDLink value: %v\n", volumeIDLink)
+			fmt.Fprintf(GinkgoWriter, "Saved volumeIDLinkOne value: %v\n", volumeIDLinkOne)
+			fmt.Fprintf(GinkgoWriter, "Saved volumeIDLinkTwo value: %v\n", volumeIDLinkTwo)
 		})
 		It(`HostCreate request example`, func() {
 			fmt.Println("\nHostCreate() result:")
@@ -200,7 +206,7 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			// begin-volume
 
 			volumeOptions := sdsaasService.NewVolumeOptions(
-				volumeIDLink,
+				volumeIDLinkOne,
 			)
 
 			volume, response, err := sdsaasService.Volume(volumeOptions)
@@ -221,7 +227,7 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			// begin-volume_update
 
 			volumeUpdateOptions := sdsaasService.NewVolumeUpdateOptions(
-				volumeIDLink,
+				volumeIDLinkOne,
 			)
 
 			volumePatch := map[string]interface{}{
@@ -416,7 +422,7 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 
 			hostVolUpdateOptions := sdsaasService.NewHostVolUpdateOptions(
 				hostIDLink,
-				volumeIDLink,
+				volumeIDLinkOne,
 			)
 
 			host, response, err := sdsaasService.HostVolUpdate(hostVolUpdateOptions)
@@ -501,7 +507,7 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			// begin-volume_delete
 
 			volumeDeleteOptions := sdsaasService.NewVolumeDeleteOptions(
-				volumeIDLink,
+				volumeIDLinkOne,
 			)
 
 			response, err := sdsaasService.VolumeDelete(volumeDeleteOptions)
