@@ -1,0 +1,42 @@
+language: go
+
+dist: jammy
+
+go:
+- 1.21.x
+- 1.22.x
+- 1.23.x
+
+install:
+  - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(go env GOPATH)/bin v1.61.0
+script:
+  - make travis-ci
+  - make test
+
+jobs:
+  include:
+    - name: Detect-Secrets
+      language: python
+      python: 3.12
+      install:
+        - pip install --upgrade "git+https://github.com/ibm/detect-secrets.git@master#egg=detect-secrets"
+      script:
+        - detect-secrets scan --update .secrets.baseline
+        - detect-secrets -v audit --report --fail-on-unaudited --fail-on-live --fail-on-audited-real .secrets.baseline
+
+# Semantic release setup
+before_deploy:
+  - nvm install 18
+  - node --version
+  - npm --version
+  - npm install
+  - pip install --user bump-my-version
+
+# Semantic release
+deploy:
+  - provider: script
+    script: npm run semantic-release
+    skip_cleanup: true
+    on:
+      go: '1.21.x'
+      branch: main

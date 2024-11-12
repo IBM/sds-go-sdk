@@ -1,0 +1,10 @@
+{
+  "settingsInheritedFrom":"whitesource-config/whitesource-config@master",
+  "issueSettings":{
+     "issueRepoName":"sdsaas-issues",
+     "customLabels":[
+        "Type: bug",
+        "security vulnerability"
+     ]
+  }
+}
