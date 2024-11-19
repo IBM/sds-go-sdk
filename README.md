@@ -72,6 +72,7 @@ import (
 	"github.com/IBM/sds-go-sdk/sdsaasv1"
 )
 ```
+
 Next, run `go build` or `go mod tidy` to download and install the new dependencies and update your application's
 `go.mod` file.
 
