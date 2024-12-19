@@ -245,7 +245,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "limit": 5, "next": {"href": "Href"}, "total_count": 10, "volumes": [{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "host_mappings": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}]}`)
+					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "limit": 5, "next": {"href": "Href"}, "total_count": 10, "volumes": [{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "hosts": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}]}`)
 				}))
 			})
 			It(`Invoke Volumes successfully with retries`, func() {
@@ -302,7 +302,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "limit": 5, "next": {"href": "Href"}, "total_count": 10, "volumes": [{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "host_mappings": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}]}`)
+					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "limit": 5, "next": {"href": "Href"}, "total_count": 10, "volumes": [{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "hosts": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}]}`)
 				}))
 			})
 			It(`Invoke Volumes successfully`, func() {
@@ -476,7 +476,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "host_mappings": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "hosts": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
 				}))
 			})
 			It(`Invoke VolumeCreate successfully with retries`, func() {
@@ -549,7 +549,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "host_mappings": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "hosts": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
 				}))
 			})
 			It(`Invoke VolumeCreate successfully`, func() {
@@ -713,7 +713,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "host_mappings": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "hosts": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
 				}))
 			})
 			It(`Invoke Volume successfully with retries`, func() {
@@ -767,7 +767,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "host_mappings": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "hosts": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
 				}))
 			})
 			It(`Invoke Volume successfully`, func() {
@@ -1017,7 +1017,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "host_mappings": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "hosts": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
 				}))
 			})
 			It(`Invoke VolumeUpdate successfully with retries`, func() {
@@ -1095,7 +1095,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "host_mappings": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 8, "created_at": "CreatedAt", "hosts": [{"host_id": "HostID", "host_name": "HostName", "host_nqn": "HostNqn"}], "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "Status", "status_reasons": ["StatusReasons"]}`)
 				}))
 			})
 			It(`Invoke VolumeUpdate successfully`, func() {
@@ -2210,7 +2210,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "hosts": [{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}], "limit": 5, "next": {"href": "Href"}, "total_count": 10}`)
+					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "hosts": [{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}], "limit": 5, "next": {"href": "Href"}, "total_count": 10}`)
 				}))
 			})
 			It(`Invoke Hosts successfully with retries`, func() {
@@ -2267,7 +2267,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "hosts": [{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}], "limit": 5, "next": {"href": "Href"}, "total_count": 10}`)
+					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "hosts": [{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}], "limit": 5, "next": {"href": "Href"}, "total_count": 10}`)
 				}))
 			})
 			It(`Invoke Hosts successfully`, func() {
@@ -2390,7 +2390,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel := new(sdsaasv1.HostCreateOptions)
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
-				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
+				hostCreateOptionsModel.Volumes = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
 				result, response, operationErr := sdsaasService.HostCreate(hostCreateOptionsModel)
@@ -2443,7 +2443,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
 				}))
 			})
 			It(`Invoke HostCreate successfully with retries`, func() {
@@ -2463,7 +2463,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel := new(sdsaasv1.HostCreateOptions)
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
-				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
+				hostCreateOptionsModel.Volumes = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
@@ -2519,7 +2519,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
 				}))
 			})
 			It(`Invoke HostCreate successfully`, func() {
@@ -2544,7 +2544,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel := new(sdsaasv1.HostCreateOptions)
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
-				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
+				hostCreateOptionsModel.Volumes = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
@@ -2570,7 +2570,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel := new(sdsaasv1.HostCreateOptions)
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
-				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
+				hostCreateOptionsModel.Volumes = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := sdsaasService.SetServiceURL("")
@@ -2617,7 +2617,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel := new(sdsaasv1.HostCreateOptions)
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
-				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
+				hostCreateOptionsModel.Volumes = []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
@@ -2695,7 +2695,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
 				}))
 			})
 			It(`Invoke Host successfully with retries`, func() {
@@ -2749,7 +2749,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
 				}))
 			})
 			It(`Invoke Host successfully`, func() {
@@ -2930,7 +2930,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
 				}))
 			})
 			It(`Invoke HostUpdate successfully with retries`, func() {
@@ -3007,7 +3007,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
 				}))
 			})
 			It(`Invoke HostUpdate successfully`, func() {
@@ -3393,7 +3393,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(202)
-					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
 				}))
 			})
 			It(`Invoke HostVolUpdate successfully with retries`, func() {
@@ -3448,7 +3448,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(202)
-					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "service_instance_id": "ServiceInstanceID", "volume_mappings": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "CreatedAt", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-host", "nqn": "nqn-abc-1234", "volumes": [{"status": "Status", "volume_id": "VolumeID", "volume_name": "VolumeName", "storage_identifiers": {"id": "ID", "namespace_id": 11, "namespace_uuid": "NamespaceUUID", "network_info": [{"gateway_ip": "GatewayIP", "port": 4}]}}]}`)
 				}))
 			})
 			It(`Invoke HostVolUpdate successfully`, func() {
@@ -3609,12 +3609,12 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel := sdsaasService.NewHostCreateOptions(hostCreateOptionsNqn)
 				hostCreateOptionsModel.SetNqn("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.SetName("my-host")
-				hostCreateOptionsModel.SetVolumeMappings([]sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel})
+				hostCreateOptionsModel.SetVolumes([]sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel})
 				hostCreateOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(hostCreateOptionsModel).ToNot(BeNil())
 				Expect(hostCreateOptionsModel.Nqn).To(Equal(core.StringPtr("nqn.2014-06.org:9345")))
 				Expect(hostCreateOptionsModel.Name).To(Equal(core.StringPtr("my-host")))
-				Expect(hostCreateOptionsModel.VolumeMappings).To(Equal([]sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}))
+				Expect(hostCreateOptionsModel.Volumes).To(Equal([]sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel}))
 				Expect(hostCreateOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewHostDeleteOptions successfully`, func() {

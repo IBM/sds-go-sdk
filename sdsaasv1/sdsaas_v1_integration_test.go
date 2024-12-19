@@ -142,9 +142,9 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			}
 
 			hostCreateOptions := &sdsaasv1.HostCreateOptions{
-				Nqn:            core.StringPtr("nqn.2014-06.org:9345"),
-				Name:           core.StringPtr("my-host"),
-				VolumeMappings: []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel},
+				Nqn:     core.StringPtr("nqn.2014-06.org:9345"),
+				Name:    core.StringPtr("my-host"),
+				Volumes: []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel},
 			}
 
 			host, response, err := sdsaasService.HostCreate(hostCreateOptions)
