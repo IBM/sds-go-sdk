@@ -964,8 +964,8 @@ func (sdsaas *SdsaasV1) HostCreateWithContext(ctx context.Context, hostCreateOpt
 	if hostCreateOptions.Name != nil {
 		body["name"] = hostCreateOptions.Name
 	}
-	if hostCreateOptions.VolumeMappings != nil {
-		body["volume_mappings"] = hostCreateOptions.VolumeMappings
+	if hostCreateOptions.Volumes != nil {
+		body["volumes"] = hostCreateOptions.Volumes
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
@@ -1636,11 +1636,8 @@ type Host struct {
 	// The NQN of the host configured in customer's environment.
 	Nqn *string `json:"nqn" validate:"required"`
 
-	// The service instance ID this host should be created in.
-	ServiceInstanceID *string `json:"service_instance_id,omitempty"`
-
 	// The host-to-volume map.
-	VolumeMappings []VolumeMappingReference `json:"volume_mappings,omitempty"`
+	Volumes []VolumeMappingReference `json:"volumes,omitempty"`
 }
 
 // UnmarshalHost unmarshals an instance of Host from the specified map of raw messages.
@@ -1666,14 +1663,9 @@ func UnmarshalHost(m map[string]json.RawMessage, result interface{}) (err error)
 		err = core.SDKErrorf(err, "", "nqn-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "service_instance_id", &obj.ServiceInstanceID)
+	err = core.UnmarshalModel(m, "volumes", &obj.Volumes, UnmarshalVolumeMappingReference)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "service_instance_id-error", common.GetComponentInfo())
-		return
-	}
-	err = core.UnmarshalModel(m, "volume_mappings", &obj.VolumeMappings, UnmarshalVolumeMappingReference)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "volume_mappings-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "volumes-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -1743,7 +1735,7 @@ type HostCreateOptions struct {
 	// The unique identifier of the volume to be mapped to this host.  Must be in the form '['volume_id':
 	// '1a6b7274-678d-4dfb-8981-c71dd9d4daa5']'.  If curly braces {} are used to separate volumes, double quotes must be
 	// used instead.
-	VolumeMappings []VolumeMappingIdentity `json:"volume_mappings,omitempty"`
+	Volumes []VolumeMappingIdentity `json:"volumes,omitempty"`
 
 	// Allows users to set headers on API requests.
 	Headers map[string]string
@@ -1768,9 +1760,9 @@ func (_options *HostCreateOptions) SetName(name string) *HostCreateOptions {
 	return _options
 }
 
-// SetVolumeMappings : Allow user to set VolumeMappings
-func (_options *HostCreateOptions) SetVolumeMappings(volumeMappings []VolumeMappingIdentity) *HostCreateOptions {
-	_options.VolumeMappings = volumeMappings
+// SetVolumes : Allow user to set Volumes
+func (_options *HostCreateOptions) SetVolumes(volumes []VolumeMappingIdentity) *HostCreateOptions {
+	_options.Volumes = volumes
 	return _options
 }
 
@@ -2172,7 +2164,7 @@ type Volume struct {
 	CreatedAt *string `json:"created_at,omitempty"`
 
 	// List of host details that volume is mapped to.
-	HostMappings []HostMapping `json:"host_mappings,omitempty"`
+	Hosts []HostMapping `json:"hosts,omitempty"`
 
 	// The volume profile id.
 	ID *string `json:"id,omitempty"`
@@ -2211,9 +2203,9 @@ func UnmarshalVolume(m map[string]json.RawMessage, result interface{}) (err erro
 		err = core.SDKErrorf(err, "", "created_at-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalModel(m, "host_mappings", &obj.HostMappings, UnmarshalHostMapping)
+	err = core.UnmarshalModel(m, "hosts", &obj.Hosts, UnmarshalHostMapping)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "host_mappings-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "hosts-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
