@@ -1,3 +1,10 @@
+## [0.0.2](https://github.com/IBM/sds-go-sdk/compare/v0.0.1...v0.0.2) (2024-12-19)
+
+
+### Bug Fixes
+
+* Add headers ([050c442](https://github.com/IBM/sds-go-sdk/commit/050c44269e248554f7333968826ccb2d8bf7e3b6))
+
 ## [0.0.1](https://github.com/IBM/sds-go-sdk/compare/v0.0.0...v0.0.1) (2024-11-19)
 
 
