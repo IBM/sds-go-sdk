@@ -25,7 +25,6 @@ import (
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
-
 	"github.com/IBM/sds-go-sdk/sdsaasv1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -161,8 +160,6 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			hostCreateOptions := sdsaasService.NewHostCreateOptions(
 				"nqn.2014-06.org:9345",
 			)
-
-			hostCreateOptions.SetName("my-host")
 
 			host, response, err := sdsaasService.HostCreate(hostCreateOptions)
 			if err != nil {
