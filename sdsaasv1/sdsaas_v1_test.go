@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2024.
+ * (C) Copyright IBM Corp. 2024-2025.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1216,7 +1216,7 @@ var _ = Describe(`SdsaasV1`, func() {
 		})
 	})
 	Describe(`Creds(credsOptions *CredsOptions) - Operation response error`, func() {
-		credsPath := "/v1/object/accounts/credentials"
+		credsPath := "/v1/object/workspace/credentials"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
@@ -1260,7 +1260,7 @@ var _ = Describe(`SdsaasV1`, func() {
 		})
 	})
 	Describe(`Creds(credsOptions *CredsOptions)`, func() {
-		credsPath := "/v1/object/accounts/credentials"
+		credsPath := "/v1/object/workspace/credentials"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
@@ -1416,7 +1416,7 @@ var _ = Describe(`SdsaasV1`, func() {
 		})
 	})
 	Describe(`CredCreate(credCreateOptions *CredCreateOptions) - Operation response error`, func() {
-		credCreatePath := "/v1/object/accounts/credentials"
+		credCreatePath := "/v1/object/workspace/credentials"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
@@ -1462,7 +1462,7 @@ var _ = Describe(`SdsaasV1`, func() {
 		})
 	})
 	Describe(`CredCreate(credCreateOptions *CredCreateOptions)`, func() {
-		credCreatePath := "/v1/object/accounts/credentials"
+		credCreatePath := "/v1/object/workspace/credentials"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
@@ -1631,7 +1631,7 @@ var _ = Describe(`SdsaasV1`, func() {
 		})
 	})
 	Describe(`CredDelete(credDeleteOptions *CredDeleteOptions)`, func() {
-		credDeletePath := "/v1/object/accounts/credentials"
+		credDeletePath := "/v1/object/workspace/credentials"
 		Context(`Using mock server endpoint`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {

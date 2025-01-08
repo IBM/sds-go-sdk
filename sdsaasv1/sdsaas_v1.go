@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2024.
+ * (C) Copyright IBM Corp. 2024-2025.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -552,7 +552,7 @@ func (sdsaas *SdsaasV1) CredsWithContext(ctx context.Context, credsOptions *Cred
 	builder := core.NewRequestBuilder(core.GET)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/accounts/credentials`, nil)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/workspace/credentials`, nil)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
@@ -617,7 +617,7 @@ func (sdsaas *SdsaasV1) CredCreateWithContext(ctx context.Context, credCreateOpt
 	builder := core.NewRequestBuilder(core.POST)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/accounts/credentials`, nil)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/workspace/credentials`, nil)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
@@ -684,7 +684,7 @@ func (sdsaas *SdsaasV1) CredDeleteWithContext(ctx context.Context, credDeleteOpt
 	builder := core.NewRequestBuilder(core.DELETE)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/accounts/credentials`, nil)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/workspace/credentials`, nil)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
