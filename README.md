@@ -27,7 +27,7 @@ Changes might occur which impact applications that use this SDK.
 <!-- toc -->
 
 - [sds-go-sdk](#sds-go-sdk)
-- [sdsaas 0.0.3](#sdsaas-002)
+- [sdsaas 0.0.3](#sdsaas-003)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Prerequisites](#prerequisites)
@@ -65,6 +65,7 @@ The current version of this SDK: 0.0.3
 ### Go modules
 If your application uses Go modules for dependency management (recommended), just add an import for each service
 that you will use in your application.
+
 Here is an example:
 
 ```go
