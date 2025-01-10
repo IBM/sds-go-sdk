@@ -1,3 +1,10 @@
+## [0.0.4](https://github.com/IBM/sds-go-sdk/compare/v0.0.3...v0.0.4) (2025-01-10)
+
+
+### Bug Fixes
+
+* trigger semantic-release ([8651b50](https://github.com/IBM/sds-go-sdk/commit/8651b50c77b65c3fa82f04a1a0832ee5a5f2440d))
+
 ## [0.0.3](https://github.com/IBM/sds-go-sdk/compare/v0.0.2...v0.0.3) (2025-01-08)
 
 
