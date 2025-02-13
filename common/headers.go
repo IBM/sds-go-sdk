@@ -26,8 +26,8 @@ import (
 const (
 	sdkName              = "sds-go-sdk"
 	headerNameUserAgent  = "User-Agent"
-	blockApiVersion      = "2024-12-15" // Volume and host operations
-	objectApiVersion     = "2024-12-04" // Cred and cert operations
+	blockApiVersion      = "2025-02-01" // Volume and host operations
+	objectApiVersion     = "2025-02-01" // Cred and cert operations
 	headerNameAPIVersion = "IBM-API-Version"
 )
 

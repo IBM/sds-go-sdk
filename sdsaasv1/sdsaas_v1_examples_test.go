@@ -1,7 +1,7 @@
 //go:build examples
 
 /**
- * (C) Copyright IBM Corp. 2024.
+ * (C) Copyright IBM Corp. 2024, 2025.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,9 +50,10 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 		config        map[string]string
 
 		// Variables to hold link values
-		hostIDLink      string
-		volumeIDLinkOne string
-		volumeIDLinkTwo string
+		hostIDLink             string
+		volumeIDLinkOne        string
+		volumeIDLinkTwo        string
+		volumeMappingIDLinkOne string
 	)
 
 	var shouldSkipTest = func() {
@@ -113,8 +114,6 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			volumeCreateOptions := sdsaasService.NewVolumeCreateOptions(
 				int64(10),
 			)
-
-			volumeCreateOptions.SetHostnqnstring("nqn.2014-06.org:9345")
 			volumeCreateOptions.SetName("my-volume-one")
 
 			volumeOne, responseOne, errOne := sdsaasService.VolumeCreate(volumeCreateOptions)
@@ -128,7 +127,6 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			volumeCreateOptionsTwo := sdsaasService.NewVolumeCreateOptions(
 				int64(10),
 			)
-			volumeCreateOptionsTwo.SetHostnqnstring("nqn.2014-06.org:9345")
 			volumeCreateOptionsTwo.SetName("my-volume-two")
 
 			volumeTwo, responseTwo, errTwo := sdsaasService.VolumeCreate(volumeCreateOptionsTwo)
@@ -182,7 +180,7 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			// begin-volumes
 
 			volumesOptions := sdsaasService.NewVolumesOptions()
-			volumesOptions.SetLimit(int64(10))
+			volumesOptions.SetLimit(int64(20))
 			volumesOptions.SetName("my-volume-one")
 
 			volumeCollection, response, err := sdsaasService.Volumes(volumesOptions)
@@ -283,14 +281,35 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			// end-cred_create
 
 			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(200))
+			Expect(response.StatusCode).To(Equal(201))
 			Expect(credentialsUpdated).ToNot(BeNil())
+		})
+		It(`CertTypes request example`, func() {
+			fmt.Println("\nCertTypes() result:")
+			// begin-cert_types
+
+			certTypesOptions := sdsaasService.NewCertTypesOptions()
+
+			certificateList, response, err := sdsaasService.CertTypes(certTypesOptions)
+			if err != nil {
+				panic(err)
+			}
+			b, _ := json.MarshalIndent(certificateList, "", "  ")
+			fmt.Println(string(b))
+
+			// end-cert_types
+
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(certificateList).ToNot(BeNil())
 		})
 		It(`Cert request example`, func() {
 			fmt.Println("\nCert() result:")
 			// begin-cert
 
-			certOptions := sdsaasService.NewCertOptions()
+			certOptions := sdsaasService.NewCertOptions(
+				"s3",
+			)
 
 			certificateFound, response, err := sdsaasService.Cert(certOptions)
 			if err != nil {
@@ -305,52 +324,57 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			Expect(response.StatusCode).To(Equal(200))
 			Expect(certificateFound).ToNot(BeNil())
 		})
-		// It(`CertUpload request example`, func() {
-		// 	fmt.Println("\nCertUpload() result:")
-		// 	// begin-cert_upload
+		// It(`CertCreate request example`, func() {
+		// 	fmt.Println("\nCertCreate() result:")
+		// 	// begin-cert_create
 
-		// 	// Generate a temp cert
-		// 	var tc, tk string
-		// 	cert, key, _ := testcerts.GenerateCertsToTempFile("/tmp/")
-		// 	c, _ := os.Open(cert)
-		// 	k, _ := os.Open(key)
-		// 	defer c.Close()
-		// 	defer k.Close()
-		// 	scanner1 := bufio.NewScanner(c)
-		// 	for scanner1.Scan() {
-		// 		tc = tc + scanner1.Text() + `\n`
-		// 	}
-		// 	scanner2 := bufio.NewScanner(k)
-		// 	for scanner2.Scan() {
-		// 		tk = tk + scanner2.Text() + `\n`
-		// 	}
-		// 	tempCert := tk + tc
-
-		// 	certUploadOptions := sdsaasService.NewCertUploadOptions(
-		// 		CreateMockReader(tempCert),
+		// 	certCreateOptions := sdsaasService.NewCertCreateOptions(
+		// 		"s3",
+		// 		CreateMockReader("This is a mock file."),
 		// 	)
 
-		// 	certificateUpdated, response, err := sdsaasService.CertUpload(certUploadOptions)
+		// 	certificateUpdated, response, err := sdsaasService.CertCreate(certCreateOptions)
 		// 	if err != nil {
 		// 		panic(err)
 		// 	}
 		// 	b, _ := json.MarshalIndent(certificateUpdated, "", "  ")
 		// 	fmt.Println(string(b))
 
-		// 	// end-cert_upload
+		// 	// end-cert_create
 
 		// 	Expect(err).To(BeNil())
 		// 	Expect(response.StatusCode).To(Equal(202))
 		// 	Expect(certificateUpdated).ToNot(BeNil())
 		// })
+		// It(`CertUpdate request example`, func() {
+		// 	fmt.Println("\nCertUpdate() result:")
+		// 	// begin-cert_update
 
+		// 	certUpdateOptions := sdsaasService.NewCertUpdateOptions(
+		// 		"s3",
+		// 		CreateMockReader("This is a mock file."),
+		// 	)
+
+		// 	certificateUpdated, response, err := sdsaasService.CertUpdate(certUpdateOptions)
+		// 	if err != nil {
+		// 		panic(err)
+		// 	}
+		// 	b, _ := json.MarshalIndent(certificateUpdated, "", "  ")
+		// 	fmt.Println(string(b))
+
+		// 	// end-cert_update
+
+		// 	Expect(err).To(BeNil())
+		// 	Expect(response.StatusCode).To(Equal(202))
+		// 	Expect(certificateUpdated).ToNot(BeNil())
+		// })
 		It(`Hosts request example`, func() {
 			fmt.Println("\nHosts() result:")
 			// begin-hosts
 
 			hostsOptions := sdsaasService.NewHostsOptions()
-			hostsOptions.SetLimit(int64(10))
-			hostsOptions.SetName("myhost1")
+			hostsOptions.SetLimit(int64(20))
+			hostsOptions.SetName("my-host")
 
 			hostCollection, response, err := sdsaasService.Hosts(hostsOptions)
 			if err != nil {
@@ -413,93 +437,140 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			Expect(response.StatusCode).To(Equal(200))
 			Expect(host).ToNot(BeNil())
 		})
-		It(`HostVolUpdate request example`, func() {
-			fmt.Println("\nHostVolUpdate() result:")
-			// begin-host_vol_update
+		It(`HostMappings request example`, func() {
+			fmt.Println("\nHostMappings() result:")
+			// begin-host_mappings
 
-			hostVolUpdateOptions := sdsaasService.NewHostVolUpdateOptions(
+			hostMappingsOptions := sdsaasService.NewHostMappingsOptions(
 				hostIDLink,
-				volumeIDLinkOne,
 			)
 
-			host, response, err := sdsaasService.HostVolUpdate(hostVolUpdateOptions)
+			volumeMappingCollection, response, err := sdsaasService.HostMappings(hostMappingsOptions)
 			if err != nil {
 				panic(err)
 			}
-			b, _ := json.MarshalIndent(host, "", "  ")
+			b, _ := json.MarshalIndent(volumeMappingCollection, "", "  ")
 			fmt.Println(string(b))
 
-			// Assign the second volume to the host as well
-			hostVolUpdateOptionsTwo := sdsaasService.NewHostVolUpdateOptions(
+			// end-host_mappings
+
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(volumeMappingCollection).ToNot(BeNil())
+		})
+		It(`HostMappingCreate request example`, func() {
+			fmt.Println("\nHostMappingCreate() result:")
+			// begin-host_mapping_create
+
+			volumeIdentityModel := &sdsaasv1.VolumeIdentity{
+				ID: core.StringPtr(volumeIDLinkOne),
+			}
+			volumeIdentityModelTwo := &sdsaasv1.VolumeIdentity{
+				ID: core.StringPtr(volumeIDLinkTwo),
+			}
+
+			hostMappingCreateOptions := sdsaasService.NewHostMappingCreateOptions(
 				hostIDLink,
-				volumeIDLinkTwo,
+				volumeIdentityModel,
+			)
+			hostMappingCreateOptionsTwo := sdsaasService.NewHostMappingCreateOptions(
+				hostIDLink,
+				volumeIdentityModelTwo,
 			)
 
-			hostTwo, responseTwo, errTwo := sdsaasService.HostVolUpdate(hostVolUpdateOptionsTwo)
+			volumeMapping, response, err := sdsaasService.HostMappingCreate(hostMappingCreateOptions)
 			if err != nil {
 				panic(err)
 			}
+			b, _ := json.MarshalIndent(volumeMapping, "", "  ")
+			fmt.Println(string(b))
 
-			// end-host_vol_update
+			volumeMappingTwo, responseTwo, errTwo := sdsaasService.HostMappingCreate(hostMappingCreateOptionsTwo)
+			if errTwo != nil {
+				panic(errTwo)
+			}
+			b, _ = json.MarshalIndent(volumeMappingTwo, "", "  ")
+			fmt.Println(string(b))
+
+			// end-host_mapping_create
+
+			time.Sleep(10 * time.Second)
+
+			volumeMappingIDLinkOne = *volumeMapping.ID
 
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(202))
-			Expect(host).ToNot(BeNil())
+			Expect(volumeMapping).ToNot(BeNil())
 
 			Expect(errTwo).To(BeNil())
 			Expect(responseTwo.StatusCode).To(Equal(202))
-			Expect(hostTwo).ToNot(BeNil())
+			Expect(volumeMappingTwo).ToNot(BeNil())
 		})
+		It(`HostMapping request example`, func() {
+			fmt.Println("\nHostMapping() result:")
+			// begin-host_mapping
 
-		It(`HostVolDelete request example`, func() {
-			// begin-host_volid_delete
-
-			hostVolDeleteOptions := sdsaasService.NewHostVolDeleteOptions(
+			hostMappingOptions := sdsaasService.NewHostMappingOptions(
 				hostIDLink,
-				volumeIDLinkTwo,
+				volumeMappingIDLinkOne,
 			)
 
-			response, err := sdsaasService.HostVolDelete(hostVolDeleteOptions)
+			volumeMapping, response, err := sdsaasService.HostMapping(hostMappingOptions)
+			if err != nil {
+				panic(err)
+			}
+			b, _ := json.MarshalIndent(volumeMapping, "", "  ")
+			fmt.Println(string(b))
+
+			// end-host_mapping
+
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(volumeMapping).ToNot(BeNil())
+		})
+		It(`HostMappingDelete request example`, func() {
+			// begin-host_mapping_delete
+
+			hostMappingDeleteOptions := sdsaasService.NewHostMappingDeleteOptions(
+				hostIDLink,
+				volumeMappingIDLinkOne,
+			)
+
+			response, err := sdsaasService.HostMappingDelete(hostMappingDeleteOptions)
 			if err != nil {
 				panic(err)
 			}
 			if response.StatusCode != 204 {
-				fmt.Printf("\nUnexpected response status code received from HostVolDelete(): %d\n", response.StatusCode)
+				fmt.Printf("\nUnexpected response status code received from HostMappingDelete(): %d\n", response.StatusCode)
 			}
 
-			// end-host_volid_delete
+			// end-host_mapping_delete
 
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
-
-			// Make sure the volumes are no longer attached before deleting anything
-			time.Sleep(15 * time.Second)
 		})
+		It(`HostMappingDeleteAll request example`, func() {
+			// begin-host_mapping_delete_all
 
-		It(`HostVolDeleteall request example`, func() {
-			// begin-host_vol_deleteall
-
-			hostVolDeleteallOptions := sdsaasService.NewHostVolDeleteallOptions(
+			hostMappingDeleteAllOptions := sdsaasService.NewHostMappingDeleteAllOptions(
 				hostIDLink,
 			)
 
-			response, err := sdsaasService.HostVolDeleteall(hostVolDeleteallOptions)
+			response, err := sdsaasService.HostMappingDeleteAll(hostMappingDeleteAllOptions)
 			if err != nil {
 				panic(err)
 			}
 			if response.StatusCode != 204 {
-				fmt.Printf("\nUnexpected response status code received from HostVolDeleteall(): %d\n", response.StatusCode)
+				fmt.Printf("\nUnexpected response status code received from HostMappingDeleteAll(): %d\n", response.StatusCode)
 			}
 
-			// end-host_vol_deleteall
+			// end-host_mapping_delete_all
+
+			time.Sleep(10 * time.Second)
 
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
-
-			// Make sure the volumes are no longer attached before deleting anything
-			time.Sleep(15 * time.Second)
 		})
-
 		It(`VolumeDelete request example`, func() {
 			// begin-volume_delete
 
@@ -530,31 +601,12 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 
 			// end-volume_delete
 
+			time.Sleep(10 * time.Second)
+
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
-
 			Expect(errTwo).To(BeNil())
 			Expect(responseTwo.StatusCode).To(Equal(204))
-		})
-		It(`CredDelete request example`, func() {
-			// begin-cred_delete
-
-			credDeleteOptions := sdsaasService.NewCredDeleteOptions(
-				"mytestkey",
-			)
-
-			response, err := sdsaasService.CredDelete(credDeleteOptions)
-			if err != nil {
-				panic(err)
-			}
-			if response.StatusCode != 200 {
-				fmt.Printf("\nUnexpected response status code received from CredDelete(): %d\n", response.StatusCode)
-			}
-
-			// end-cred_delete
-
-			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(200))
 		})
 		It(`HostDelete request example`, func() {
 			// begin-host_delete
@@ -576,5 +628,45 @@ var _ = Describe(`SdsaasV1 Examples Tests`, func() {
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
 		})
+		It(`CredDelete request example`, func() {
+			// begin-cred_delete
+
+			credDeleteOptions := sdsaasService.NewCredDeleteOptions(
+				"mytestkey",
+			)
+
+			response, err := sdsaasService.CredDelete(credDeleteOptions)
+			if err != nil {
+				panic(err)
+			}
+			if response.StatusCode != 204 {
+				fmt.Printf("\nUnexpected response status code received from CredDelete(): %d\n", response.StatusCode)
+			}
+
+			// end-cred_delete
+
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(204))
+		})
+		// It(`CertDelete request example`, func() {
+		// 	// begin-cert_delete
+
+		// 	certDeleteOptions := sdsaasService.NewCertDeleteOptions(
+		// 		"s3",
+		// 	)
+
+		// 	response, err := sdsaasService.CertDelete(certDeleteOptions)
+		// 	if err != nil {
+		// 		panic(err)
+		// 	}
+		// 	if response.StatusCode != 204 {
+		// 		fmt.Printf("\nUnexpected response status code received from CertDelete(): %d\n", response.StatusCode)
+		// 	}
+
+		// 	// end-cert_delete
+
+		// 	Expect(err).To(BeNil())
+		// 	Expect(response.StatusCode).To(Equal(204))
+		// })
 	})
 })

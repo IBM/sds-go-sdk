@@ -32,6 +32,7 @@ import (
 
 	"github.com/IBM/go-sdk-core/v5/core"
 	common "github.com/IBM/sds-go-sdk/common"
+	"github.com/go-openapi/strfmt"
 )
 
 // SdsaasV1 : OpenAPI definition for SDSaaS
@@ -284,10 +285,6 @@ func (sdsaas *SdsaasV1) VolumeCreateWithContext(ctx context.Context, volumeCreat
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/json")
-
-	if volumeCreateOptions.Hostnqnstring != nil {
-		builder.AddQuery("hostnqnstring", fmt.Sprint(*volumeCreateOptions.Hostnqnstring))
-	}
 
 	body := make(map[string]interface{})
 	if volumeCreateOptions.Capacity != nil {
@@ -552,7 +549,7 @@ func (sdsaas *SdsaasV1) CredsWithContext(ctx context.Context, credsOptions *Cred
 	builder := core.NewRequestBuilder(core.GET)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/workspace/credentials`, nil)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/s3_credentials`, nil)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
@@ -614,10 +611,14 @@ func (sdsaas *SdsaasV1) CredCreateWithContext(ctx context.Context, credCreateOpt
 		return
 	}
 
+	pathParamsMap := map[string]string{
+		"access_key": *credCreateOptions.AccessKey,
+	}
+
 	builder := core.NewRequestBuilder(core.POST)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/workspace/credentials`, nil)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/s3_credentials/{access_key}`, pathParamsMap)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
@@ -632,8 +633,6 @@ func (sdsaas *SdsaasV1) CredCreateWithContext(ctx context.Context, credCreateOpt
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-
-	builder.AddQuery("access_key", fmt.Sprint(*credCreateOptions.AccessKey))
 
 	request, err := builder.Build()
 	if err != nil {
@@ -681,10 +680,14 @@ func (sdsaas *SdsaasV1) CredDeleteWithContext(ctx context.Context, credDeleteOpt
 		return
 	}
 
+	pathParamsMap := map[string]string{
+		"access_key": *credDeleteOptions.AccessKey,
+	}
+
 	builder := core.NewRequestBuilder(core.DELETE)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/workspace/credentials`, nil)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/s3_credentials/{access_key}`, pathParamsMap)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
@@ -698,8 +701,6 @@ func (sdsaas *SdsaasV1) CredDeleteWithContext(ctx context.Context, credDeleteOpt
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
-
-	builder.AddQuery("access_key", fmt.Sprint(*credDeleteOptions.AccessKey))
 
 	request, err := builder.Build()
 	if err != nil {
@@ -717,17 +718,17 @@ func (sdsaas *SdsaasV1) CredDeleteWithContext(ctx context.Context, credDeleteOpt
 	return
 }
 
-// Cert : Retrieves the S3 SSL certificate expiration date and status
-// This request retrieves the S3 SSL certificate expiration date and status.
-func (sdsaas *SdsaasV1) Cert(certOptions *CertOptions) (result *CertificateFound, response *core.DetailedResponse, err error) {
-	result, response, err = sdsaas.CertWithContext(context.Background(), certOptions)
+// CertTypes : List the allowed certificate types
+// Retrieves the list configured certificates.
+func (sdsaas *SdsaasV1) CertTypes(certTypesOptions *CertTypesOptions) (result *CertificateList, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.CertTypesWithContext(context.Background(), certTypesOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// CertWithContext is an alternate form of the Cert method which supports a Context parameter
-func (sdsaas *SdsaasV1) CertWithContext(ctx context.Context, certOptions *CertOptions) (result *CertificateFound, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(certOptions, "certOptions")
+// CertTypesWithContext is an alternate form of the CertTypes method which supports a Context parameter
+func (sdsaas *SdsaasV1) CertTypesWithContext(ctx context.Context, certTypesOptions *CertTypesOptions) (result *CertificateList, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(certTypesOptions, "certTypesOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
@@ -736,7 +737,76 @@ func (sdsaas *SdsaasV1) CertWithContext(ctx context.Context, certOptions *CertOp
 	builder := core.NewRequestBuilder(core.GET)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/certificate/s3`, nil)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/certificates`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range certTypesOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertTypes")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = sdsaas.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "cert_types", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCertificateList)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// Cert : Retrieves the SSL certificate expiration date and status
+// This request retrieves the SSL certificate expiration date and status.
+func (sdsaas *SdsaasV1) Cert(certOptions *CertOptions) (result *CertificateFound, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.CertWithContext(context.Background(), certOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CertWithContext is an alternate form of the Cert method which supports a Context parameter
+func (sdsaas *SdsaasV1) CertWithContext(ctx context.Context, certOptions *CertOptions) (result *CertificateFound, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(certOptions, "certOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(certOptions, "certOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"cert": *certOptions.Cert,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/certificates/{cert}`, pathParamsMap)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
@@ -777,48 +847,111 @@ func (sdsaas *SdsaasV1) CertWithContext(ctx context.Context, certOptions *CertOp
 	return
 }
 
-// CertUpload : Creates/updates the S3 SSL Certificates
-// Updates the S3 SSL Certificates or creates them if they do not exist.
-func (sdsaas *SdsaasV1) CertUpload(certUploadOptions *CertUploadOptions) (result *CertificateUpdated, response *core.DetailedResponse, err error) {
-	result, response, err = sdsaas.CertUploadWithContext(context.Background(), certUploadOptions)
+// CertDelete : Delete SSL certificate
+// Delete the provided PEM formatted TLS certificate.
+func (sdsaas *SdsaasV1) CertDelete(certDeleteOptions *CertDeleteOptions) (response *core.DetailedResponse, err error) {
+	response, err = sdsaas.CertDeleteWithContext(context.Background(), certDeleteOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// CertUploadWithContext is an alternate form of the CertUpload method which supports a Context parameter
-func (sdsaas *SdsaasV1) CertUploadWithContext(ctx context.Context, certUploadOptions *CertUploadOptions) (result *CertificateUpdated, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(certUploadOptions, "certUploadOptions cannot be nil")
+// CertDeleteWithContext is an alternate form of the CertDelete method which supports a Context parameter
+func (sdsaas *SdsaasV1) CertDeleteWithContext(ctx context.Context, certDeleteOptions *CertDeleteOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(certDeleteOptions, "certDeleteOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(certUploadOptions, "certUploadOptions")
+	err = core.ValidateStruct(certDeleteOptions, "certDeleteOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
-	builder := core.NewRequestBuilder(core.POST)
+	pathParamsMap := map[string]string{
+		"cert": *certDeleteOptions.Cert,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/v1/object/certificate/s3`, nil)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/certificates/{cert}`, pathParamsMap)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range certUploadOptions.Headers {
+	for headerName, headerValue := range certDeleteOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertUpload")
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertDelete")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = sdsaas.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "cert_delete", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// CertCreate : Creates a new SSL Certificate
+// Creates a new SSL Certificate.
+func (sdsaas *SdsaasV1) CertCreate(certCreateOptions *CertCreateOptions) (result *CertificateUpdated, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.CertCreateWithContext(context.Background(), certCreateOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CertCreateWithContext is an alternate form of the CertCreate method which supports a Context parameter
+func (sdsaas *SdsaasV1) CertCreateWithContext(ctx context.Context, certCreateOptions *CertCreateOptions) (result *CertificateUpdated, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(certCreateOptions, "certCreateOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(certCreateOptions, "certCreateOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"cert": *certCreateOptions.Cert,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/certificates/{cert}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range certCreateOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertCreate")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/octect-stream")
 
-	_, err = builder.SetBodyContent("application/octect-stream", nil, nil, certUploadOptions.Body)
+	_, err = builder.SetBodyContent("application/octect-stream", nil, nil, certCreateOptions.Body)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "set-body-error", common.GetComponentInfo())
 		return
@@ -833,7 +966,83 @@ func (sdsaas *SdsaasV1) CertUploadWithContext(ctx context.Context, certUploadOpt
 	var rawResponse map[string]json.RawMessage
 	response, err = sdsaas.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "cert_upload", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "cert_create", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCertificateUpdated)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CertUpdate : Updates the SSL Certificate
+// Updates the SSL Certificate.
+func (sdsaas *SdsaasV1) CertUpdate(certUpdateOptions *CertUpdateOptions) (result *CertificateUpdated, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.CertUpdateWithContext(context.Background(), certUpdateOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CertUpdateWithContext is an alternate form of the CertUpdate method which supports a Context parameter
+func (sdsaas *SdsaasV1) CertUpdateWithContext(ctx context.Context, certUpdateOptions *CertUpdateOptions) (result *CertificateUpdated, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(certUpdateOptions, "certUpdateOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(certUpdateOptions, "certUpdateOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"cert": *certUpdateOptions.Cert,
+	}
+
+	builder := core.NewRequestBuilder(core.PUT)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/certificates/{cert}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range certUpdateOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertUpdate")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/octect-stream")
+
+	_, err = builder.SetBodyContent("application/octect-stream", nil, nil, certUpdateOptions.Body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = sdsaas.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "cert_update", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
@@ -850,7 +1059,8 @@ func (sdsaas *SdsaasV1) CertUploadWithContext(ctx context.Context, certUploadOpt
 }
 
 // Hosts : Lists all hosts and all host IDs
-// This request lists all hosts and host IDs.
+// This request lists all hosts in the deployment. Hosts are objects representing the NVMe initiators that may be mapped
+// to one or more volumes in the same deployment.
 func (sdsaas *SdsaasV1) Hosts(hostsOptions *HostsOptions) (result *HostCollection, response *core.DetailedResponse, err error) {
 	result, response, err = sdsaas.HostsWithContext(context.Background(), hostsOptions)
 	err = core.RepurposeSDKProblem(err, "")
@@ -964,8 +1174,8 @@ func (sdsaas *SdsaasV1) HostCreateWithContext(ctx context.Context, hostCreateOpt
 	if hostCreateOptions.Name != nil {
 		body["name"] = hostCreateOptions.Name
 	}
-	if hostCreateOptions.Volumes != nil {
-		body["volumes"] = hostCreateOptions.Volumes
+	if hostCreateOptions.VolumeMappings != nil {
+		body["volume_mappings"] = hostCreateOptions.VolumeMappings
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
@@ -1068,7 +1278,8 @@ func (sdsaas *SdsaasV1) HostWithContext(ctx context.Context, hostOptions *HostOp
 }
 
 // HostUpdate : Update a host
-// This request updates a host with the information in a provided host patch.
+// This request updates a Host with the information in a provided host patch object. The host patch object is structured
+// in the same way as a retrieved host and contains only the information to be updated.
 func (sdsaas *SdsaasV1) HostUpdate(hostUpdateOptions *HostUpdateOptions) (result *Host, response *core.DetailedResponse, err error) {
 	result, response, err = sdsaas.HostUpdateWithContext(context.Background(), hostUpdateOptions)
 	err = core.RepurposeSDKProblem(err, "")
@@ -1146,7 +1357,7 @@ func (sdsaas *SdsaasV1) HostUpdateWithContext(ctx context.Context, hostUpdateOpt
 }
 
 // HostDelete : Delete a specific host
-// This request deletes a host using the ID.
+// This request deletes a host. For this request to succeed, the host must not be mapped to any volumes.
 func (sdsaas *SdsaasV1) HostDelete(hostDeleteOptions *HostDeleteOptions) (response *core.DetailedResponse, err error) {
 	response, err = sdsaas.HostDeleteWithContext(context.Background(), hostDeleteOptions)
 	err = core.RepurposeSDKProblem(err, "")
@@ -1204,165 +1415,45 @@ func (sdsaas *SdsaasV1) HostDeleteWithContext(ctx context.Context, hostDeleteOpt
 	return
 }
 
-// HostVolDeleteall : Deletes all the volume mappings for a given host
-// This request deletes all volume mappings associated with a specific host ID.
-func (sdsaas *SdsaasV1) HostVolDeleteall(hostVolDeleteallOptions *HostVolDeleteallOptions) (response *core.DetailedResponse, err error) {
-	response, err = sdsaas.HostVolDeleteallWithContext(context.Background(), hostVolDeleteallOptions)
+// HostMappings : List all volume mappings for a host
+// This request lists volume mappings for a host.
+func (sdsaas *SdsaasV1) HostMappings(hostMappingsOptions *HostMappingsOptions) (result *VolumeMappingCollection, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.HostMappingsWithContext(context.Background(), hostMappingsOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// HostVolDeleteallWithContext is an alternate form of the HostVolDeleteall method which supports a Context parameter
-func (sdsaas *SdsaasV1) HostVolDeleteallWithContext(ctx context.Context, hostVolDeleteallOptions *HostVolDeleteallOptions) (response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(hostVolDeleteallOptions, "hostVolDeleteallOptions cannot be nil")
+// HostMappingsWithContext is an alternate form of the HostMappings method which supports a Context parameter
+func (sdsaas *SdsaasV1) HostMappingsWithContext(ctx context.Context, hostMappingsOptions *HostMappingsOptions) (result *VolumeMappingCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(hostMappingsOptions, "hostMappingsOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(hostVolDeleteallOptions, "hostVolDeleteallOptions")
+	err = core.ValidateStruct(hostMappingsOptions, "hostMappingsOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"host_id": *hostVolDeleteallOptions.HostID,
+		"host_id": *hostMappingsOptions.HostID,
 	}
 
-	builder := core.NewRequestBuilder(core.DELETE)
+	builder := core.NewRequestBuilder(core.GET)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/hosts/{host_id}/volumes`, pathParamsMap)
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/hosts/{host_id}/volume_mappings`, pathParamsMap)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range hostVolDeleteallOptions.Headers {
+	for headerName, headerValue := range hostMappingsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostVolDeleteall")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
-		return
-	}
-
-	response, err = sdsaas.Service.Request(request, nil)
-	if err != nil {
-		core.EnrichHTTPProblem(err, "host_vol_deleteall", getServiceComponentInfo())
-		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
-		return
-	}
-
-	return
-}
-
-// HostVolDelete : Deletes the given volume mapping for a specific host
-// This request deletes a particular volume mapped from the host.
-func (sdsaas *SdsaasV1) HostVolDelete(hostVolDeleteOptions *HostVolDeleteOptions) (response *core.DetailedResponse, err error) {
-	response, err = sdsaas.HostVolDeleteWithContext(context.Background(), hostVolDeleteOptions)
-	err = core.RepurposeSDKProblem(err, "")
-	return
-}
-
-// HostVolDeleteWithContext is an alternate form of the HostVolDelete method which supports a Context parameter
-func (sdsaas *SdsaasV1) HostVolDeleteWithContext(ctx context.Context, hostVolDeleteOptions *HostVolDeleteOptions) (response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(hostVolDeleteOptions, "hostVolDeleteOptions cannot be nil")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
-		return
-	}
-	err = core.ValidateStruct(hostVolDeleteOptions, "hostVolDeleteOptions")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
-		return
-	}
-
-	pathParamsMap := map[string]string{
-		"host_id":   *hostVolDeleteOptions.HostID,
-		"volume_id": *hostVolDeleteOptions.VolumeID,
-	}
-
-	builder := core.NewRequestBuilder(core.DELETE)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/hosts/{host_id}/volumes/{volume_id}`, pathParamsMap)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
-		return
-	}
-
-	for headerName, headerValue := range hostVolDeleteOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostVolDelete")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
-		return
-	}
-
-	response, err = sdsaas.Service.Request(request, nil)
-	if err != nil {
-		core.EnrichHTTPProblem(err, "host_vol_delete", getServiceComponentInfo())
-		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
-		return
-	}
-
-	return
-}
-
-// HostVolUpdate : Maps the given volume to the given host
-// This request creates a volume mapping to the given host ID.
-func (sdsaas *SdsaasV1) HostVolUpdate(hostVolUpdateOptions *HostVolUpdateOptions) (result *Host, response *core.DetailedResponse, err error) {
-	result, response, err = sdsaas.HostVolUpdateWithContext(context.Background(), hostVolUpdateOptions)
-	err = core.RepurposeSDKProblem(err, "")
-	return
-}
-
-// HostVolUpdateWithContext is an alternate form of the HostVolUpdate method which supports a Context parameter
-func (sdsaas *SdsaasV1) HostVolUpdateWithContext(ctx context.Context, hostVolUpdateOptions *HostVolUpdateOptions) (result *Host, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(hostVolUpdateOptions, "hostVolUpdateOptions cannot be nil")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
-		return
-	}
-	err = core.ValidateStruct(hostVolUpdateOptions, "hostVolUpdateOptions")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
-		return
-	}
-
-	pathParamsMap := map[string]string{
-		"host_id":   *hostVolUpdateOptions.HostID,
-		"volume_id": *hostVolUpdateOptions.VolumeID,
-	}
-
-	builder := core.NewRequestBuilder(core.PUT)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/hosts/{host_id}/volumes/{volume_id}`, pathParamsMap)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
-		return
-	}
-
-	for headerName, headerValue := range hostVolUpdateOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostVolUpdate")
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappings")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
@@ -1377,12 +1468,12 @@ func (sdsaas *SdsaasV1) HostVolUpdateWithContext(ctx context.Context, hostVolUpd
 	var rawResponse map[string]json.RawMessage
 	response, err = sdsaas.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "host_vol_update", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "host_mappings", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalHost)
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalVolumeMappingCollection)
 		if err != nil {
 			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
@@ -1392,30 +1483,284 @@ func (sdsaas *SdsaasV1) HostVolUpdateWithContext(ctx context.Context, hostVolUpd
 
 	return
 }
+
+// HostMappingCreate : Create a Volume mapping for a host
+// This request creates a new volume mapping for a given host.
+func (sdsaas *SdsaasV1) HostMappingCreate(hostMappingCreateOptions *HostMappingCreateOptions) (result *VolumeMapping, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.HostMappingCreateWithContext(context.Background(), hostMappingCreateOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// HostMappingCreateWithContext is an alternate form of the HostMappingCreate method which supports a Context parameter
+func (sdsaas *SdsaasV1) HostMappingCreateWithContext(ctx context.Context, hostMappingCreateOptions *HostMappingCreateOptions) (result *VolumeMapping, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(hostMappingCreateOptions, "hostMappingCreateOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(hostMappingCreateOptions, "hostMappingCreateOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"host_id": *hostMappingCreateOptions.HostID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/hosts/{host_id}/volume_mappings`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range hostMappingCreateOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingCreate")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	body := make(map[string]interface{})
+	if hostMappingCreateOptions.Volume != nil {
+		body["volume"] = hostMappingCreateOptions.Volume
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = sdsaas.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "host_mapping_create", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalVolumeMapping)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// HostMappingDeleteAll : Deletes all the volume mappings for a given host
+// This request deletes all volume mappings associated with a specific host ID.
+func (sdsaas *SdsaasV1) HostMappingDeleteAll(hostMappingDeleteAllOptions *HostMappingDeleteAllOptions) (response *core.DetailedResponse, err error) {
+	response, err = sdsaas.HostMappingDeleteAllWithContext(context.Background(), hostMappingDeleteAllOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// HostMappingDeleteAllWithContext is an alternate form of the HostMappingDeleteAll method which supports a Context parameter
+func (sdsaas *SdsaasV1) HostMappingDeleteAllWithContext(ctx context.Context, hostMappingDeleteAllOptions *HostMappingDeleteAllOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(hostMappingDeleteAllOptions, "hostMappingDeleteAllOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(hostMappingDeleteAllOptions, "hostMappingDeleteAllOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"host_id": *hostMappingDeleteAllOptions.HostID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/hosts/{host_id}/volume_mappings`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range hostMappingDeleteAllOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingDeleteAll")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = sdsaas.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "host_mapping_delete_all", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// HostMapping : Retrieve a volume mapping
+// This request retrieves a single volume mapping specified by the identifier in the URL.
+func (sdsaas *SdsaasV1) HostMapping(hostMappingOptions *HostMappingOptions) (result *VolumeMapping, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.HostMappingWithContext(context.Background(), hostMappingOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// HostMappingWithContext is an alternate form of the HostMapping method which supports a Context parameter
+func (sdsaas *SdsaasV1) HostMappingWithContext(ctx context.Context, hostMappingOptions *HostMappingOptions) (result *VolumeMapping, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(hostMappingOptions, "hostMappingOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(hostMappingOptions, "hostMappingOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"host_id":           *hostMappingOptions.HostID,
+		"volume_mapping_id": *hostMappingOptions.VolumeMappingID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/hosts/{host_id}/volume_mappings/{volume_mapping_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range hostMappingOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMapping")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = sdsaas.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "host_mapping", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalVolumeMapping)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// HostMappingDelete : Deletes the given volume mapping for a specific host
+// This request deletes a particular volume mapped from the host.
+func (sdsaas *SdsaasV1) HostMappingDelete(hostMappingDeleteOptions *HostMappingDeleteOptions) (response *core.DetailedResponse, err error) {
+	response, err = sdsaas.HostMappingDeleteWithContext(context.Background(), hostMappingDeleteOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// HostMappingDeleteWithContext is an alternate form of the HostMappingDelete method which supports a Context parameter
+func (sdsaas *SdsaasV1) HostMappingDeleteWithContext(ctx context.Context, hostMappingDeleteOptions *HostMappingDeleteOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(hostMappingDeleteOptions, "hostMappingDeleteOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(hostMappingDeleteOptions, "hostMappingDeleteOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"host_id":           *hostMappingDeleteOptions.HostID,
+		"volume_mapping_id": *hostMappingDeleteOptions.VolumeMappingID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/hosts/{host_id}/volume_mappings/{volume_mapping_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range hostMappingDeleteOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingDelete")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = sdsaas.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "host_mapping_delete", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
 func getServiceComponentInfo() *core.ProblemComponent {
 	return core.NewProblemComponent(DefaultServiceName, "1.0.0")
 }
 
-// CertOptions : The Cert options.
-type CertOptions struct {
+// CertCreateOptions : The CertCreate options.
+type CertCreateOptions struct {
+	// The certificate type that is to be used in the request. Acceptable values include - s3.
+	Cert *string `json:"cert" validate:"required,ne="`
 
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewCertOptions : Instantiate CertOptions
-func (*SdsaasV1) NewCertOptions() *CertOptions {
-	return &CertOptions{}
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CertOptions) SetHeaders(param map[string]string) *CertOptions {
-	options.Headers = param
-	return options
-}
-
-// CertUploadOptions : The CertUpload options.
-type CertUploadOptions struct {
 	// The request body containing the S3 TLS certificate. The CLI will accept certificate files of any type, but they must
 	// be in proper .pem format.
 	Body io.ReadCloser `json:"body" validate:"required"`
@@ -1424,29 +1769,152 @@ type CertUploadOptions struct {
 	Headers map[string]string
 }
 
-// NewCertUploadOptions : Instantiate CertUploadOptions
-func (*SdsaasV1) NewCertUploadOptions(body io.ReadCloser) *CertUploadOptions {
-	return &CertUploadOptions{
+// NewCertCreateOptions : Instantiate CertCreateOptions
+func (*SdsaasV1) NewCertCreateOptions(cert string, body io.ReadCloser) *CertCreateOptions {
+	return &CertCreateOptions{
+		Cert: core.StringPtr(cert),
 		Body: body,
 	}
 }
 
+// SetCert : Allow user to set Cert
+func (_options *CertCreateOptions) SetCert(cert string) *CertCreateOptions {
+	_options.Cert = core.StringPtr(cert)
+	return _options
+}
+
 // SetBody : Allow user to set Body
-func (_options *CertUploadOptions) SetBody(body io.ReadCloser) *CertUploadOptions {
+func (_options *CertCreateOptions) SetBody(body io.ReadCloser) *CertCreateOptions {
 	_options.Body = body
 	return _options
 }
 
 // SetHeaders : Allow user to set Headers
-func (options *CertUploadOptions) SetHeaders(param map[string]string) *CertUploadOptions {
+func (options *CertCreateOptions) SetHeaders(param map[string]string) *CertCreateOptions {
+	options.Headers = param
+	return options
+}
+
+// CertDeleteOptions : The CertDelete options.
+type CertDeleteOptions struct {
+	// The certificate type that is to be used in the request. Acceptable values include - s3.
+	Cert *string `json:"cert" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCertDeleteOptions : Instantiate CertDeleteOptions
+func (*SdsaasV1) NewCertDeleteOptions(cert string) *CertDeleteOptions {
+	return &CertDeleteOptions{
+		Cert: core.StringPtr(cert),
+	}
+}
+
+// SetCert : Allow user to set Cert
+func (_options *CertDeleteOptions) SetCert(cert string) *CertDeleteOptions {
+	_options.Cert = core.StringPtr(cert)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CertDeleteOptions) SetHeaders(param map[string]string) *CertDeleteOptions {
+	options.Headers = param
+	return options
+}
+
+// CertOptions : The Cert options.
+type CertOptions struct {
+	// The certificate type that is to be used in the request. Acceptable values include - s3.
+	Cert *string `json:"cert" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCertOptions : Instantiate CertOptions
+func (*SdsaasV1) NewCertOptions(cert string) *CertOptions {
+	return &CertOptions{
+		Cert: core.StringPtr(cert),
+	}
+}
+
+// SetCert : Allow user to set Cert
+func (_options *CertOptions) SetCert(cert string) *CertOptions {
+	_options.Cert = core.StringPtr(cert)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CertOptions) SetHeaders(param map[string]string) *CertOptions {
+	options.Headers = param
+	return options
+}
+
+// CertTypesOptions : The CertTypes options.
+type CertTypesOptions struct {
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCertTypesOptions : Instantiate CertTypesOptions
+func (*SdsaasV1) NewCertTypesOptions() *CertTypesOptions {
+	return &CertTypesOptions{}
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CertTypesOptions) SetHeaders(param map[string]string) *CertTypesOptions {
+	options.Headers = param
+	return options
+}
+
+// CertUpdateOptions : The CertUpdate options.
+type CertUpdateOptions struct {
+	// The certificate type that is to be used in the request. Acceptable values include - s3.
+	Cert *string `json:"cert" validate:"required,ne="`
+
+	// The request body containing the S3 TLS certificate. The CLI will accept certificate files of any type, but they must
+	// be in proper .pem format.
+	Body io.ReadCloser `json:"body" validate:"required"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCertUpdateOptions : Instantiate CertUpdateOptions
+func (*SdsaasV1) NewCertUpdateOptions(cert string, body io.ReadCloser) *CertUpdateOptions {
+	return &CertUpdateOptions{
+		Cert: core.StringPtr(cert),
+		Body: body,
+	}
+}
+
+// SetCert : Allow user to set Cert
+func (_options *CertUpdateOptions) SetCert(cert string) *CertUpdateOptions {
+	_options.Cert = core.StringPtr(cert)
+	return _options
+}
+
+// SetBody : Allow user to set Body
+func (_options *CertUpdateOptions) SetBody(body io.ReadCloser) *CertUpdateOptions {
+	_options.Body = body
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CertUpdateOptions) SetHeaders(param map[string]string) *CertUpdateOptions {
 	options.Headers = param
 	return options
 }
 
 // CertificateFound : The responese object for certificate GET operations.
 type CertificateFound struct {
+	// The name of the certificate.
+	Name *string `json:"name,omitempty"`
+
 	// The expiration date of the certificate.
-	ExpirationDate *string `json:"expiration_date,omitempty"`
+	ExpirationDate *strfmt.DateTime `json:"expiration_date,omitempty"`
 
 	// The boolean value of the expiration status.
 	Expired *bool `json:"expired,omitempty"`
@@ -1455,6 +1923,11 @@ type CertificateFound struct {
 // UnmarshalCertificateFound unmarshals an instance of CertificateFound from the specified map of raw messages.
 func UnmarshalCertificateFound(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(CertificateFound)
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "expiration_date", &obj.ExpirationDate)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "expiration_date-error", common.GetComponentInfo())
@@ -1469,10 +1942,35 @@ func UnmarshalCertificateFound(m map[string]json.RawMessage, result interface{})
 	return
 }
 
+// CertificateList : The list of configured certificates.
+type CertificateList struct {
+	// The current list of configured certificates.
+	Certificates []string `json:"certificates" validate:"required"`
+}
+
+// UnmarshalCertificateList unmarshals an instance of CertificateList from the specified map of raw messages.
+func UnmarshalCertificateList(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(CertificateList)
+	err = core.UnmarshalPrimitive(m, "certificates", &obj.Certificates)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "certificates-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // CertificateUpdated : The response object for certificate POST operations.
 type CertificateUpdated struct {
+	// Name of the certificate.
+	Name *string `json:"name,omitempty"`
+
+	// A trace string for the request that caused the error, should be a correlation ID that can be used to track down the
+	// underlying issue.
+	Trace *string `json:"trace,omitempty"`
+
 	// An array of certificate error codes and their descriptions.
-	Error []map[string]string `json:"error,omitempty"`
+	Errors []map[string]string `json:"errors,omitempty"`
 
 	// The boolean valid status of the certificate.
 	ValidCertificate *bool `json:"valid_certificate,omitempty"`
@@ -1484,9 +1982,19 @@ type CertificateUpdated struct {
 // UnmarshalCertificateUpdated unmarshals an instance of CertificateUpdated from the specified map of raw messages.
 func UnmarshalCertificateUpdated(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(CertificateUpdated)
-	err = core.UnmarshalPrimitive(m, "error", &obj.Error)
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "error-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "trace", &obj.Trace)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "trace-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "errors", &obj.Errors)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "errors-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "valid_certificate", &obj.ValidCertificate)
@@ -1506,7 +2014,7 @@ func UnmarshalCertificateUpdated(m map[string]json.RawMessage, result interface{
 // CredCreateOptions : The CredCreate options.
 type CredCreateOptions struct {
 	// Access key to update or set.
-	AccessKey *string `json:"access_key" validate:"required"`
+	AccessKey *string `json:"access_key" validate:"required,ne="`
 
 	// Allows users to set headers on API requests.
 	Headers map[string]string
@@ -1534,7 +2042,7 @@ func (options *CredCreateOptions) SetHeaders(param map[string]string) *CredCreat
 // CredDeleteOptions : The CredDelete options.
 type CredDeleteOptions struct {
 	// Access key to update or set.
-	AccessKey *string `json:"access_key" validate:"required"`
+	AccessKey *string `json:"access_key" validate:"required,ne="`
 
 	// Allows users to set headers on API requests.
 	Headers map[string]string
@@ -1562,15 +2070,15 @@ func (options *CredDeleteOptions) SetHeaders(param map[string]string) *CredDelet
 // CredentialsFound : The response object for credential GET operations.
 type CredentialsFound struct {
 	// Collection of access keys.
-	AccessKeys []string `json:"access_keys,omitempty"`
+	S3Credentials []string `json:"s3_credentials,omitempty"`
 }
 
 // UnmarshalCredentialsFound unmarshals an instance of CredentialsFound from the specified map of raw messages.
 func UnmarshalCredentialsFound(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(CredentialsFound)
-	err = core.UnmarshalPrimitive(m, "access_keys", &obj.AccessKeys)
+	err = core.UnmarshalPrimitive(m, "s3_credentials", &obj.S3Credentials)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "access_keys-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "s3_credentials-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -1621,23 +2129,51 @@ func (options *CredsOptions) SetHeaders(param map[string]string) *CredsOptions {
 	return options
 }
 
+// Gateway : Connection properties for the NVME gateways.
+type Gateway struct {
+	// Network information for volume/host mappings.
+	IPAddress *string `json:"ip_address" validate:"required"`
+
+	// Network information for volume/host mappings.
+	Port *int64 `json:"port" validate:"required"`
+}
+
+// UnmarshalGateway unmarshals an instance of Gateway from the specified map of raw messages.
+func UnmarshalGateway(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Gateway)
+	err = core.UnmarshalPrimitive(m, "ip_address", &obj.IPAddress)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "ip_address-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // Host : The host object.
 type Host struct {
-	// The date and time that the host was created.
-	CreatedAt *string `json:"created_at,omitempty"`
+	// The date and time when the resource was created.
+	CreatedAt *strfmt.DateTime `json:"created_at" validate:"required"`
 
-	// The unique identifier for this host.
-	ID *string `json:"id,omitempty"`
+	// The URL for this resource.
+	Href *string `json:"href" validate:"required"`
 
-	// The name for this host. The name must not be used by another host.  If unspecified, the name will be a hyphenated
-	// list of randomly-selected words.
-	Name *string `json:"name,omitempty"`
+	// Unique identifer of the host.
+	ID *string `json:"id" validate:"required"`
 
-	// The NQN of the host configured in customer's environment.
+	// Unique name of the host.
+	Name *string `json:"name" validate:"required"`
+
+	// The NQN (NVMe Qualified Name) as configured on the initiator (compute/host) accessing the storage.
 	Nqn *string `json:"nqn" validate:"required"`
 
 	// The host-to-volume map.
-	Volumes []VolumeMappingReference `json:"volumes,omitempty"`
+	VolumeMappings []VolumeMapping `json:"volume_mappings" validate:"required"`
 }
 
 // UnmarshalHost unmarshals an instance of Host from the specified map of raw messages.
@@ -1646,6 +2182,11 @@ func UnmarshalHost(m map[string]json.RawMessage, result interface{}) (err error)
 	err = core.UnmarshalPrimitive(m, "created_at", &obj.CreatedAt)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "created_at-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "href", &obj.Href)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "href-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
@@ -1663,9 +2204,9 @@ func UnmarshalHost(m map[string]json.RawMessage, result interface{}) (err error)
 		err = core.SDKErrorf(err, "", "nqn-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalModel(m, "volumes", &obj.Volumes, UnmarshalVolumeMappingReference)
+	err = core.UnmarshalModel(m, "volume_mappings", &obj.VolumeMappings, UnmarshalVolumeMapping)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "volumes-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "volume_mappings-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -1682,7 +2223,7 @@ type HostCollection struct {
 	Hosts []Host `json:"hosts" validate:"required"`
 
 	// The maximum number of resources that can be returned by the request.
-	Limit *int64 `json:"limit,omitempty"`
+	Limit *int64 `json:"limit" validate:"required"`
 
 	// A link to the next page of resources. This property is present for all pages except the last page.
 	Next *PageLink `json:"next,omitempty"`
@@ -1725,17 +2266,15 @@ func UnmarshalHostCollection(m map[string]json.RawMessage, result interface{}) (
 
 // HostCreateOptions : The HostCreate options.
 type HostCreateOptions struct {
-	// The NQN of the host configured in customer's environment.
+	// The NQN (NVMe Qualified Name) as configured on the initiator (compute/host) accessing the storage.
 	Nqn *string `json:"nqn" validate:"required"`
 
-	// The name for this host. The name must not be used by another host.  If unspecified, the name will be a hyphenated
+	// The name for this host. The name must not be used by another host. If unspecified, the name will be a hyphenated
 	// list of randomly-selected words.
 	Name *string `json:"name,omitempty"`
 
-	// The unique identifier of the volume to be mapped to this host.  Must be in the form '['volume_id':
-	// '1a6b7274-678d-4dfb-8981-c71dd9d4daa5']'.  If curly braces {} are used to separate volumes, double quotes must be
-	// used instead.
-	Volumes []VolumeMappingIdentity `json:"volumes,omitempty"`
+	// List of volume IDs to be mapped to the host.
+	VolumeMappings []VolumeMappingPrototype `json:"volume_mappings,omitempty"`
 
 	// Allows users to set headers on API requests.
 	Headers map[string]string
@@ -1760,9 +2299,9 @@ func (_options *HostCreateOptions) SetName(name string) *HostCreateOptions {
 	return _options
 }
 
-// SetVolumes : Allow user to set Volumes
-func (_options *HostCreateOptions) SetVolumes(volumes []VolumeMappingIdentity) *HostCreateOptions {
-	_options.Volumes = volumes
+// SetVolumeMappings : Allow user to set VolumeMappings
+func (_options *HostCreateOptions) SetVolumeMappings(volumeMappings []VolumeMappingPrototype) *HostCreateOptions {
+	_options.VolumeMappings = volumeMappings
 	return _options
 }
 
@@ -1800,38 +2339,174 @@ func (options *HostDeleteOptions) SetHeaders(param map[string]string) *HostDelet
 	return options
 }
 
-// HostMapping : HostMapping struct
-type HostMapping struct {
-	// Unique identifer of the host.
-	HostID *string `json:"host_id,omitempty"`
+// HostMappingCreateOptions : The HostMappingCreate options.
+type HostMappingCreateOptions struct {
+	// A unique host ID.
+	HostID *string `json:"host_id" validate:"required,ne="`
 
-	// Unique name of the host.
-	HostName *string `json:"host_name,omitempty"`
+	// Volume identifier.
+	Volume *VolumeIdentity `json:"volume" validate:"required"`
 
-	// The NQN of the host configured in customer's environment.
-	HostNqn *string `json:"host_nqn,omitempty"`
+	// Allows users to set headers on API requests.
+	Headers map[string]string
 }
 
-// UnmarshalHostMapping unmarshals an instance of HostMapping from the specified map of raw messages.
-func UnmarshalHostMapping(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(HostMapping)
-	err = core.UnmarshalPrimitive(m, "host_id", &obj.HostID)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "host_id-error", common.GetComponentInfo())
-		return
+// NewHostMappingCreateOptions : Instantiate HostMappingCreateOptions
+func (*SdsaasV1) NewHostMappingCreateOptions(hostID string, volume *VolumeIdentity) *HostMappingCreateOptions {
+	return &HostMappingCreateOptions{
+		HostID: core.StringPtr(hostID),
+		Volume: volume,
 	}
-	err = core.UnmarshalPrimitive(m, "host_name", &obj.HostName)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "host_name-error", common.GetComponentInfo())
-		return
+}
+
+// SetHostID : Allow user to set HostID
+func (_options *HostMappingCreateOptions) SetHostID(hostID string) *HostMappingCreateOptions {
+	_options.HostID = core.StringPtr(hostID)
+	return _options
+}
+
+// SetVolume : Allow user to set Volume
+func (_options *HostMappingCreateOptions) SetVolume(volume *VolumeIdentity) *HostMappingCreateOptions {
+	_options.Volume = volume
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *HostMappingCreateOptions) SetHeaders(param map[string]string) *HostMappingCreateOptions {
+	options.Headers = param
+	return options
+}
+
+// HostMappingDeleteAllOptions : The HostMappingDeleteAll options.
+type HostMappingDeleteAllOptions struct {
+	// A unique host ID.
+	HostID *string `json:"host_id" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewHostMappingDeleteAllOptions : Instantiate HostMappingDeleteAllOptions
+func (*SdsaasV1) NewHostMappingDeleteAllOptions(hostID string) *HostMappingDeleteAllOptions {
+	return &HostMappingDeleteAllOptions{
+		HostID: core.StringPtr(hostID),
 	}
-	err = core.UnmarshalPrimitive(m, "host_nqn", &obj.HostNqn)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "host_nqn-error", common.GetComponentInfo())
-		return
+}
+
+// SetHostID : Allow user to set HostID
+func (_options *HostMappingDeleteAllOptions) SetHostID(hostID string) *HostMappingDeleteAllOptions {
+	_options.HostID = core.StringPtr(hostID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *HostMappingDeleteAllOptions) SetHeaders(param map[string]string) *HostMappingDeleteAllOptions {
+	options.Headers = param
+	return options
+}
+
+// HostMappingDeleteOptions : The HostMappingDelete options.
+type HostMappingDeleteOptions struct {
+	// A unique host ID.
+	HostID *string `json:"host_id" validate:"required,ne="`
+
+	// A unique volume mapping ID.
+	VolumeMappingID *string `json:"volume_mapping_id" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewHostMappingDeleteOptions : Instantiate HostMappingDeleteOptions
+func (*SdsaasV1) NewHostMappingDeleteOptions(hostID string, volumeMappingID string) *HostMappingDeleteOptions {
+	return &HostMappingDeleteOptions{
+		HostID:          core.StringPtr(hostID),
+		VolumeMappingID: core.StringPtr(volumeMappingID),
 	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
+}
+
+// SetHostID : Allow user to set HostID
+func (_options *HostMappingDeleteOptions) SetHostID(hostID string) *HostMappingDeleteOptions {
+	_options.HostID = core.StringPtr(hostID)
+	return _options
+}
+
+// SetVolumeMappingID : Allow user to set VolumeMappingID
+func (_options *HostMappingDeleteOptions) SetVolumeMappingID(volumeMappingID string) *HostMappingDeleteOptions {
+	_options.VolumeMappingID = core.StringPtr(volumeMappingID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *HostMappingDeleteOptions) SetHeaders(param map[string]string) *HostMappingDeleteOptions {
+	options.Headers = param
+	return options
+}
+
+// HostMappingOptions : The HostMapping options.
+type HostMappingOptions struct {
+	// A unique host ID.
+	HostID *string `json:"host_id" validate:"required,ne="`
+
+	// A unique volume mapping ID.
+	VolumeMappingID *string `json:"volume_mapping_id" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewHostMappingOptions : Instantiate HostMappingOptions
+func (*SdsaasV1) NewHostMappingOptions(hostID string, volumeMappingID string) *HostMappingOptions {
+	return &HostMappingOptions{
+		HostID:          core.StringPtr(hostID),
+		VolumeMappingID: core.StringPtr(volumeMappingID),
+	}
+}
+
+// SetHostID : Allow user to set HostID
+func (_options *HostMappingOptions) SetHostID(hostID string) *HostMappingOptions {
+	_options.HostID = core.StringPtr(hostID)
+	return _options
+}
+
+// SetVolumeMappingID : Allow user to set VolumeMappingID
+func (_options *HostMappingOptions) SetVolumeMappingID(volumeMappingID string) *HostMappingOptions {
+	_options.VolumeMappingID = core.StringPtr(volumeMappingID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *HostMappingOptions) SetHeaders(param map[string]string) *HostMappingOptions {
+	options.Headers = param
+	return options
+}
+
+// HostMappingsOptions : The HostMappings options.
+type HostMappingsOptions struct {
+	// A unique host ID.
+	HostID *string `json:"host_id" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewHostMappingsOptions : Instantiate HostMappingsOptions
+func (*SdsaasV1) NewHostMappingsOptions(hostID string) *HostMappingsOptions {
+	return &HostMappingsOptions{
+		HostID: core.StringPtr(hostID),
+	}
+}
+
+// SetHostID : Allow user to set HostID
+func (_options *HostMappingsOptions) SetHostID(hostID string) *HostMappingsOptions {
+	_options.HostID = core.StringPtr(hostID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *HostMappingsOptions) SetHeaders(param map[string]string) *HostMappingsOptions {
+	options.Headers = param
+	return options
 }
 
 // HostOptions : The Host options.
@@ -1864,7 +2539,7 @@ func (options *HostOptions) SetHeaders(param map[string]string) *HostOptions {
 
 // HostPatch : The host PATCH request body.
 type HostPatch struct {
-	// The name for this Host. The name must not be used by another host.
+	// Unique name of the host.
 	Name *string `json:"name,omitempty"`
 }
 
@@ -1887,6 +2562,40 @@ func (hostPatch *HostPatch) AsPatch() (_patch map[string]interface{}, err error)
 		_patch["name"] = hostPatch.Name
 	}
 
+	return
+}
+
+// HostReference : Host mapping schema.
+type HostReference struct {
+	// Unique identifer of the host.
+	ID *string `json:"id" validate:"required"`
+
+	// Unique name of the host.
+	Name *string `json:"name" validate:"required"`
+
+	// The NQN (NVMe Qualified Name) as configured on the initiator (compute/host) accessing the storage.
+	Nqn *string `json:"nqn" validate:"required"`
+}
+
+// UnmarshalHostReference unmarshals an instance of HostReference from the specified map of raw messages.
+func UnmarshalHostReference(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(HostReference)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "nqn", &obj.Nqn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "nqn-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
@@ -1927,110 +2636,6 @@ func (options *HostUpdateOptions) SetHeaders(param map[string]string) *HostUpdat
 	return options
 }
 
-// HostVolDeleteOptions : The HostVolDelete options.
-type HostVolDeleteOptions struct {
-	// A unique host ID.
-	HostID *string `json:"host_id" validate:"required,ne="`
-
-	// A unique volume ID.
-	VolumeID *string `json:"volume_id" validate:"required,ne="`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewHostVolDeleteOptions : Instantiate HostVolDeleteOptions
-func (*SdsaasV1) NewHostVolDeleteOptions(hostID string, volumeID string) *HostVolDeleteOptions {
-	return &HostVolDeleteOptions{
-		HostID:   core.StringPtr(hostID),
-		VolumeID: core.StringPtr(volumeID),
-	}
-}
-
-// SetHostID : Allow user to set HostID
-func (_options *HostVolDeleteOptions) SetHostID(hostID string) *HostVolDeleteOptions {
-	_options.HostID = core.StringPtr(hostID)
-	return _options
-}
-
-// SetVolumeID : Allow user to set VolumeID
-func (_options *HostVolDeleteOptions) SetVolumeID(volumeID string) *HostVolDeleteOptions {
-	_options.VolumeID = core.StringPtr(volumeID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *HostVolDeleteOptions) SetHeaders(param map[string]string) *HostVolDeleteOptions {
-	options.Headers = param
-	return options
-}
-
-// HostVolDeleteallOptions : The HostVolDeleteall options.
-type HostVolDeleteallOptions struct {
-	// A unique host ID.
-	HostID *string `json:"host_id" validate:"required,ne="`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewHostVolDeleteallOptions : Instantiate HostVolDeleteallOptions
-func (*SdsaasV1) NewHostVolDeleteallOptions(hostID string) *HostVolDeleteallOptions {
-	return &HostVolDeleteallOptions{
-		HostID: core.StringPtr(hostID),
-	}
-}
-
-// SetHostID : Allow user to set HostID
-func (_options *HostVolDeleteallOptions) SetHostID(hostID string) *HostVolDeleteallOptions {
-	_options.HostID = core.StringPtr(hostID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *HostVolDeleteallOptions) SetHeaders(param map[string]string) *HostVolDeleteallOptions {
-	options.Headers = param
-	return options
-}
-
-// HostVolUpdateOptions : The HostVolUpdate options.
-type HostVolUpdateOptions struct {
-	// A unique host ID.
-	HostID *string `json:"host_id" validate:"required,ne="`
-
-	// A unique volume ID.
-	VolumeID *string `json:"volume_id" validate:"required,ne="`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewHostVolUpdateOptions : Instantiate HostVolUpdateOptions
-func (*SdsaasV1) NewHostVolUpdateOptions(hostID string, volumeID string) *HostVolUpdateOptions {
-	return &HostVolUpdateOptions{
-		HostID:   core.StringPtr(hostID),
-		VolumeID: core.StringPtr(volumeID),
-	}
-}
-
-// SetHostID : Allow user to set HostID
-func (_options *HostVolUpdateOptions) SetHostID(hostID string) *HostVolUpdateOptions {
-	_options.HostID = core.StringPtr(hostID)
-	return _options
-}
-
-// SetVolumeID : Allow user to set VolumeID
-func (_options *HostVolUpdateOptions) SetVolumeID(volumeID string) *HostVolUpdateOptions {
-	_options.VolumeID = core.StringPtr(volumeID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *HostVolUpdateOptions) SetHeaders(param map[string]string) *HostVolUpdateOptions {
-	options.Headers = param
-	return options
-}
-
 // HostsOptions : The Hosts options.
 type HostsOptions struct {
 	// The number of resources to return on a page.
@@ -2066,36 +2671,36 @@ func (options *HostsOptions) SetHeaders(param map[string]string) *HostsOptions {
 	return options
 }
 
-// NetworkInfoReference : NetworkInfoReference struct
-type NetworkInfoReference struct {
-	// Network information for volume/host mappings.
-	GatewayIP *string `json:"gateway_ip,omitempty"`
+// Namespace : The NVMe namespace properties for a given volume mapping.
+type Namespace struct {
+	// NVMe namespace ID that can be used to co-relate the discovered devices on host to the corresponding volume.
+	ID *int64 `json:"id,omitempty"`
 
-	// Network information for volume/host mappings.
-	Port *int64 `json:"port,omitempty"`
+	// UUID of the NVMe namespace.
+	UUID *string `json:"uuid,omitempty"`
 }
 
-// UnmarshalNetworkInfoReference unmarshals an instance of NetworkInfoReference from the specified map of raw messages.
-func UnmarshalNetworkInfoReference(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(NetworkInfoReference)
-	err = core.UnmarshalPrimitive(m, "gateway_ip", &obj.GatewayIP)
+// UnmarshalNamespace unmarshals an instance of Namespace from the specified map of raw messages.
+func UnmarshalNamespace(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Namespace)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "gateway_ip-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
+	err = core.UnmarshalPrimitive(m, "uuid", &obj.UUID)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "uuid-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// PageLink : PageLink struct
+// PageLink : A link to the help page.
 type PageLink struct {
 	// The URL for a page of resources.
-	Href *string `json:"href,omitempty"`
+	Href *string `json:"href" validate:"required"`
 }
 
 // UnmarshalPageLink unmarshals an instance of PageLink from the specified map of raw messages.
@@ -2110,27 +2715,27 @@ func UnmarshalPageLink(m map[string]json.RawMessage, result interface{}) (err er
 	return
 }
 
-// StorageIdentifiersReference : Storage network and ID information associated with a volume/host mapping.
-type StorageIdentifiersReference struct {
-	// The storage ID associated with a volume/host mapping.
-	ID *string `json:"id,omitempty"`
+// StorageIdentifier : Storage network and ID information associated with a volume/host mapping.
+type StorageIdentifier struct {
+	// The NVMe target subsystem NQN (NVMe Qualified Name) that can be used for doing NVMe connect by the initiator.
+	SubsystemNqn *string `json:"subsystem_nqn" validate:"required"`
 
-	// The namespace ID associated with a volume/host mapping.
-	NamespaceID *int64 `json:"namespace_id,omitempty"`
+	// NVMe namespace ID that can be used to co-relate the discovered devices on host to the corresponding volume.
+	NamespaceID *int64 `json:"namespace_id" validate:"required"`
 
 	// The namespace UUID associated with a volume/host mapping.
-	NamespaceUUID *string `json:"namespace_uuid,omitempty"`
+	NamespaceUUID *string `json:"namespace_uuid" validate:"required"`
 
-	// The IP and port for volume/host mappings.
-	NetworkInfo []NetworkInfoReference `json:"network_info,omitempty"`
+	// List of NVMe gateways.
+	Gateways []Gateway `json:"gateways" validate:"required"`
 }
 
-// UnmarshalStorageIdentifiersReference unmarshals an instance of StorageIdentifiersReference from the specified map of raw messages.
-func UnmarshalStorageIdentifiersReference(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(StorageIdentifiersReference)
-	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
+// UnmarshalStorageIdentifier unmarshals an instance of StorageIdentifier from the specified map of raw messages.
+func UnmarshalStorageIdentifier(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(StorageIdentifier)
+	err = core.UnmarshalPrimitive(m, "subsystem_nqn", &obj.SubsystemNqn)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "subsystem_nqn-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "namespace_id", &obj.NamespaceID)
@@ -2143,9 +2748,9 @@ func UnmarshalStorageIdentifiersReference(m map[string]json.RawMessage, result i
 		err = core.SDKErrorf(err, "", "namespace_uuid-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalModel(m, "network_info", &obj.NetworkInfo, UnmarshalNetworkInfoReference)
+	err = core.UnmarshalModel(m, "gateways", &obj.Gateways, UnmarshalGateway)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "network_info-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "gateways-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -2155,35 +2760,51 @@ func UnmarshalStorageIdentifiersReference(m map[string]json.RawMessage, result i
 // Volume : The volume metadata prototype.
 type Volume struct {
 	// The maximum bandwidth (in megabits per second) for the volume.
-	Bandwidth *int64 `json:"bandwidth,omitempty"`
+	Bandwidth *int64 `json:"bandwidth" validate:"required"`
 
 	// The capacity of the volume (in gigabytes).
-	Capacity *int64 `json:"capacity,omitempty"`
+	Capacity *int64 `json:"capacity" validate:"required"`
 
 	// The date and time that the volume was created.
-	CreatedAt *string `json:"created_at,omitempty"`
+	CreatedAt *strfmt.DateTime `json:"created_at" validate:"required"`
 
-	// List of host details that volume is mapped to.
-	Hosts []HostMapping `json:"hosts,omitempty"`
+	// The URL for this resource.
+	Href *string `json:"href" validate:"required"`
 
 	// The volume profile id.
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id" validate:"required"`
 
 	// Iops The maximum I/O operations per second (IOPS) for this volume.
-	Iops *int64 `json:"iops,omitempty"`
+	Iops *int64 `json:"iops" validate:"required"`
 
-	// The name of the volume.
-	Name *string `json:"name,omitempty"`
+	// Unique name of the host.
+	Name *string `json:"name" validate:"required"`
 
 	// The resource type of the volume.
-	ResourceType *string `json:"resource_type,omitempty"`
+	ResourceType *string `json:"resource_type" validate:"required"`
 
-	// The current status of the volume.
+	// The status of the volume resource. The enumerated values for this property will expand in the future. When
+	// processing this property, check for and log unknown values. Optionally halt processing and surface the error, or
+	// bypass the resource on which the unexpected property value was encountered.
 	Status *string `json:"status,omitempty"`
 
-	// Reasons for the current status of the volume.
-	StatusReasons []string `json:"status_reasons,omitempty"`
+	// The reasons for the current status (if any).
+	StatusReasons []VolumeStatusReason `json:"status_reasons,omitempty"`
+
+	// List of volume mappings for this volume.
+	VolumeMappings []VolumeMapping `json:"volume_mappings" validate:"required"`
 }
+
+// Constants associated with the Volume.Status property.
+// The status of the volume resource. The enumerated values for this property will expand in the future. When processing
+// this property, check for and log unknown values. Optionally halt processing and surface the error, or bypass the
+// resource on which the unexpected property value was encountered.
+const (
+	VolumeStatusAvailableConst       = "available"
+	VolumeStatusPendingConst         = "pending"
+	VolumeStatusPendingDeletionConst = "pending_deletion"
+	VolumeStatusUpdatingConst        = "updating"
+)
 
 // UnmarshalVolume unmarshals an instance of Volume from the specified map of raw messages.
 func UnmarshalVolume(m map[string]json.RawMessage, result interface{}) (err error) {
@@ -2203,9 +2824,9 @@ func UnmarshalVolume(m map[string]json.RawMessage, result interface{}) (err erro
 		err = core.SDKErrorf(err, "", "created_at-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalModel(m, "hosts", &obj.Hosts, UnmarshalHostMapping)
+	err = core.UnmarshalPrimitive(m, "href", &obj.Href)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "hosts-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "href-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
@@ -2233,9 +2854,14 @@ func UnmarshalVolume(m map[string]json.RawMessage, result interface{}) (err erro
 		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "status_reasons", &obj.StatusReasons)
+	err = core.UnmarshalModel(m, "status_reasons", &obj.StatusReasons, UnmarshalVolumeStatusReason)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "status_reasons-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "volume_mappings", &obj.VolumeMappings, UnmarshalVolumeMapping)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "volume_mappings-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -2247,13 +2873,13 @@ type VolumeCollection struct {
 	// The first page of volume objects.
 	First *PageLink `json:"first,omitempty"`
 
-	// The maximum number of volumes retrieved with the volumes command.
+	// The maximum number of resources that can be returned by the request.
 	Limit *int64 `json:"limit,omitempty"`
 
-	// The next page of volume objects.
+	// A link to the next page of resources. This property is present for all pages except the last page.
 	Next *PageLink `json:"next,omitempty"`
 
-	// Total number of volumes retrieved.
+	// The total number of resources across all pages.
 	TotalCount *int64 `json:"total_count" validate:"required"`
 
 	// List of volumes retrieved.
@@ -2302,9 +2928,6 @@ type VolumeCreateOptions struct {
 	// list of randomly-selected words.
 	Name *string `json:"name,omitempty"`
 
-	// The host nqn.
-	Hostnqnstring *string `json:"hostnqnstring,omitempty"`
-
 	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
@@ -2325,12 +2948,6 @@ func (_options *VolumeCreateOptions) SetCapacity(capacity int64) *VolumeCreateOp
 // SetName : Allow user to set Name
 func (_options *VolumeCreateOptions) SetName(name string) *VolumeCreateOptions {
 	_options.Name = core.StringPtr(name)
-	return _options
-}
-
-// SetHostnqnstring : Allow user to set Hostnqnstring
-func (_options *VolumeCreateOptions) SetHostnqnstring(hostnqnstring string) *VolumeCreateOptions {
-	_options.Hostnqnstring = core.StringPtr(hostnqnstring)
 	return _options
 }
 
@@ -2368,16 +2985,16 @@ func (options *VolumeDeleteOptions) SetHeaders(param map[string]string) *VolumeD
 	return options
 }
 
-// VolumeMappingIdentity : VolumeMappingIdentity struct
-type VolumeMappingIdentity struct {
-	// The volume ID that needs to be mapped with a host.
-	VolumeID *string `json:"volume_id" validate:"required"`
+// VolumeIdentity : Volume identifier.
+type VolumeIdentity struct {
+	// Unique identifer of the host.
+	ID *string `json:"id" validate:"required"`
 }
 
-// NewVolumeMappingIdentity : Instantiate VolumeMappingIdentity (Generic Model Constructor)
-func (*SdsaasV1) NewVolumeMappingIdentity(volumeID string) (_model *VolumeMappingIdentity, err error) {
-	_model = &VolumeMappingIdentity{
-		VolumeID: core.StringPtr(volumeID),
+// NewVolumeIdentity : Instantiate VolumeIdentity (Generic Model Constructor)
+func (*SdsaasV1) NewVolumeIdentity(id string) (_model *VolumeIdentity, err error) {
+	_model = &VolumeIdentity{
+		ID: core.StringPtr(id),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
 	if err != nil {
@@ -2386,54 +3003,187 @@ func (*SdsaasV1) NewVolumeMappingIdentity(volumeID string) (_model *VolumeMappin
 	return
 }
 
-// UnmarshalVolumeMappingIdentity unmarshals an instance of VolumeMappingIdentity from the specified map of raw messages.
-func UnmarshalVolumeMappingIdentity(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(VolumeMappingIdentity)
-	err = core.UnmarshalPrimitive(m, "volume_id", &obj.VolumeID)
+// UnmarshalVolumeIdentity unmarshals an instance of VolumeIdentity from the specified map of raw messages.
+func UnmarshalVolumeIdentity(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(VolumeIdentity)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "volume_id-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// VolumeMappingReference : VolumeMappingReference struct
-type VolumeMappingReference struct {
-	// The current status of a volume/host mapping attempt.
-	Status *string `json:"status,omitempty"`
-
-	// The volume ID that needs to be mapped with a host.
-	VolumeID *string `json:"volume_id" validate:"required"`
-
-	// The volume name.
-	VolumeName *string `json:"volume_name" validate:"required"`
+// VolumeMapping : Schema for a volume mapping to a host.
+type VolumeMapping struct {
+	// The status of the volume mapping. The enumerated values for this property will expand in the future. When processing
+	// this property, check for and log unknown values. Optionally halt processing and surface the error, or bypass the
+	// resource on which the unexpected property value was encountered.
+	Status *string `json:"status" validate:"required"`
 
 	// Storage network and ID information associated with a volume/host mapping.
-	StorageIdentifiers *StorageIdentifiersReference `json:"storage_identifiers,omitempty"`
+	StorageIdentifier *StorageIdentifier `json:"storage_identifier,omitempty"`
+
+	// The URL for this resource.
+	Href *string `json:"href" validate:"required"`
+
+	// Unique identifier of the mapping.
+	ID *string `json:"id" validate:"required"`
+
+	// The volume reference.
+	Volume *VolumeReference `json:"volume,omitempty"`
+
+	// Host mapping schema.
+	Host *HostReference `json:"host,omitempty"`
+
+	// The NVMe target subsystem NQN (NVMe Qualified Name) that can be used for doing NVMe connect by the initiator.
+	SubsystemNqn *string `json:"subsystem_nqn,omitempty"`
+
+	// The NVMe namespace properties for a given volume mapping.
+	Namespace *Namespace `json:"namespace,omitempty"`
+
+	// List of NVMe gateways.
+	Gateways []Gateway `json:"gateways,omitempty"`
 }
 
-// UnmarshalVolumeMappingReference unmarshals an instance of VolumeMappingReference from the specified map of raw messages.
-func UnmarshalVolumeMappingReference(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(VolumeMappingReference)
+// Constants associated with the VolumeMapping.Status property.
+// The status of the volume mapping. The enumerated values for this property will expand in the future. When processing
+// this property, check for and log unknown values. Optionally halt processing and surface the error, or bypass the
+// resource on which the unexpected property value was encountered.
+const (
+	VolumeMappingStatusMappedConst           = "mapped"
+	VolumeMappingStatusMappingFailedConst    = "mapping_failed"
+	VolumeMappingStatusPendingConst          = "pending"
+	VolumeMappingStatusPendingUnmappingConst = "pending_unmapping"
+)
+
+// UnmarshalVolumeMapping unmarshals an instance of VolumeMapping from the specified map of raw messages.
+func UnmarshalVolumeMapping(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(VolumeMapping)
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "volume_id", &obj.VolumeID)
+	err = core.UnmarshalModel(m, "storage_identifier", &obj.StorageIdentifier, UnmarshalStorageIdentifier)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "volume_id-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "storage_identifier-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "volume_name", &obj.VolumeName)
+	err = core.UnmarshalPrimitive(m, "href", &obj.Href)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "volume_name-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "href-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalModel(m, "storage_identifiers", &obj.StorageIdentifiers, UnmarshalStorageIdentifiersReference)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "storage_identifiers-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "volume", &obj.Volume, UnmarshalVolumeReference)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "volume-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "host", &obj.Host, UnmarshalHostReference)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "host-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "subsystem_nqn", &obj.SubsystemNqn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "subsystem_nqn-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "namespace", &obj.Namespace, UnmarshalNamespace)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "namespace-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "gateways", &obj.Gateways, UnmarshalGateway)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "gateways-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// VolumeMappingCollection : Collection of volume mappings for a host.
+type VolumeMappingCollection struct {
+	// A link to the first page of resources.
+	First *PageLink `json:"first" validate:"required"`
+
+	// List of volume_mappings.
+	VolumeMappings []VolumeMapping `json:"volume_mappings" validate:"required"`
+
+	// The maximum number of resources that can be returned by the request.
+	Limit *int64 `json:"limit" validate:"required"`
+
+	// A link to the next page of resources. This property is present for all pages except the last page.
+	Next *PageLink `json:"next,omitempty"`
+
+	// The total number of resources across all pages.
+	TotalCount *int64 `json:"total_count" validate:"required"`
+}
+
+// UnmarshalVolumeMappingCollection unmarshals an instance of VolumeMappingCollection from the specified map of raw messages.
+func UnmarshalVolumeMappingCollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(VolumeMappingCollection)
+	err = core.UnmarshalModel(m, "first", &obj.First, UnmarshalPageLink)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "first-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "volume_mappings", &obj.VolumeMappings, UnmarshalVolumeMapping)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "volume_mappings-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "limit", &obj.Limit)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "limit-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "next", &obj.Next, UnmarshalPageLink)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "next-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_count", &obj.TotalCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_count-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// VolumeMappingPrototype : The volume mapping request.
+type VolumeMappingPrototype struct {
+	// Volume identifier.
+	Volume *VolumeIdentity `json:"volume" validate:"required"`
+}
+
+// NewVolumeMappingPrototype : Instantiate VolumeMappingPrototype (Generic Model Constructor)
+func (*SdsaasV1) NewVolumeMappingPrototype(volume *VolumeIdentity) (_model *VolumeMappingPrototype, err error) {
+	_model = &VolumeMappingPrototype{
+		Volume: volume,
+	}
+	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
+	return
+}
+
+// UnmarshalVolumeMappingPrototype unmarshals an instance of VolumeMappingPrototype from the specified map of raw messages.
+func UnmarshalVolumeMappingPrototype(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(VolumeMappingPrototype)
+	err = core.UnmarshalModel(m, "volume", &obj.Volume, UnmarshalVolumeIdentity)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "volume-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -2468,12 +3218,13 @@ func (options *VolumeOptions) SetHeaders(param map[string]string) *VolumeOptions
 	return options
 }
 
-// VolumePatch : Volume update request metadata.
+// VolumePatch : The capacity to use for the volume (in gigabytes). Additionally, the specified value must not be less than the
+// current capacity.
 type VolumePatch struct {
 	// The capacity of the volume (in gigabytes).
 	Capacity *int64 `json:"capacity,omitempty"`
 
-	// The name of the volume.
+	// The name for this volume. The name must not be used by another volume.
 	Name *string `json:"name,omitempty"`
 }
 
@@ -2504,6 +3255,66 @@ func (volumePatch *VolumePatch) AsPatch() (_patch map[string]interface{}, err er
 		_patch["name"] = volumePatch.Name
 	}
 
+	return
+}
+
+// VolumeReference : The volume reference.
+type VolumeReference struct {
+	// Unique identifer of the host.
+	ID *string `json:"id" validate:"required"`
+
+	// Unique name of the host.
+	Name *string `json:"name" validate:"required"`
+}
+
+// UnmarshalVolumeReference unmarshals an instance of VolumeReference from the specified map of raw messages.
+func UnmarshalVolumeReference(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(VolumeReference)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// VolumeStatusReason : The reason for the current status (if any).
+type VolumeStatusReason struct {
+	// A snake case string succinctly identifying the status reason.
+	Code *string `json:"code" validate:"required"`
+
+	// An explanation of the status reason.
+	Message *string `json:"message" validate:"required"`
+
+	// Link to documentation about this status reason.
+	MoreInfo *string `json:"more_info,omitempty"`
+}
+
+// UnmarshalVolumeStatusReason unmarshals an instance of VolumeStatusReason from the specified map of raw messages.
+func UnmarshalVolumeStatusReason(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(VolumeStatusReason)
+	err = core.UnmarshalPrimitive(m, "code", &obj.Code)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "code-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "message", &obj.Message)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "message-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "more_info", &obj.MoreInfo)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "more_info-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
