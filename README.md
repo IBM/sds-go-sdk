@@ -27,7 +27,7 @@ Changes might occur which impact applications that use this SDK.
 <!-- toc -->
 
 - [sds-go-sdk](#sds-go-sdk)
-- [sdsaas 0.0.4](#sdsaas-003)
+- [sdsaas 0.0.4](#sdsaas-004)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Prerequisites](#prerequisites)

@@ -1,7 +1,7 @@
 //go:build integration
 
 /**
- * (C) Copyright IBM Corp. 2024.
+ * (C) Copyright IBM Corp. 2024, 2025.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,9 +48,10 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		config        map[string]string
 
 		// Variables to hold link values
-		hostIDLink      string
-		volumeIDLink    string
-		volumeIDLinkTwo string
+		hostIDLink             string
+		volumeIDLink           string
+		volumeIDLinkTwo        string
+		volumeMappingIDLinkOne string
 	)
 
 	var shouldSkipTest = func() {
@@ -102,15 +103,13 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 		It(`VolumeCreate(volumeCreateOptions *VolumeCreateOptions)`, func() {
 			volumeCreateOptions := &sdsaasv1.VolumeCreateOptions{
-				Capacity:      core.Int64Ptr(int64(1)),
-				Name:          core.StringPtr("my-volume-one"),
-				Hostnqnstring: core.StringPtr("nqn.2014-06.org:9345"),
+				Capacity: core.Int64Ptr(int64(10)),
+				Name:     core.StringPtr("my-volume-one"),
 			}
 
 			volumeCreateOptionsTwo := &sdsaasv1.VolumeCreateOptions{
-				Capacity:      core.Int64Ptr(int64(2)),
-				Name:          core.StringPtr("my-volume-two"),
-				Hostnqnstring: core.StringPtr("nqn.2014-06.org:9345"),
+				Capacity: core.Int64Ptr(int64(10)),
+				Name:     core.StringPtr("my-volume-two"),
 			}
 
 			volume, response, err := sdsaasService.VolumeCreate(volumeCreateOptions)
@@ -137,14 +136,18 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			shouldSkipTest()
 		})
 		It(`HostCreate(hostCreateOptions *HostCreateOptions)`, func() {
-			volumeMappingIdentityModel := &sdsaasv1.VolumeMappingIdentity{
-				VolumeID: &volumeIDLink,
+			volumeIdentityModel := &sdsaasv1.VolumeIdentity{
+				ID: core.StringPtr(volumeIDLink),
+			}
+
+			volumeMappingPrototypeModel := &sdsaasv1.VolumeMappingPrototype{
+				Volume: volumeIdentityModel,
 			}
 
 			hostCreateOptions := &sdsaasv1.HostCreateOptions{
-				Nqn:     core.StringPtr("nqn.2014-06.org:9345"),
-				Name:    core.StringPtr("my-host"),
-				Volumes: []sdsaasv1.VolumeMappingIdentity{*volumeMappingIdentityModel},
+				Nqn:            core.StringPtr("nqn.2014-06.org:9345"),
+				Name:           core.StringPtr("my-host"),
+				VolumeMappings: []sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel},
 			}
 
 			host, response, err := sdsaasService.HostCreate(hostCreateOptions)
@@ -153,6 +156,8 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			Expect(host).ToNot(BeNil())
 
 			hostIDLink = *host.ID
+			volumeMappingIDLinkOne = *host.VolumeMappings[0].ID
+
 			fmt.Fprintf(GinkgoWriter, "Saved hostIDLink value: %v\n", hostIDLink)
 
 			time.Sleep(5 * time.Second)
@@ -165,7 +170,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 		It(`Volumes(volumesOptions *VolumesOptions)`, func() {
 			volumesOptions := &sdsaasv1.VolumesOptions{
-				Limit: core.Int64Ptr(int64(10)),
+				Limit: core.Int64Ptr(int64(20)),
 				Name:  core.StringPtr("my-volume"),
 			}
 
@@ -242,19 +247,35 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 
 			credentialsUpdated, response, err := sdsaasService.CredCreate(credCreateOptions)
 			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(200)) // Set this to 201 when it works as expected...
+			Expect(response.StatusCode).To(Equal(201))
 			Expect(credentialsUpdated).ToNot(BeNil())
 
 			time.Sleep(5 * time.Second)
 		})
 	})
 
-	Describe(`Cert - Retrieves the S3 SSL certificate expiration date and status`, func() {
+	Describe(`CertTypes - List the allowed certificate types`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`CertTypes(certTypesOptions *CertTypesOptions)`, func() {
+			certTypesOptions := &sdsaasv1.CertTypesOptions{}
+
+			certificateList, response, err := sdsaasService.CertTypes(certTypesOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(certificateList).ToNot(BeNil())
+		})
+	})
+
+	Describe(`Cert - Retrieves the SSL certificate expiration date and status`, func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
 		It(`Cert(certOptions *CertOptions)`, func() {
-			certOptions := &sdsaasv1.CertOptions{}
+			certOptions := &sdsaasv1.CertOptions{
+				Cert: core.StringPtr("s3"),
+			}
 
 			certificateFound, response, err := sdsaasService.Cert(certOptions)
 			Expect(err).To(BeNil())
@@ -262,35 +283,34 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			Expect(certificateFound).ToNot(BeNil())
 		})
 	})
-
-	// Describe(`CertUpload - Creates/updates the S3 SSL Certificates`, func() {
+	// Describe(`CertCreate - Creates a new SSL Certificate`, func() {
 	// 	BeforeEach(func() {
 	// 		shouldSkipTest()
 	// 	})
-	// 	It(`CertUpload(certUploadOptions *CertUploadOptions)`, func() {
-
-	// 		// Generate a temp cert
-	// 		var tc, tk string
-	// 		cert, key, _ := testcerts.GenerateCertsToTempFile("/tmp/")
-	// 		c, _ := os.Open(cert)
-	// 		k, _ := os.Open(key)
-	// 		defer c.Close()
-	// 		defer k.Close()
-	// 		scanner1 := bufio.NewScanner(c)
-	// 		for scanner1.Scan() {
-	// 			tc = tc + scanner1.Text() + `\n`
-	// 		}
-	// 		scanner2 := bufio.NewScanner(k)
-	// 		for scanner2.Scan() {
-	// 			tk = tk + scanner2.Text() + `\n`
-	// 		}
-	// 		tempCert := tk + tc
-
-	// 		certUploadOptions := &sdsaasv1.CertUploadOptions{
-	// 			Body: CreateMockReader(tempCert),
+	// 	It(`CertCreate(certCreateOptions *CertCreateOptions)`, func() {
+	// 		certCreateOptions := &sdsaasv1.CertCreateOptions{
+	// 			Cert: core.StringPtr("s3"),
+	// 			Body: CreateMockReader("This is a mock file."),
 	// 		}
 
-	// 		certificateUpdated, response, err := sdsaasService.CertUpload(certUploadOptions)
+	// 		certificateUpdated, response, err := sdsaasService.CertCreate(certCreateOptions)
+	// 		Expect(err).To(BeNil())
+	// 		Expect(response.StatusCode).To(Equal(202))
+	// 		Expect(certificateUpdated).ToNot(BeNil())
+	// 	})
+	// })
+
+	// Describe(`CertUpdate - Updates the SSL Certificate`, func() {
+	// 	BeforeEach(func() {
+	// 		shouldSkipTest()
+	// 	})
+	// 	It(`CertUpdate(certUpdateOptions *CertUpdateOptions)`, func() {
+	// 		certUpdateOptions := &sdsaasv1.CertUpdateOptions{
+	// 			Cert: core.StringPtr("s3"),
+	// 			Body: CreateMockReader("This is a mock file."),
+	// 		}
+
+	// 		certificateUpdated, response, err := sdsaasService.CertUpdate(certUpdateOptions)
 	// 		Expect(err).To(BeNil())
 	// 		Expect(response.StatusCode).To(Equal(202))
 	// 		Expect(certificateUpdated).ToNot(BeNil())
@@ -303,7 +323,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 		It(`Hosts(hostsOptions *HostsOptions)`, func() {
 			hostsOptions := &sdsaasv1.HostsOptions{
-				Limit: core.Int64Ptr(int64(10)),
+				Limit: core.Int64Ptr(int64(20)),
 				Name:  core.StringPtr("my-host"),
 			}
 
@@ -355,72 +375,92 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`HostVolUpdate - Maps the given volume to the given host`, func() {
+	Describe(`HostMappings - List all volume mappings for a host`, func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
-		It(`HostVolUpdate(hostVolUpdateOptions *HostVolUpdateOptions)`, func() {
-			hostVolUpdateOptions := &sdsaasv1.HostVolUpdateOptions{
-				HostID:   &hostIDLink,
-				VolumeID: &volumeIDLinkTwo,
-			}
-
-			host, response, err := sdsaasService.HostVolUpdate(hostVolUpdateOptions)
-			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(202))
-			Expect(host).ToNot(BeNil())
-
-			time.Sleep(8 * time.Second)
-		})
-	})
-
-	Describe(`CredDelete - Delete storage account credentials`, func() {
-		BeforeEach(func() {
-			shouldSkipTest()
-		})
-		It(`CredDelete(credDeleteOptions *CredDeleteOptions)`, func() {
-			credDeleteOptions := &sdsaasv1.CredDeleteOptions{
-				AccessKey: core.StringPtr("mytestkey"),
-			}
-
-			response, err := sdsaasService.CredDelete(credDeleteOptions)
-			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(200)) // Set this to 204 when it works as expected
-		})
-	})
-
-	Describe(`HostVolDelete - Deletes the given volume mapping for a specific host`, func() {
-		BeforeEach(func() {
-			shouldSkipTest()
-		})
-		It(`HostVolidDelete(hostVolidDeleteOptions *HostVolDeleteOptions)`, func() {
-			hostVolDeleteOptions := &sdsaasv1.HostVolDeleteOptions{
-				HostID:   &hostIDLink,
-				VolumeID: &volumeIDLink,
-			}
-
-			response, err := sdsaasService.HostVolDelete(hostVolDeleteOptions)
-			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(204))
-
-			time.Sleep(8 * time.Second)
-		})
-	})
-
-	Describe(`HostVolDeleteall - Deletes all the volume mappings for a given host`, func() {
-		BeforeEach(func() {
-			shouldSkipTest()
-		})
-		It(`HostVolDeleteall(hostVolDeleteallOptions *HostVolDeleteallOptions)`, func() {
-			hostVolDeleteallOptions := &sdsaasv1.HostVolDeleteallOptions{
+		It(`HostMappings(hostMappingsOptions *HostMappingsOptions)`, func() {
+			hostMappingsOptions := &sdsaasv1.HostMappingsOptions{
 				HostID: &hostIDLink,
 			}
 
-			response, err := sdsaasService.HostVolDeleteall(hostVolDeleteallOptions)
+			volumeMappingCollection, response, err := sdsaasService.HostMappings(hostMappingsOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(volumeMappingCollection).ToNot(BeNil())
+		})
+	})
+
+	Describe(`HostMappingCreate - Create a Volume mapping for a host`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`HostMappingCreate(hostMappingCreateOptions *HostMappingCreateOptions)`, func() {
+			volumeIdentityModel := &sdsaasv1.VolumeIdentity{
+				ID: core.StringPtr(volumeIDLinkTwo),
+			}
+
+			hostMappingCreateOptions := &sdsaasv1.HostMappingCreateOptions{
+				HostID: &hostIDLink,
+				Volume: volumeIdentityModel,
+			}
+
+			time.Sleep(5 * time.Second)
+
+			volumeMapping, response, err := sdsaasService.HostMappingCreate(hostMappingCreateOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(202))
+			Expect(volumeMapping).ToNot(BeNil())
+		})
+	})
+
+	Describe(`HostMapping - Retrieve a volume mapping`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`HostMapping(hostMappingOptions *HostMappingOptions)`, func() {
+			hostMappingOptions := &sdsaasv1.HostMappingOptions{
+				HostID:          &hostIDLink,
+				VolumeMappingID: core.StringPtr(volumeMappingIDLinkOne),
+			}
+
+			volumeMapping, response, err := sdsaasService.HostMapping(hostMappingOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(volumeMapping).ToNot(BeNil())
+		})
+	})
+
+	Describe(`HostMappingDelete - Deletes the given volume mapping for a specific host`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`HostMappingDelete(hostMappingDeleteOptions *HostMappingDeleteOptions)`, func() {
+			hostMappingDeleteOptions := &sdsaasv1.HostMappingDeleteOptions{
+				HostID:          &hostIDLink,
+				VolumeMappingID: core.StringPtr(volumeMappingIDLinkOne),
+			}
+
+			response, err := sdsaasService.HostMappingDelete(hostMappingDeleteOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(204))
+		})
+	})
+
+	Describe(`HostMappingDeleteAll - Deletes all the volume mappings for a given host`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`HostMappingDeleteAll(hostMappingDeleteAllOptions *HostMappingDeleteAllOptions)`, func() {
+			hostMappingDeleteAllOptions := &sdsaasv1.HostMappingDeleteAllOptions{
+				HostID: &hostIDLink,
+			}
+
+			response, err := sdsaasService.HostMappingDeleteAll(hostMappingDeleteAllOptions)
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
 
-			time.Sleep(8 * time.Second)
+			time.Sleep(10 * time.Second)
 		})
 	})
 
@@ -463,6 +503,36 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			Expect(response.StatusCode).To(Equal(204))
 		})
 	})
+
+	Describe(`CredDelete - Delete storage account credentials`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`CredDelete(credDeleteOptions *CredDeleteOptions)`, func() {
+			credDeleteOptions := &sdsaasv1.CredDeleteOptions{
+				AccessKey: core.StringPtr("mytestkey"),
+			}
+
+			response, err := sdsaasService.CredDelete(credDeleteOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(204))
+		})
+	})
+
+	// Describe(`CertDelete - Delete SSL certificate`, func() {
+	// 	BeforeEach(func() {
+	// 		shouldSkipTest()
+	// 	})
+	// 	It(`CertDelete(certDeleteOptions *CertDeleteOptions)`, func() {
+	// 		certDeleteOptions := &sdsaasv1.CertDeleteOptions{
+	// 			Cert: core.StringPtr("s3"),
+	// 		}
+
+	// 		response, err := sdsaasService.CertDelete(certDeleteOptions)
+	// 		Expect(err).To(BeNil())
+	// 		Expect(response.StatusCode).To(Equal(204))
+	// 	})
+	// })
 })
 
 //
