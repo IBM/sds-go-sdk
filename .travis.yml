@@ -31,6 +31,8 @@ before_deploy:
   - npm --version
   - npm install
   - pip install --user bump-my-version
+  - git config --global credential.helper store
+  - git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
 
 # Semantic release
 deploy:
