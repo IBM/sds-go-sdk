@@ -1,3 +1,17 @@
+# [0.1.0](https://github.com/IBM/sds-go-sdk/compare/v0.0.4...v0.1.0) (2025-02-24)
+
+
+### Features
+
+* **API changes:** Adjusting to API changes ([18c9181](https://github.com/IBM/sds-go-sdk/commit/18c91818beaa531f30fff5108bf64d3e0bf6d8c1))
+* **API changes:** Adjusting to API changes ([a7a5c87](https://github.com/IBM/sds-go-sdk/commit/a7a5c87d1a0ab0703bd3750528e01f7c473ecefa))
+* **API changes:** Adjusting to API changes ([ea3646a](https://github.com/IBM/sds-go-sdk/commit/ea3646abe257a097cc770e763209db53256c29f8))
+* **API changes:** Adjusting to API changes ([d790811](https://github.com/IBM/sds-go-sdk/commit/d790811774c0bdd1a8a5960d375569c7cc2761b7))
+* **API changes:** Adjusting to API changes ([163bc6a](https://github.com/IBM/sds-go-sdk/commit/163bc6a995a4e69c9b5dac3a138e9925e0deae52))
+* **API changes:** Adjusting to API changes ([4094fc0](https://github.com/IBM/sds-go-sdk/commit/4094fc0e8f3829b5fb3d836e6d10ada891117475))
+* **API changes:** Adjusting to API changes ([317de32](https://github.com/IBM/sds-go-sdk/commit/317de320404528034b26d69fc8a3359cd4cefc6d))
+* **API changes:** Adjusting to API changes. Just triggering a minor release for these changes though ([ce98798](https://github.com/IBM/sds-go-sdk/commit/ce987981390a498d34cd3795459cf6c779c906a9))
+
 ## [0.0.4](https://github.com/IBM/sds-go-sdk/compare/v0.0.3...v0.0.4) (2025-01-10)
 
 
