@@ -27,7 +27,7 @@ Changes might occur which impact applications that use this SDK.
 <!-- toc -->
 
 - [sds-go-sdk](#sds-go-sdk)
-- [sdsaas 0.1.0](#sdsaas-004)
+- [sdsaas 0.1.0](#sdsaas-010)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Prerequisites](#prerequisites)
@@ -49,7 +49,7 @@ The IBM Cloud SDS Go SDK allows developers to programmatically interact with the
 
 Service Name | Package name
 --- | ---
-[Ceph as a service](https://cloud.ibm.com/apidocs/example-service) | sdsaasv1
+[Ceph as a service](https://cloud.ibm.com/docs/cephaas) | sdsaasv1
 
 ## Prerequisites
 

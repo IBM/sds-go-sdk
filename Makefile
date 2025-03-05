@@ -20,6 +20,9 @@ test-int:
 test-int-cov:
 	${GO} test ./... -tags=integration ${COVERAGE}
 
+test-examples:
+	${GO} test ./... -tags=examples
+
 lint:
 	${LINT} run --build-tags=integration,examples ${LINTOPTS}
 
