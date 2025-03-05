@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/IBM/sds-go-sdk/compare/v0.1.0...v0.1.1) (2025-03-05)
+
+
+### Bug Fixes
+
+* **cleanup:** BREAKING CHANGE - Release first major version ([8dbb826](https://github.com/IBM/sds-go-sdk/commit/8dbb826ab1f7a549dcaf696e5430cf72c3fb1477))
+
 # [0.1.0](https://github.com/IBM/sds-go-sdk/compare/v0.0.4...v0.1.0) (2025-02-24)
 
 
