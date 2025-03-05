@@ -68,13 +68,14 @@ var _ = Describe(`SdsaasV1`, func() {
 		Context(`Using external config, construct service client instances`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"SDSAAS_URL":       "https://sdsaasv1/api",
+				"SDSAAS_URL": "https://sdsaasv1/api",
 				"SDSAAS_AUTH_TYPE": "noauth",
 			}
 
 			It(`Create service client using external config successfully`, func() {
 				SetTestEnvironment(testEnvironment)
-				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{})
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{
+				})
 				Expect(sdsaasService).ToNot(BeNil())
 				Expect(serviceErr).To(BeNil())
 				ClearTestEnvironment(testEnvironment)
@@ -103,7 +104,8 @@ var _ = Describe(`SdsaasV1`, func() {
 			})
 			It(`Create service client using external config and set url programatically successfully`, func() {
 				SetTestEnvironment(testEnvironment)
-				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{})
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{
+				})
 				err := sdsaasService.SetServiceURL("https://testService/api")
 				Expect(err).To(BeNil())
 				Expect(sdsaasService).ToNot(BeNil())
@@ -121,12 +123,13 @@ var _ = Describe(`SdsaasV1`, func() {
 		Context(`Using external config, construct service client instances with error: Invalid Auth`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"SDSAAS_URL":       "https://sdsaasv1/api",
+				"SDSAAS_URL": "https://sdsaasv1/api",
 				"SDSAAS_AUTH_TYPE": "someOtherAuth",
 			}
 
 			SetTestEnvironment(testEnvironment)
-			sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{})
+			sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{
+			})
 
 			It(`Instantiate service client with error`, func() {
 				Expect(sdsaasService).To(BeNil())
@@ -137,7 +140,7 @@ var _ = Describe(`SdsaasV1`, func() {
 		Context(`Using external config, construct service client instances with error: Invalid URL`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"SDSAAS_AUTH_TYPE": "NOAuth",
+				"SDSAAS_AUTH_TYPE":   "NOAuth",
 			}
 
 			SetTestEnvironment(testEnvironment)
