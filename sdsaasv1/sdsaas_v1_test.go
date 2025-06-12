@@ -29,10 +29,10 @@ import (
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
-	"github.com/IBM/sds-go-sdk/sdsaasv1"
 	"github.com/go-openapi/strfmt"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.ibm.com/SDSaaS/sds-go-sdk/sdsaasv1"
 )
 
 var _ = Describe(`SdsaasV1`, func() {
@@ -68,14 +68,13 @@ var _ = Describe(`SdsaasV1`, func() {
 		Context(`Using external config, construct service client instances`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"SDSAAS_URL": "https://sdsaasv1/api",
+				"SDSAAS_URL":       "https://sdsaasv1/api",
 				"SDSAAS_AUTH_TYPE": "noauth",
 			}
 
 			It(`Create service client using external config successfully`, func() {
 				SetTestEnvironment(testEnvironment)
-				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{
-				})
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{})
 				Expect(sdsaasService).ToNot(BeNil())
 				Expect(serviceErr).To(BeNil())
 				ClearTestEnvironment(testEnvironment)
@@ -104,8 +103,7 @@ var _ = Describe(`SdsaasV1`, func() {
 			})
 			It(`Create service client using external config and set url programatically successfully`, func() {
 				SetTestEnvironment(testEnvironment)
-				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{
-				})
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{})
 				err := sdsaasService.SetServiceURL("https://testService/api")
 				Expect(err).To(BeNil())
 				Expect(sdsaasService).ToNot(BeNil())
@@ -123,13 +121,12 @@ var _ = Describe(`SdsaasV1`, func() {
 		Context(`Using external config, construct service client instances with error: Invalid Auth`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"SDSAAS_URL": "https://sdsaasv1/api",
+				"SDSAAS_URL":       "https://sdsaasv1/api",
 				"SDSAAS_AUTH_TYPE": "someOtherAuth",
 			}
 
 			SetTestEnvironment(testEnvironment)
-			sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{
-			})
+			sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1UsingExternalConfig(&sdsaasv1.SdsaasV1Options{})
 
 			It(`Instantiate service client with error`, func() {
 				Expect(sdsaasService).To(BeNil())
@@ -140,7 +137,7 @@ var _ = Describe(`SdsaasV1`, func() {
 		Context(`Using external config, construct service client instances with error: Invalid URL`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"SDSAAS_AUTH_TYPE":   "NOAuth",
+				"SDSAAS_AUTH_TYPE": "NOAuth",
 			}
 
 			SetTestEnvironment(testEnvironment)
@@ -193,6 +190,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					Expect(req.Method).To(Equal("GET"))
 					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(20))}))
 					Expect(req.URL.Query()["name"]).To(Equal([]string{"my-host"}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"}))
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
 					fmt.Fprint(res, `} this is not valid json {`)
@@ -210,6 +208,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				volumesOptionsModel := new(sdsaasv1.VolumesOptions)
 				volumesOptionsModel.Limit = core.Int64Ptr(int64(20))
 				volumesOptionsModel.Name = core.StringPtr("my-host")
+				volumesOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
 				volumesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
 				result, response, operationErr := sdsaasService.Volumes(volumesOptionsModel)
@@ -242,13 +241,14 @@ var _ = Describe(`SdsaasV1`, func() {
 
 					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(20))}))
 					Expect(req.URL.Query()["name"]).To(Equal([]string{"my-host"}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"}))
 					// Sleep a short time to support a timeout test
 					time.Sleep(100 * time.Millisecond)
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "limit": 20, "next": {"href": "Href"}, "total_count": 20, "volumes": [{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}]}`)
+					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "limit": 20, "next": {"href": "Href"}, "total_count": 20, "volumes": [{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}], "snapshot_count": 5, "source_snapshot": {"id": "ID"}}]}`)
 				}))
 			})
 			It(`Invoke Volumes successfully with retries`, func() {
@@ -264,6 +264,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				volumesOptionsModel := new(sdsaasv1.VolumesOptions)
 				volumesOptionsModel.Limit = core.Int64Ptr(int64(20))
 				volumesOptionsModel.Name = core.StringPtr("my-host")
+				volumesOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
 				volumesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
@@ -302,10 +303,11 @@ var _ = Describe(`SdsaasV1`, func() {
 
 					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(20))}))
 					Expect(req.URL.Query()["name"]).To(Equal([]string{"my-host"}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"}))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "limit": 20, "next": {"href": "Href"}, "total_count": 20, "volumes": [{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}]}`)
+					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "limit": 20, "next": {"href": "Href"}, "total_count": 20, "volumes": [{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}], "snapshot_count": 5, "source_snapshot": {"id": "ID"}}]}`)
 				}))
 			})
 			It(`Invoke Volumes successfully`, func() {
@@ -326,6 +328,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				volumesOptionsModel := new(sdsaasv1.VolumesOptions)
 				volumesOptionsModel.Limit = core.Int64Ptr(int64(20))
 				volumesOptionsModel.Name = core.StringPtr("my-host")
+				volumesOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
 				volumesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
@@ -347,6 +350,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				volumesOptionsModel := new(sdsaasv1.VolumesOptions)
 				volumesOptionsModel.Limit = core.Int64Ptr(int64(20))
 				volumesOptionsModel.Name = core.StringPtr("my-host")
+				volumesOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
 				volumesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := sdsaasService.SetServiceURL("")
@@ -382,6 +386,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				volumesOptionsModel := new(sdsaasv1.VolumesOptions)
 				volumesOptionsModel.Limit = core.Int64Ptr(int64(20))
 				volumesOptionsModel.Name = core.StringPtr("my-host")
+				volumesOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
 				volumesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
@@ -394,6 +399,107 @@ var _ = Describe(`SdsaasV1`, func() {
 			})
 			AfterEach(func() {
 				testServer.Close()
+			})
+		})
+		Context(`Test pagination helper method on response`, func() {
+			It(`Invoke GetNextStart successfully`, func() {
+				responseObject := new(sdsaasv1.VolumeCollection)
+				nextObject := new(sdsaasv1.PageLink)
+				nextObject.Href = core.StringPtr("ibm.com?start=abc-123")
+				responseObject.Next = nextObject
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(Equal(core.StringPtr("abc-123")))
+			})
+			It(`Invoke GetNextStart without a "Next" property in the response`, func() {
+				responseObject := new(sdsaasv1.VolumeCollection)
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(BeNil())
+			})
+			It(`Invoke GetNextStart without any query params in the "Next" URL`, func() {
+				responseObject := new(sdsaasv1.VolumeCollection)
+				nextObject := new(sdsaasv1.PageLink)
+				nextObject.Href = core.StringPtr("ibm.com")
+				responseObject.Next = nextObject
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(BeNil())
+			})
+		})
+		Context(`Using mock server endpoint - paginated response`, func() {
+			BeforeEach(func() {
+				var requestNumber int = 0
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumesPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					requestNumber++
+					if requestNumber == 1 {
+						fmt.Fprintf(res, "%s", `{"next":{"href":"https://myhost.com/somePath?start=1"},"total_count":2,"limit":1,"volumes":[{"bandwidth":1000,"capacity":30,"created_at":"2019-01-01T12:00:00.000Z","href":"Href","id":"ID","iops":10000,"name":"Name","resource_type":"ResourceType","status":"available","status_reasons":[{"code":"volume_not_found","message":"Specified resource not found","more_info":"MoreInfo"}],"volume_mappings":[{"status":"mapped","storage_identifier":{"subsystem_nqn":"nqn.2014-06.org:1234","namespace_id":1,"namespace_uuid":"NamespaceUUID","gateways":[{"ip_address":"IPAddress","port":22}]},"href":"Href","id":"1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45","volume":{"id":"ID","name":"Name"},"host":{"id":"ID","name":"Name","nqn":"Nqn"},"subsystem_nqn":"nqn.2014-06.org:1234","namespace":{"id":1,"uuid":"UUID"},"gateways":[{"ip_address":"IPAddress","port":22}]}],"snapshot_count":5,"source_snapshot":{"id":"ID"}}]}`)
+					} else if requestNumber == 2 {
+						fmt.Fprintf(res, "%s", `{"total_count":2,"limit":1,"volumes":[{"bandwidth":1000,"capacity":30,"created_at":"2019-01-01T12:00:00.000Z","href":"Href","id":"ID","iops":10000,"name":"Name","resource_type":"ResourceType","status":"available","status_reasons":[{"code":"volume_not_found","message":"Specified resource not found","more_info":"MoreInfo"}],"volume_mappings":[{"status":"mapped","storage_identifier":{"subsystem_nqn":"nqn.2014-06.org:1234","namespace_id":1,"namespace_uuid":"NamespaceUUID","gateways":[{"ip_address":"IPAddress","port":22}]},"href":"Href","id":"1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45","volume":{"id":"ID","name":"Name"},"host":{"id":"ID","name":"Name","nqn":"Nqn"},"subsystem_nqn":"nqn.2014-06.org:1234","namespace":{"id":1,"uuid":"UUID"},"gateways":[{"ip_address":"IPAddress","port":22}]}],"snapshot_count":5,"source_snapshot":{"id":"ID"}}]}`)
+					} else {
+						res.WriteHeader(400)
+					}
+				}))
+			})
+			It(`Use VolumesPager.GetNext successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				volumesOptionsModel := &sdsaasv1.VolumesOptions{
+					Limit: core.Int64Ptr(int64(20)),
+					Name:  core.StringPtr("my-host"),
+				}
+
+				pager, err := sdsaasService.NewVolumesPager(volumesOptionsModel)
+				Expect(err).To(BeNil())
+				Expect(pager).ToNot(BeNil())
+
+				var allResults []sdsaasv1.Volume
+				for pager.HasNext() {
+					nextPage, err := pager.GetNext()
+					Expect(err).To(BeNil())
+					Expect(nextPage).ToNot(BeNil())
+					allResults = append(allResults, nextPage...)
+				}
+				Expect(len(allResults)).To(Equal(2))
+			})
+			It(`Use VolumesPager.GetAll successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				volumesOptionsModel := &sdsaasv1.VolumesOptions{
+					Limit: core.Int64Ptr(int64(20)),
+					Name:  core.StringPtr("my-host"),
+				}
+
+				pager, err := sdsaasService.NewVolumesPager(volumesOptionsModel)
+				Expect(err).To(BeNil())
+				Expect(pager).ToNot(BeNil())
+
+				allResults, err := pager.GetAll()
+				Expect(err).To(BeNil())
+				Expect(allResults).ToNot(BeNil())
+				Expect(len(allResults)).To(Equal(2))
 			})
 		})
 	})
@@ -420,10 +526,15 @@ var _ = Describe(`SdsaasV1`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(sdsaasService).ToNot(BeNil())
 
+				// Construct an instance of the SourceSnapshot model
+				sourceSnapshotModel := new(sdsaasv1.SourceSnapshot)
+				sourceSnapshotModel.ID = core.StringPtr("testString")
+
 				// Construct an instance of the VolumeCreateOptions model
 				volumeCreateOptionsModel := new(sdsaasv1.VolumeCreateOptions)
 				volumeCreateOptionsModel.Capacity = core.Int64Ptr(int64(10))
 				volumeCreateOptionsModel.Name = core.StringPtr("my-volume")
+				volumeCreateOptionsModel.SourceSnapshot = sourceSnapshotModel
 				volumeCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
 				result, response, operationErr := sdsaasService.VolumeCreate(volumeCreateOptionsModel)
@@ -476,7 +587,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}], "snapshot_count": 5, "source_snapshot": {"id": "ID"}}`)
 				}))
 			})
 			It(`Invoke VolumeCreate successfully with retries`, func() {
@@ -488,10 +599,15 @@ var _ = Describe(`SdsaasV1`, func() {
 				Expect(sdsaasService).ToNot(BeNil())
 				sdsaasService.EnableRetries(0, 0)
 
+				// Construct an instance of the SourceSnapshot model
+				sourceSnapshotModel := new(sdsaasv1.SourceSnapshot)
+				sourceSnapshotModel.ID = core.StringPtr("testString")
+
 				// Construct an instance of the VolumeCreateOptions model
 				volumeCreateOptionsModel := new(sdsaasv1.VolumeCreateOptions)
 				volumeCreateOptionsModel.Capacity = core.Int64Ptr(int64(10))
 				volumeCreateOptionsModel.Name = core.StringPtr("my-volume")
+				volumeCreateOptionsModel.SourceSnapshot = sourceSnapshotModel
 				volumeCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
@@ -547,7 +663,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}], "snapshot_count": 5, "source_snapshot": {"id": "ID"}}`)
 				}))
 			})
 			It(`Invoke VolumeCreate successfully`, func() {
@@ -564,10 +680,15 @@ var _ = Describe(`SdsaasV1`, func() {
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
 
+				// Construct an instance of the SourceSnapshot model
+				sourceSnapshotModel := new(sdsaasv1.SourceSnapshot)
+				sourceSnapshotModel.ID = core.StringPtr("testString")
+
 				// Construct an instance of the VolumeCreateOptions model
 				volumeCreateOptionsModel := new(sdsaasv1.VolumeCreateOptions)
 				volumeCreateOptionsModel.Capacity = core.Int64Ptr(int64(10))
 				volumeCreateOptionsModel.Name = core.StringPtr("my-volume")
+				volumeCreateOptionsModel.SourceSnapshot = sourceSnapshotModel
 				volumeCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
@@ -585,10 +706,15 @@ var _ = Describe(`SdsaasV1`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(sdsaasService).ToNot(BeNil())
 
+				// Construct an instance of the SourceSnapshot model
+				sourceSnapshotModel := new(sdsaasv1.SourceSnapshot)
+				sourceSnapshotModel.ID = core.StringPtr("testString")
+
 				// Construct an instance of the VolumeCreateOptions model
 				volumeCreateOptionsModel := new(sdsaasv1.VolumeCreateOptions)
 				volumeCreateOptionsModel.Capacity = core.Int64Ptr(int64(10))
 				volumeCreateOptionsModel.Name = core.StringPtr("my-volume")
+				volumeCreateOptionsModel.SourceSnapshot = sourceSnapshotModel
 				volumeCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := sdsaasService.SetServiceURL("")
@@ -627,10 +753,15 @@ var _ = Describe(`SdsaasV1`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(sdsaasService).ToNot(BeNil())
 
+				// Construct an instance of the SourceSnapshot model
+				sourceSnapshotModel := new(sdsaasv1.SourceSnapshot)
+				sourceSnapshotModel.ID = core.StringPtr("testString")
+
 				// Construct an instance of the VolumeCreateOptions model
 				volumeCreateOptionsModel := new(sdsaasv1.VolumeCreateOptions)
 				volumeCreateOptionsModel.Capacity = core.Int64Ptr(int64(10))
 				volumeCreateOptionsModel.Name = core.StringPtr("my-volume")
+				volumeCreateOptionsModel.SourceSnapshot = sourceSnapshotModel
 				volumeCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
@@ -708,7 +839,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}], "snapshot_count": 5, "source_snapshot": {"id": "ID"}}`)
 				}))
 			})
 			It(`Invoke Volume successfully with retries`, func() {
@@ -762,7 +893,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}], "snapshot_count": 5, "source_snapshot": {"id": "ID"}}`)
 				}))
 			})
 			It(`Invoke Volume successfully`, func() {
@@ -1012,7 +1143,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}], "snapshot_count": 5, "source_snapshot": {"id": "ID"}}`)
 				}))
 			})
 			It(`Invoke VolumeUpdate successfully with retries`, func() {
@@ -1090,7 +1221,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"bandwidth": 1000, "capacity": 30, "created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "iops": 10000, "name": "Name", "resource_type": "ResourceType", "status": "available", "status_reasons": [{"code": "volume_not_found", "message": "Specified resource not found", "more_info": "MoreInfo"}], "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}], "snapshot_count": 5, "source_snapshot": {"id": "ID"}}`)
 				}))
 			})
 			It(`Invoke VolumeUpdate successfully`, func() {
@@ -1204,6 +1335,1232 @@ var _ = Describe(`SdsaasV1`, func() {
 
 				// Verify a nil result
 				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshots(volumeSnapshotsOptions *VolumeSnapshotsOptions) - Operation response error`, func() {
+		volumeSnapshotsPath := "/snapshots"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"}))
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(20))}))
+					Expect(req.URL.Query()["name"]).To(Equal([]string{"my-host"}))
+					Expect(req.URL.Query()["source_volume.id"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke VolumeSnapshots with error: Operation response processing error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the VolumeSnapshotsOptions model
+				volumeSnapshotsOptionsModel := new(sdsaasv1.VolumeSnapshotsOptions)
+				volumeSnapshotsOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotsOptionsModel.Limit = core.Int64Ptr(int64(20))
+				volumeSnapshotsOptionsModel.Name = core.StringPtr("my-host")
+				volumeSnapshotsOptionsModel.SourceVolumeID = core.StringPtr("testString")
+				volumeSnapshotsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := sdsaasService.VolumeSnapshots(volumeSnapshotsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				sdsaasService.EnableRetries(0, 0)
+				result, response, operationErr = sdsaasService.VolumeSnapshots(volumeSnapshotsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshots(volumeSnapshotsOptions *VolumeSnapshotsOptions)`, func() {
+		volumeSnapshotsPath := "/snapshots"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"}))
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(20))}))
+					Expect(req.URL.Query()["name"]).To(Equal([]string{"my-host"}))
+					Expect(req.URL.Query()["source_volume.id"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"snapshots": [{"id": "ID", "href": "Href", "name": "Name", "created_at": "2019-01-01T12:00:00.000Z", "resource_type": "volume", "lifecycle_state": "stable", "size": 30, "minimum_capacity": 30, "deletable": true, "source_volume": {"id": "ID", "href": "Href", "name": "Name", "resource_type": "volume"}}], "first": {"href": "Href"}, "limit": 20, "next": {"href": "Href"}, "total_count": 20}`)
+				}))
+			})
+			It(`Invoke VolumeSnapshots successfully with retries`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+				sdsaasService.EnableRetries(0, 0)
+
+				// Construct an instance of the VolumeSnapshotsOptions model
+				volumeSnapshotsOptionsModel := new(sdsaasv1.VolumeSnapshotsOptions)
+				volumeSnapshotsOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotsOptionsModel.Limit = core.Int64Ptr(int64(20))
+				volumeSnapshotsOptionsModel.Name = core.StringPtr("my-host")
+				volumeSnapshotsOptionsModel.SourceVolumeID = core.StringPtr("testString")
+				volumeSnapshotsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := sdsaasService.VolumeSnapshotsWithContext(ctx, volumeSnapshotsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				sdsaasService.DisableRetries()
+				result, response, operationErr := sdsaasService.VolumeSnapshots(volumeSnapshotsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = sdsaasService.VolumeSnapshotsWithContext(ctx, volumeSnapshotsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"}))
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(20))}))
+					Expect(req.URL.Query()["name"]).To(Equal([]string{"my-host"}))
+					Expect(req.URL.Query()["source_volume.id"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"snapshots": [{"id": "ID", "href": "Href", "name": "Name", "created_at": "2019-01-01T12:00:00.000Z", "resource_type": "volume", "lifecycle_state": "stable", "size": 30, "minimum_capacity": 30, "deletable": true, "source_volume": {"id": "ID", "href": "Href", "name": "Name", "resource_type": "volume"}}], "first": {"href": "Href"}, "limit": 20, "next": {"href": "Href"}, "total_count": 20}`)
+				}))
+			})
+			It(`Invoke VolumeSnapshots successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := sdsaasService.VolumeSnapshots(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotsOptions model
+				volumeSnapshotsOptionsModel := new(sdsaasv1.VolumeSnapshotsOptions)
+				volumeSnapshotsOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotsOptionsModel.Limit = core.Int64Ptr(int64(20))
+				volumeSnapshotsOptionsModel.Name = core.StringPtr("my-host")
+				volumeSnapshotsOptionsModel.SourceVolumeID = core.StringPtr("testString")
+				volumeSnapshotsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = sdsaasService.VolumeSnapshots(volumeSnapshotsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke VolumeSnapshots with error: Operation request error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the VolumeSnapshotsOptions model
+				volumeSnapshotsOptionsModel := new(sdsaasv1.VolumeSnapshotsOptions)
+				volumeSnapshotsOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotsOptionsModel.Limit = core.Int64Ptr(int64(20))
+				volumeSnapshotsOptionsModel.Name = core.StringPtr("my-host")
+				volumeSnapshotsOptionsModel.SourceVolumeID = core.StringPtr("testString")
+				volumeSnapshotsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := sdsaasService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := sdsaasService.VolumeSnapshots(volumeSnapshotsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke VolumeSnapshots successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the VolumeSnapshotsOptions model
+				volumeSnapshotsOptionsModel := new(sdsaasv1.VolumeSnapshotsOptions)
+				volumeSnapshotsOptionsModel.Start = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotsOptionsModel.Limit = core.Int64Ptr(int64(20))
+				volumeSnapshotsOptionsModel.Name = core.StringPtr("my-host")
+				volumeSnapshotsOptionsModel.SourceVolumeID = core.StringPtr("testString")
+				volumeSnapshotsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := sdsaasService.VolumeSnapshots(volumeSnapshotsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Test pagination helper method on response`, func() {
+			It(`Invoke GetNextStart successfully`, func() {
+				responseObject := new(sdsaasv1.SnapshotCollection)
+				nextObject := new(sdsaasv1.PageLink)
+				nextObject.Href = core.StringPtr("ibm.com?start=abc-123")
+				responseObject.Next = nextObject
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(Equal(core.StringPtr("abc-123")))
+			})
+			It(`Invoke GetNextStart without a "Next" property in the response`, func() {
+				responseObject := new(sdsaasv1.SnapshotCollection)
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(BeNil())
+			})
+			It(`Invoke GetNextStart without any query params in the "Next" URL`, func() {
+				responseObject := new(sdsaasv1.SnapshotCollection)
+				nextObject := new(sdsaasv1.PageLink)
+				nextObject.Href = core.StringPtr("ibm.com")
+				responseObject.Next = nextObject
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(BeNil())
+			})
+		})
+		Context(`Using mock server endpoint - paginated response`, func() {
+			BeforeEach(func() {
+				var requestNumber int = 0
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					requestNumber++
+					if requestNumber == 1 {
+						fmt.Fprintf(res, "%s", `{"snapshots":[{"id":"ID","href":"Href","name":"Name","created_at":"2019-01-01T12:00:00.000Z","resource_type":"volume","lifecycle_state":"stable","size":30,"minimum_capacity":30,"deletable":true,"source_volume":{"id":"ID","href":"Href","name":"Name","resource_type":"volume"}}],"next":{"href":"https://myhost.com/somePath?start=1"},"total_count":2,"limit":1}`)
+					} else if requestNumber == 2 {
+						fmt.Fprintf(res, "%s", `{"snapshots":[{"id":"ID","href":"Href","name":"Name","created_at":"2019-01-01T12:00:00.000Z","resource_type":"volume","lifecycle_state":"stable","size":30,"minimum_capacity":30,"deletable":true,"source_volume":{"id":"ID","href":"Href","name":"Name","resource_type":"volume"}}],"total_count":2,"limit":1}`)
+					} else {
+						res.WriteHeader(400)
+					}
+				}))
+			})
+			It(`Use VolumeSnapshotsPager.GetNext successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				volumeSnapshotsOptionsModel := &sdsaasv1.VolumeSnapshotsOptions{
+					Limit:          core.Int64Ptr(int64(20)),
+					Name:           core.StringPtr("my-host"),
+					SourceVolumeID: core.StringPtr("testString"),
+				}
+
+				pager, err := sdsaasService.NewVolumeSnapshotsPager(volumeSnapshotsOptionsModel)
+				Expect(err).To(BeNil())
+				Expect(pager).ToNot(BeNil())
+
+				var allResults []sdsaasv1.Snapshot
+				for pager.HasNext() {
+					nextPage, err := pager.GetNext()
+					Expect(err).To(BeNil())
+					Expect(nextPage).ToNot(BeNil())
+					allResults = append(allResults, nextPage...)
+				}
+				Expect(len(allResults)).To(Equal(2))
+			})
+			It(`Use VolumeSnapshotsPager.GetAll successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				volumeSnapshotsOptionsModel := &sdsaasv1.VolumeSnapshotsOptions{
+					Limit:          core.Int64Ptr(int64(20)),
+					Name:           core.StringPtr("my-host"),
+					SourceVolumeID: core.StringPtr("testString"),
+				}
+
+				pager, err := sdsaasService.NewVolumeSnapshotsPager(volumeSnapshotsOptionsModel)
+				Expect(err).To(BeNil())
+				Expect(pager).ToNot(BeNil())
+
+				allResults, err := pager.GetAll()
+				Expect(err).To(BeNil())
+				Expect(allResults).ToNot(BeNil())
+				Expect(len(allResults)).To(Equal(2))
+			})
+		})
+	})
+	Describe(`VolumeSnapshotCreate(volumeSnapshotCreateOptions *VolumeSnapshotCreateOptions) - Operation response error`, func() {
+		volumeSnapshotCreatePath := "/snapshots"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotCreatePath))
+					Expect(req.Method).To(Equal("POST"))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke VolumeSnapshotCreate with error: Operation response processing error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the SourceVolumePrototype model
+				sourceVolumePrototypeModel := new(sdsaasv1.SourceVolumePrototype)
+				sourceVolumePrototypeModel.ID = core.StringPtr("testString")
+
+				// Construct an instance of the VolumeSnapshotCreateOptions model
+				volumeSnapshotCreateOptionsModel := new(sdsaasv1.VolumeSnapshotCreateOptions)
+				volumeSnapshotCreateOptionsModel.SourceVolume = sourceVolumePrototypeModel
+				volumeSnapshotCreateOptionsModel.Name = core.StringPtr("my-snapshot")
+				volumeSnapshotCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := sdsaasService.VolumeSnapshotCreate(volumeSnapshotCreateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				sdsaasService.EnableRetries(0, 0)
+				result, response, operationErr = sdsaasService.VolumeSnapshotCreate(volumeSnapshotCreateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshotCreate(volumeSnapshotCreateOptions *VolumeSnapshotCreateOptions)`, func() {
+		volumeSnapshotCreatePath := "/snapshots"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotCreatePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"id": "ID", "href": "Href", "name": "Name", "created_at": "2019-01-01T12:00:00.000Z", "resource_type": "volume", "lifecycle_state": "stable", "size": 30, "minimum_capacity": 30, "deletable": true, "source_volume": {"id": "ID", "href": "Href", "name": "Name", "resource_type": "volume"}}`)
+				}))
+			})
+			It(`Invoke VolumeSnapshotCreate successfully with retries`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+				sdsaasService.EnableRetries(0, 0)
+
+				// Construct an instance of the SourceVolumePrototype model
+				sourceVolumePrototypeModel := new(sdsaasv1.SourceVolumePrototype)
+				sourceVolumePrototypeModel.ID = core.StringPtr("testString")
+
+				// Construct an instance of the VolumeSnapshotCreateOptions model
+				volumeSnapshotCreateOptionsModel := new(sdsaasv1.VolumeSnapshotCreateOptions)
+				volumeSnapshotCreateOptionsModel.SourceVolume = sourceVolumePrototypeModel
+				volumeSnapshotCreateOptionsModel.Name = core.StringPtr("my-snapshot")
+				volumeSnapshotCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := sdsaasService.VolumeSnapshotCreateWithContext(ctx, volumeSnapshotCreateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				sdsaasService.DisableRetries()
+				result, response, operationErr := sdsaasService.VolumeSnapshotCreate(volumeSnapshotCreateOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = sdsaasService.VolumeSnapshotCreateWithContext(ctx, volumeSnapshotCreateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotCreatePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"id": "ID", "href": "Href", "name": "Name", "created_at": "2019-01-01T12:00:00.000Z", "resource_type": "volume", "lifecycle_state": "stable", "size": 30, "minimum_capacity": 30, "deletable": true, "source_volume": {"id": "ID", "href": "Href", "name": "Name", "resource_type": "volume"}}`)
+				}))
+			})
+			It(`Invoke VolumeSnapshotCreate successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := sdsaasService.VolumeSnapshotCreate(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the SourceVolumePrototype model
+				sourceVolumePrototypeModel := new(sdsaasv1.SourceVolumePrototype)
+				sourceVolumePrototypeModel.ID = core.StringPtr("testString")
+
+				// Construct an instance of the VolumeSnapshotCreateOptions model
+				volumeSnapshotCreateOptionsModel := new(sdsaasv1.VolumeSnapshotCreateOptions)
+				volumeSnapshotCreateOptionsModel.SourceVolume = sourceVolumePrototypeModel
+				volumeSnapshotCreateOptionsModel.Name = core.StringPtr("my-snapshot")
+				volumeSnapshotCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = sdsaasService.VolumeSnapshotCreate(volumeSnapshotCreateOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke VolumeSnapshotCreate with error: Operation validation and request error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the SourceVolumePrototype model
+				sourceVolumePrototypeModel := new(sdsaasv1.SourceVolumePrototype)
+				sourceVolumePrototypeModel.ID = core.StringPtr("testString")
+
+				// Construct an instance of the VolumeSnapshotCreateOptions model
+				volumeSnapshotCreateOptionsModel := new(sdsaasv1.VolumeSnapshotCreateOptions)
+				volumeSnapshotCreateOptionsModel.SourceVolume = sourceVolumePrototypeModel
+				volumeSnapshotCreateOptionsModel.Name = core.StringPtr("my-snapshot")
+				volumeSnapshotCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := sdsaasService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := sdsaasService.VolumeSnapshotCreate(volumeSnapshotCreateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the VolumeSnapshotCreateOptions model with no property values
+				volumeSnapshotCreateOptionsModelNew := new(sdsaasv1.VolumeSnapshotCreateOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = sdsaasService.VolumeSnapshotCreate(volumeSnapshotCreateOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke VolumeSnapshotCreate successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the SourceVolumePrototype model
+				sourceVolumePrototypeModel := new(sdsaasv1.SourceVolumePrototype)
+				sourceVolumePrototypeModel.ID = core.StringPtr("testString")
+
+				// Construct an instance of the VolumeSnapshotCreateOptions model
+				volumeSnapshotCreateOptionsModel := new(sdsaasv1.VolumeSnapshotCreateOptions)
+				volumeSnapshotCreateOptionsModel.SourceVolume = sourceVolumePrototypeModel
+				volumeSnapshotCreateOptionsModel.Name = core.StringPtr("my-snapshot")
+				volumeSnapshotCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := sdsaasService.VolumeSnapshotCreate(volumeSnapshotCreateOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshotsDelete(volumeSnapshotsDeleteOptions *VolumeSnapshotsDeleteOptions)`, func() {
+		volumeSnapshotsDeletePath := "/snapshots"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotsDeletePath))
+					Expect(req.Method).To(Equal("DELETE"))
+
+					Expect(req.URL.Query()["source_volume.id"]).To(Equal([]string{"testString"}))
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke VolumeSnapshotsDelete successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := sdsaasService.VolumeSnapshotsDelete(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotsDeleteOptions model
+				volumeSnapshotsDeleteOptionsModel := new(sdsaasv1.VolumeSnapshotsDeleteOptions)
+				volumeSnapshotsDeleteOptionsModel.SourceVolumeID = core.StringPtr("testString")
+				volumeSnapshotsDeleteOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = sdsaasService.VolumeSnapshotsDelete(volumeSnapshotsDeleteOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke VolumeSnapshotsDelete with error: Operation request error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the VolumeSnapshotsDeleteOptions model
+				volumeSnapshotsDeleteOptionsModel := new(sdsaasv1.VolumeSnapshotsDeleteOptions)
+				volumeSnapshotsDeleteOptionsModel.SourceVolumeID = core.StringPtr("testString")
+				volumeSnapshotsDeleteOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := sdsaasService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := sdsaasService.VolumeSnapshotsDelete(volumeSnapshotsDeleteOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshot(volumeSnapshotOptions *VolumeSnapshotOptions) - Operation response error`, func() {
+		volumeSnapshotPath := "/snapshots/r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotPath))
+					Expect(req.Method).To(Equal("GET"))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke VolumeSnapshot with error: Operation response processing error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the VolumeSnapshotOptions model
+				volumeSnapshotOptionsModel := new(sdsaasv1.VolumeSnapshotOptions)
+				volumeSnapshotOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := sdsaasService.VolumeSnapshot(volumeSnapshotOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				sdsaasService.EnableRetries(0, 0)
+				result, response, operationErr = sdsaasService.VolumeSnapshot(volumeSnapshotOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshot(volumeSnapshotOptions *VolumeSnapshotOptions)`, func() {
+		volumeSnapshotPath := "/snapshots/r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"id": "ID", "href": "Href", "name": "Name", "created_at": "2019-01-01T12:00:00.000Z", "resource_type": "volume", "lifecycle_state": "stable", "size": 30, "minimum_capacity": 30, "deletable": true, "source_volume": {"id": "ID", "href": "Href", "name": "Name", "resource_type": "volume"}}`)
+				}))
+			})
+			It(`Invoke VolumeSnapshot successfully with retries`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+				sdsaasService.EnableRetries(0, 0)
+
+				// Construct an instance of the VolumeSnapshotOptions model
+				volumeSnapshotOptionsModel := new(sdsaasv1.VolumeSnapshotOptions)
+				volumeSnapshotOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := sdsaasService.VolumeSnapshotWithContext(ctx, volumeSnapshotOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				sdsaasService.DisableRetries()
+				result, response, operationErr := sdsaasService.VolumeSnapshot(volumeSnapshotOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = sdsaasService.VolumeSnapshotWithContext(ctx, volumeSnapshotOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"id": "ID", "href": "Href", "name": "Name", "created_at": "2019-01-01T12:00:00.000Z", "resource_type": "volume", "lifecycle_state": "stable", "size": 30, "minimum_capacity": 30, "deletable": true, "source_volume": {"id": "ID", "href": "Href", "name": "Name", "resource_type": "volume"}}`)
+				}))
+			})
+			It(`Invoke VolumeSnapshot successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := sdsaasService.VolumeSnapshot(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotOptions model
+				volumeSnapshotOptionsModel := new(sdsaasv1.VolumeSnapshotOptions)
+				volumeSnapshotOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = sdsaasService.VolumeSnapshot(volumeSnapshotOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke VolumeSnapshot with error: Operation validation and request error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the VolumeSnapshotOptions model
+				volumeSnapshotOptionsModel := new(sdsaasv1.VolumeSnapshotOptions)
+				volumeSnapshotOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := sdsaasService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := sdsaasService.VolumeSnapshot(volumeSnapshotOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the VolumeSnapshotOptions model with no property values
+				volumeSnapshotOptionsModelNew := new(sdsaasv1.VolumeSnapshotOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = sdsaasService.VolumeSnapshot(volumeSnapshotOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke VolumeSnapshot successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the VolumeSnapshotOptions model
+				volumeSnapshotOptionsModel := new(sdsaasv1.VolumeSnapshotOptions)
+				volumeSnapshotOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := sdsaasService.VolumeSnapshot(volumeSnapshotOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshotUpdate(volumeSnapshotUpdateOptions *VolumeSnapshotUpdateOptions) - Operation response error`, func() {
+		volumeSnapshotUpdatePath := "/snapshots/r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotUpdatePath))
+					Expect(req.Method).To(Equal("PATCH"))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke VolumeSnapshotUpdate with error: Operation response processing error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the SnapshotPatch model
+				snapshotPatchModel := new(sdsaasv1.SnapshotPatch)
+				snapshotPatchModel.Name = core.StringPtr("testString")
+				snapshotPatchModelAsPatch, asPatchErr := snapshotPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotUpdateOptions model
+				volumeSnapshotUpdateOptionsModel := new(sdsaasv1.VolumeSnapshotUpdateOptions)
+				volumeSnapshotUpdateOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotUpdateOptionsModel.SnapshotPatch = snapshotPatchModelAsPatch
+				volumeSnapshotUpdateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := sdsaasService.VolumeSnapshotUpdate(volumeSnapshotUpdateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				sdsaasService.EnableRetries(0, 0)
+				result, response, operationErr = sdsaasService.VolumeSnapshotUpdate(volumeSnapshotUpdateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshotUpdate(volumeSnapshotUpdateOptions *VolumeSnapshotUpdateOptions)`, func() {
+		volumeSnapshotUpdatePath := "/snapshots/r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotUpdatePath))
+					Expect(req.Method).To(Equal("PATCH"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"id": "ID", "href": "Href", "name": "Name", "created_at": "2019-01-01T12:00:00.000Z", "resource_type": "volume", "lifecycle_state": "stable", "size": 30, "minimum_capacity": 30, "deletable": true, "source_volume": {"id": "ID", "href": "Href", "name": "Name", "resource_type": "volume"}}`)
+				}))
+			})
+			It(`Invoke VolumeSnapshotUpdate successfully with retries`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+				sdsaasService.EnableRetries(0, 0)
+
+				// Construct an instance of the SnapshotPatch model
+				snapshotPatchModel := new(sdsaasv1.SnapshotPatch)
+				snapshotPatchModel.Name = core.StringPtr("testString")
+				snapshotPatchModelAsPatch, asPatchErr := snapshotPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotUpdateOptions model
+				volumeSnapshotUpdateOptionsModel := new(sdsaasv1.VolumeSnapshotUpdateOptions)
+				volumeSnapshotUpdateOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotUpdateOptionsModel.SnapshotPatch = snapshotPatchModelAsPatch
+				volumeSnapshotUpdateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := sdsaasService.VolumeSnapshotUpdateWithContext(ctx, volumeSnapshotUpdateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				sdsaasService.DisableRetries()
+				result, response, operationErr := sdsaasService.VolumeSnapshotUpdate(volumeSnapshotUpdateOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = sdsaasService.VolumeSnapshotUpdateWithContext(ctx, volumeSnapshotUpdateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotUpdatePath))
+					Expect(req.Method).To(Equal("PATCH"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"id": "ID", "href": "Href", "name": "Name", "created_at": "2019-01-01T12:00:00.000Z", "resource_type": "volume", "lifecycle_state": "stable", "size": 30, "minimum_capacity": 30, "deletable": true, "source_volume": {"id": "ID", "href": "Href", "name": "Name", "resource_type": "volume"}}`)
+				}))
+			})
+			It(`Invoke VolumeSnapshotUpdate successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := sdsaasService.VolumeSnapshotUpdate(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the SnapshotPatch model
+				snapshotPatchModel := new(sdsaasv1.SnapshotPatch)
+				snapshotPatchModel.Name = core.StringPtr("testString")
+				snapshotPatchModelAsPatch, asPatchErr := snapshotPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotUpdateOptions model
+				volumeSnapshotUpdateOptionsModel := new(sdsaasv1.VolumeSnapshotUpdateOptions)
+				volumeSnapshotUpdateOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotUpdateOptionsModel.SnapshotPatch = snapshotPatchModelAsPatch
+				volumeSnapshotUpdateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = sdsaasService.VolumeSnapshotUpdate(volumeSnapshotUpdateOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke VolumeSnapshotUpdate with error: Operation validation and request error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the SnapshotPatch model
+				snapshotPatchModel := new(sdsaasv1.SnapshotPatch)
+				snapshotPatchModel.Name = core.StringPtr("testString")
+				snapshotPatchModelAsPatch, asPatchErr := snapshotPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotUpdateOptions model
+				volumeSnapshotUpdateOptionsModel := new(sdsaasv1.VolumeSnapshotUpdateOptions)
+				volumeSnapshotUpdateOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotUpdateOptionsModel.SnapshotPatch = snapshotPatchModelAsPatch
+				volumeSnapshotUpdateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := sdsaasService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := sdsaasService.VolumeSnapshotUpdate(volumeSnapshotUpdateOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the VolumeSnapshotUpdateOptions model with no property values
+				volumeSnapshotUpdateOptionsModelNew := new(sdsaasv1.VolumeSnapshotUpdateOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = sdsaasService.VolumeSnapshotUpdate(volumeSnapshotUpdateOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke VolumeSnapshotUpdate successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the SnapshotPatch model
+				snapshotPatchModel := new(sdsaasv1.SnapshotPatch)
+				snapshotPatchModel.Name = core.StringPtr("testString")
+				snapshotPatchModelAsPatch, asPatchErr := snapshotPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotUpdateOptions model
+				volumeSnapshotUpdateOptionsModel := new(sdsaasv1.VolumeSnapshotUpdateOptions)
+				volumeSnapshotUpdateOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotUpdateOptionsModel.SnapshotPatch = snapshotPatchModelAsPatch
+				volumeSnapshotUpdateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := sdsaasService.VolumeSnapshotUpdate(volumeSnapshotUpdateOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`VolumeSnapshotDelete(volumeSnapshotDeleteOptions *VolumeSnapshotDeleteOptions)`, func() {
+		volumeSnapshotDeletePath := "/snapshots/r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(volumeSnapshotDeletePath))
+					Expect(req.Method).To(Equal("DELETE"))
+
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke VolumeSnapshotDelete successfully`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := sdsaasService.VolumeSnapshotDelete(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the VolumeSnapshotDeleteOptions model
+				volumeSnapshotDeleteOptionsModel := new(sdsaasv1.VolumeSnapshotDeleteOptions)
+				volumeSnapshotDeleteOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotDeleteOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = sdsaasService.VolumeSnapshotDelete(volumeSnapshotDeleteOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke VolumeSnapshotDelete with error: Operation validation and request error`, func() {
+				sdsaasService, serviceErr := sdsaasv1.NewSdsaasV1(&sdsaasv1.SdsaasV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(sdsaasService).ToNot(BeNil())
+
+				// Construct an instance of the VolumeSnapshotDeleteOptions model
+				volumeSnapshotDeleteOptionsModel := new(sdsaasv1.VolumeSnapshotDeleteOptions)
+				volumeSnapshotDeleteOptionsModel.SnapID = core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotDeleteOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := sdsaasService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := sdsaasService.VolumeSnapshotDelete(volumeSnapshotDeleteOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				// Construct a second instance of the VolumeSnapshotDeleteOptions model with no property values
+				volumeSnapshotDeleteOptionsModelNew := new(sdsaasv1.VolumeSnapshotDeleteOptions)
+				// Invoke operation with invalid model (negative test)
+				response, operationErr = sdsaasService.VolumeSnapshotDelete(volumeSnapshotDeleteOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
 			})
 			AfterEach(func() {
 				testServer.Close()
@@ -2735,7 +4092,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "hosts": [{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}], "limit": 20, "next": {"href": "Href"}, "total_count": 20}`)
+					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "hosts": [{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "psk_enabled": true, "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}], "limit": 20, "next": {"href": "Href"}, "total_count": 20}`)
 				}))
 			})
 			It(`Invoke Hosts successfully with retries`, func() {
@@ -2792,7 +4149,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "hosts": [{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}], "limit": 20, "next": {"href": "Href"}, "total_count": 20}`)
+					fmt.Fprintf(res, "%s", `{"first": {"href": "Href"}, "hosts": [{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "psk_enabled": true, "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}], "limit": 20, "next": {"href": "Href"}, "total_count": 20}`)
 				}))
 			})
 			It(`Invoke Hosts successfully`, func() {
@@ -2920,6 +4277,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
 				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel}
+				hostCreateOptionsModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
 				result, response, operationErr := sdsaasService.HostCreate(hostCreateOptionsModel)
@@ -2972,7 +4330,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "psk_enabled": true, "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
 				}))
 			})
 			It(`Invoke HostCreate successfully with retries`, func() {
@@ -2997,6 +4355,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
 				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel}
+				hostCreateOptionsModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
@@ -3052,7 +4411,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "psk_enabled": true, "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
 				}))
 			})
 			It(`Invoke HostCreate successfully`, func() {
@@ -3082,6 +4441,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
 				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel}
+				hostCreateOptionsModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
@@ -3112,6 +4472,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
 				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel}
+				hostCreateOptionsModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := sdsaasService.SetServiceURL("")
@@ -3163,6 +4524,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel.Nqn = core.StringPtr("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.Name = core.StringPtr("my-host")
 				hostCreateOptionsModel.VolumeMappings = []sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel}
+				hostCreateOptionsModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostCreateOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
@@ -3240,7 +4602,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "psk_enabled": true, "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
 				}))
 			})
 			It(`Invoke Host successfully with retries`, func() {
@@ -3294,7 +4656,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "psk_enabled": true, "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
 				}))
 			})
 			It(`Invoke Host successfully`, func() {
@@ -3416,6 +4778,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
+				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -3475,7 +4838,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "psk_enabled": true, "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
 				}))
 			})
 			It(`Invoke HostUpdate successfully with retries`, func() {
@@ -3490,6 +4853,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
+				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -3552,7 +4916,7 @@ var _ = Describe(`SdsaasV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
+					fmt.Fprintf(res, "%s", `{"created_at": "2019-01-01T12:00:00.000Z", "href": "Href", "id": "ID", "name": "Name", "nqn": "nqn.2014-06.org:1234", "psk_enabled": true, "volume_mappings": [{"status": "mapped", "storage_identifier": {"subsystem_nqn": "nqn.2014-06.org:1234", "namespace_id": 1, "namespace_uuid": "NamespaceUUID", "gateways": [{"ip_address": "IPAddress", "port": 22}]}, "href": "Href", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5-1a6b7274-678d-4dfb-8981-c71dd9d4da45", "volume": {"id": "ID", "name": "Name"}, "host": {"id": "ID", "name": "Name", "nqn": "Nqn"}, "subsystem_nqn": "nqn.2014-06.org:1234", "namespace": {"id": 1, "uuid": "UUID"}, "gateways": [{"ip_address": "IPAddress", "port": 22}]}]}`)
 				}))
 			})
 			It(`Invoke HostUpdate successfully`, func() {
@@ -3572,6 +4936,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
+				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -3599,6 +4964,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
+				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -3647,6 +5013,7 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
+				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -4678,11 +6045,13 @@ var _ = Describe(`SdsaasV1`, func() {
 				hostCreateOptionsModel.SetNqn("nqn.2014-06.org:9345")
 				hostCreateOptionsModel.SetName("my-host")
 				hostCreateOptionsModel.SetVolumeMappings([]sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel})
+				hostCreateOptionsModel.SetPsk("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostCreateOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(hostCreateOptionsModel).ToNot(BeNil())
 				Expect(hostCreateOptionsModel.Nqn).To(Equal(core.StringPtr("nqn.2014-06.org:9345")))
 				Expect(hostCreateOptionsModel.Name).To(Equal(core.StringPtr("my-host")))
 				Expect(hostCreateOptionsModel.VolumeMappings).To(Equal([]sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel}))
+				Expect(hostCreateOptionsModel.Psk).To(Equal(core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")))
 				Expect(hostCreateOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewHostDeleteOptions successfully`, func() {
@@ -4793,16 +6162,36 @@ var _ = Describe(`SdsaasV1`, func() {
 				Expect(hostsOptionsModel.Name).To(Equal(core.StringPtr("my-host")))
 				Expect(hostsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewSourceSnapshot successfully`, func() {
+				id := "testString"
+				_model, err := sdsaasService.NewSourceSnapshot(id)
+				Expect(_model).ToNot(BeNil())
+				Expect(err).To(BeNil())
+			})
+			It(`Invoke NewSourceVolumePrototype successfully`, func() {
+				id := "testString"
+				_model, err := sdsaasService.NewSourceVolumePrototype(id)
+				Expect(_model).ToNot(BeNil())
+				Expect(err).To(BeNil())
+			})
 			It(`Invoke NewVolumeCreateOptions successfully`, func() {
+				// Construct an instance of the SourceSnapshot model
+				sourceSnapshotModel := new(sdsaasv1.SourceSnapshot)
+				Expect(sourceSnapshotModel).ToNot(BeNil())
+				sourceSnapshotModel.ID = core.StringPtr("testString")
+				Expect(sourceSnapshotModel.ID).To(Equal(core.StringPtr("testString")))
+
 				// Construct an instance of the VolumeCreateOptions model
 				volumeCreateOptionsCapacity := int64(10)
 				volumeCreateOptionsModel := sdsaasService.NewVolumeCreateOptions(volumeCreateOptionsCapacity)
 				volumeCreateOptionsModel.SetCapacity(int64(10))
 				volumeCreateOptionsModel.SetName("my-volume")
+				volumeCreateOptionsModel.SetSourceSnapshot(sourceSnapshotModel)
 				volumeCreateOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(volumeCreateOptionsModel).ToNot(BeNil())
 				Expect(volumeCreateOptionsModel.Capacity).To(Equal(core.Int64Ptr(int64(10))))
 				Expect(volumeCreateOptionsModel.Name).To(Equal(core.StringPtr("my-volume")))
+				Expect(volumeCreateOptionsModel.SourceSnapshot).To(Equal(sourceSnapshotModel))
 				Expect(volumeCreateOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewVolumeDeleteOptions successfully`, func() {
@@ -4836,6 +6225,81 @@ var _ = Describe(`SdsaasV1`, func() {
 				Expect(volumeOptionsModel.VolumeID).To(Equal(core.StringPtr("r134-f24710c4-d5f4-4881-ab78-7bfXX6281f39")))
 				Expect(volumeOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewVolumeSnapshotCreateOptions successfully`, func() {
+				// Construct an instance of the SourceVolumePrototype model
+				sourceVolumePrototypeModel := new(sdsaasv1.SourceVolumePrototype)
+				Expect(sourceVolumePrototypeModel).ToNot(BeNil())
+				sourceVolumePrototypeModel.ID = core.StringPtr("testString")
+				Expect(sourceVolumePrototypeModel.ID).To(Equal(core.StringPtr("testString")))
+
+				// Construct an instance of the VolumeSnapshotCreateOptions model
+				var volumeSnapshotCreateOptionsSourceVolume *sdsaasv1.SourceVolumePrototype = nil
+				volumeSnapshotCreateOptionsModel := sdsaasService.NewVolumeSnapshotCreateOptions(volumeSnapshotCreateOptionsSourceVolume)
+				volumeSnapshotCreateOptionsModel.SetSourceVolume(sourceVolumePrototypeModel)
+				volumeSnapshotCreateOptionsModel.SetName("my-snapshot")
+				volumeSnapshotCreateOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(volumeSnapshotCreateOptionsModel).ToNot(BeNil())
+				Expect(volumeSnapshotCreateOptionsModel.SourceVolume).To(Equal(sourceVolumePrototypeModel))
+				Expect(volumeSnapshotCreateOptionsModel.Name).To(Equal(core.StringPtr("my-snapshot")))
+				Expect(volumeSnapshotCreateOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewVolumeSnapshotDeleteOptions successfully`, func() {
+				// Construct an instance of the VolumeSnapshotDeleteOptions model
+				snapID := "r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"
+				volumeSnapshotDeleteOptionsModel := sdsaasService.NewVolumeSnapshotDeleteOptions(snapID)
+				volumeSnapshotDeleteOptionsModel.SetSnapID("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotDeleteOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(volumeSnapshotDeleteOptionsModel).ToNot(BeNil())
+				Expect(volumeSnapshotDeleteOptionsModel.SnapID).To(Equal(core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")))
+				Expect(volumeSnapshotDeleteOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewVolumeSnapshotOptions successfully`, func() {
+				// Construct an instance of the VolumeSnapshotOptions model
+				snapID := "r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"
+				volumeSnapshotOptionsModel := sdsaasService.NewVolumeSnapshotOptions(snapID)
+				volumeSnapshotOptionsModel.SetSnapID("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(volumeSnapshotOptionsModel).ToNot(BeNil())
+				Expect(volumeSnapshotOptionsModel.SnapID).To(Equal(core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")))
+				Expect(volumeSnapshotOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewVolumeSnapshotUpdateOptions successfully`, func() {
+				// Construct an instance of the VolumeSnapshotUpdateOptions model
+				snapID := "r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e"
+				snapshotPatch := map[string]interface{}{"anyKey": "anyValue"}
+				volumeSnapshotUpdateOptionsModel := sdsaasService.NewVolumeSnapshotUpdateOptions(snapID, snapshotPatch)
+				volumeSnapshotUpdateOptionsModel.SetSnapID("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotUpdateOptionsModel.SetSnapshotPatch(map[string]interface{}{"anyKey": "anyValue"})
+				volumeSnapshotUpdateOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(volumeSnapshotUpdateOptionsModel).ToNot(BeNil())
+				Expect(volumeSnapshotUpdateOptionsModel.SnapID).To(Equal(core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")))
+				Expect(volumeSnapshotUpdateOptionsModel.SnapshotPatch).To(Equal(map[string]interface{}{"anyKey": "anyValue"}))
+				Expect(volumeSnapshotUpdateOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewVolumeSnapshotsDeleteOptions successfully`, func() {
+				// Construct an instance of the VolumeSnapshotsDeleteOptions model
+				volumeSnapshotsDeleteOptionsModel := sdsaasService.NewVolumeSnapshotsDeleteOptions()
+				volumeSnapshotsDeleteOptionsModel.SetSourceVolumeID("testString")
+				volumeSnapshotsDeleteOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(volumeSnapshotsDeleteOptionsModel).ToNot(BeNil())
+				Expect(volumeSnapshotsDeleteOptionsModel.SourceVolumeID).To(Equal(core.StringPtr("testString")))
+				Expect(volumeSnapshotsDeleteOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewVolumeSnapshotsOptions successfully`, func() {
+				// Construct an instance of the VolumeSnapshotsOptions model
+				volumeSnapshotsOptionsModel := sdsaasService.NewVolumeSnapshotsOptions()
+				volumeSnapshotsOptionsModel.SetStart("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
+				volumeSnapshotsOptionsModel.SetLimit(int64(20))
+				volumeSnapshotsOptionsModel.SetName("my-host")
+				volumeSnapshotsOptionsModel.SetSourceVolumeID("testString")
+				volumeSnapshotsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(volumeSnapshotsOptionsModel).ToNot(BeNil())
+				Expect(volumeSnapshotsOptionsModel.Start).To(Equal(core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")))
+				Expect(volumeSnapshotsOptionsModel.Limit).To(Equal(core.Int64Ptr(int64(20))))
+				Expect(volumeSnapshotsOptionsModel.Name).To(Equal(core.StringPtr("my-host")))
+				Expect(volumeSnapshotsOptionsModel.SourceVolumeID).To(Equal(core.StringPtr("testString")))
+				Expect(volumeSnapshotsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewVolumeUpdateOptions successfully`, func() {
 				// Construct an instance of the VolumeUpdateOptions model
 				volumeID := "r134-f24710c4-d5f4-4881-ab78-7bfXX6281f39"
@@ -4853,10 +6317,12 @@ var _ = Describe(`SdsaasV1`, func() {
 				volumesOptionsModel := sdsaasService.NewVolumesOptions()
 				volumesOptionsModel.SetLimit(int64(20))
 				volumesOptionsModel.SetName("my-host")
+				volumesOptionsModel.SetStart("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")
 				volumesOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(volumesOptionsModel).ToNot(BeNil())
 				Expect(volumesOptionsModel.Limit).To(Equal(core.Int64Ptr(int64(20))))
 				Expect(volumesOptionsModel.Name).To(Equal(core.StringPtr("my-host")))
+				Expect(volumesOptionsModel.Start).To(Equal(core.StringPtr("r134-69d5c3e2-8229-45f1-89c8-e4dXXb2e126e")))
 				Expect(volumesOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 		})
@@ -4866,6 +6332,7 @@ var _ = Describe(`SdsaasV1`, func() {
 			// Construct an instance of the model.
 			model := new(sdsaasv1.HostPatch)
 			model.Name = core.StringPtr("testString")
+			model.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 
 			b, err := json.Marshal(model)
 			Expect(err).To(BeNil())
@@ -4876,6 +6343,60 @@ var _ = Describe(`SdsaasV1`, func() {
 
 			var result *sdsaasv1.HostPatch
 			err = sdsaasv1.UnmarshalHostPatch(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSnapshotPatch successfully`, func() {
+			// Construct an instance of the model.
+			model := new(sdsaasv1.SnapshotPatch)
+			model.Name = core.StringPtr("testString")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *sdsaasv1.SnapshotPatch
+			err = sdsaasv1.UnmarshalSnapshotPatch(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSourceSnapshot successfully`, func() {
+			// Construct an instance of the model.
+			model := new(sdsaasv1.SourceSnapshot)
+			model.ID = core.StringPtr("testString")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *sdsaasv1.SourceSnapshot
+			err = sdsaasv1.UnmarshalSourceSnapshot(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSourceVolumePrototype successfully`, func() {
+			// Construct an instance of the model.
+			model := new(sdsaasv1.SourceVolumePrototype)
+			model.ID = core.StringPtr("testString")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *sdsaasv1.SourceVolumePrototype
+			err = sdsaasv1.UnmarshalSourceVolumePrototype(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))

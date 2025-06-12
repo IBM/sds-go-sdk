@@ -15,7 +15,7 @@
  */
 
 /*
- * IBM OpenAPI SDK Code Generator Version: 3.99.0-d27cee72-20250129-204831
+ * IBM OpenAPI SDK Code Generator Version: 3.104.0-b4a47c49-20250418-184351
  */
 
 // Package sdsaasv1 : Operations and models for the SdsaasV1 service
@@ -31,8 +31,8 @@ import (
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
-	common "github.com/IBM/sds-go-sdk/common"
 	"github.com/go-openapi/strfmt"
+	common "github.ibm.com/SDSaaS/sds-go-sdk/common"
 )
 
 // SdsaasV1 : OpenAPI definition for SDSaaS
@@ -219,6 +219,9 @@ func (sdsaas *SdsaasV1) VolumesWithContext(ctx context.Context, volumesOptions *
 	if volumesOptions.Name != nil {
 		builder.AddQuery("name", fmt.Sprint(*volumesOptions.Name))
 	}
+	if volumesOptions.Start != nil {
+		builder.AddQuery("start", fmt.Sprint(*volumesOptions.Start))
+	}
 
 	request, err := builder.Build()
 	if err != nil {
@@ -292,6 +295,9 @@ func (sdsaas *SdsaasV1) VolumeCreateWithContext(ctx context.Context, volumeCreat
 	}
 	if volumeCreateOptions.Name != nil {
 		body["name"] = volumeCreateOptions.Name
+	}
+	if volumeCreateOptions.SourceSnapshot != nil {
+		body["source_snapshot"] = volumeCreateOptions.SourceSnapshot
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
@@ -525,6 +531,417 @@ func (sdsaas *SdsaasV1) VolumeUpdateWithContext(ctx context.Context, volumeUpdat
 			return
 		}
 		response.Result = result
+	}
+
+	return
+}
+
+// VolumeSnapshots : List all snapshots
+// This request lists snapshots in the deployment.  A snapshot preserves the data of a volume at the time the snapshot
+// is created.
+func (sdsaas *SdsaasV1) VolumeSnapshots(volumeSnapshotsOptions *VolumeSnapshotsOptions) (result *SnapshotCollection, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.VolumeSnapshotsWithContext(context.Background(), volumeSnapshotsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// VolumeSnapshotsWithContext is an alternate form of the VolumeSnapshots method which supports a Context parameter
+func (sdsaas *SdsaasV1) VolumeSnapshotsWithContext(ctx context.Context, volumeSnapshotsOptions *VolumeSnapshotsOptions) (result *SnapshotCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(volumeSnapshotsOptions, "volumeSnapshotsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/snapshots`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range volumeSnapshotsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshots")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	if volumeSnapshotsOptions.Start != nil {
+		builder.AddQuery("start", fmt.Sprint(*volumeSnapshotsOptions.Start))
+	}
+	if volumeSnapshotsOptions.Limit != nil {
+		builder.AddQuery("limit", fmt.Sprint(*volumeSnapshotsOptions.Limit))
+	}
+	if volumeSnapshotsOptions.Name != nil {
+		builder.AddQuery("name", fmt.Sprint(*volumeSnapshotsOptions.Name))
+	}
+	if volumeSnapshotsOptions.SourceVolumeID != nil {
+		builder.AddQuery("source_volume.id", fmt.Sprint(*volumeSnapshotsOptions.SourceVolumeID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = sdsaas.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "volume_snapshots", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSnapshotCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// VolumeSnapshotCreate : Create a snapshot
+// This request creates a new snapshot from a snapshot prototype object.
+func (sdsaas *SdsaasV1) VolumeSnapshotCreate(volumeSnapshotCreateOptions *VolumeSnapshotCreateOptions) (result *Snapshot, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.VolumeSnapshotCreateWithContext(context.Background(), volumeSnapshotCreateOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// VolumeSnapshotCreateWithContext is an alternate form of the VolumeSnapshotCreate method which supports a Context parameter
+func (sdsaas *SdsaasV1) VolumeSnapshotCreateWithContext(ctx context.Context, volumeSnapshotCreateOptions *VolumeSnapshotCreateOptions) (result *Snapshot, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(volumeSnapshotCreateOptions, "volumeSnapshotCreateOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(volumeSnapshotCreateOptions, "volumeSnapshotCreateOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/snapshots`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range volumeSnapshotCreateOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotCreate")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	body := make(map[string]interface{})
+	if volumeSnapshotCreateOptions.SourceVolume != nil {
+		body["source_volume"] = volumeSnapshotCreateOptions.SourceVolume
+	}
+	if volumeSnapshotCreateOptions.Name != nil {
+		body["name"] = volumeSnapshotCreateOptions.Name
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = sdsaas.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "volume_snapshot_create", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSnapshot)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// VolumeSnapshotsDelete : Delete a filtered collection of snapshots
+// This request deletes snapshots that match the specified filter.
+func (sdsaas *SdsaasV1) VolumeSnapshotsDelete(volumeSnapshotsDeleteOptions *VolumeSnapshotsDeleteOptions) (response *core.DetailedResponse, err error) {
+	response, err = sdsaas.VolumeSnapshotsDeleteWithContext(context.Background(), volumeSnapshotsDeleteOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// VolumeSnapshotsDeleteWithContext is an alternate form of the VolumeSnapshotsDelete method which supports a Context parameter
+func (sdsaas *SdsaasV1) VolumeSnapshotsDeleteWithContext(ctx context.Context, volumeSnapshotsDeleteOptions *VolumeSnapshotsDeleteOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(volumeSnapshotsDeleteOptions, "volumeSnapshotsDeleteOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/snapshots`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range volumeSnapshotsDeleteOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotsDelete")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	if volumeSnapshotsDeleteOptions.SourceVolumeID != nil {
+		builder.AddQuery("source_volume.id", fmt.Sprint(*volumeSnapshotsDeleteOptions.SourceVolumeID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = sdsaas.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "volume_snapshots_delete", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// VolumeSnapshot : Retrieve a single snapshot
+// This request retrieves a single snapshot specified by the identifier in the URL.
+func (sdsaas *SdsaasV1) VolumeSnapshot(volumeSnapshotOptions *VolumeSnapshotOptions) (result *Snapshot, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.VolumeSnapshotWithContext(context.Background(), volumeSnapshotOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// VolumeSnapshotWithContext is an alternate form of the VolumeSnapshot method which supports a Context parameter
+func (sdsaas *SdsaasV1) VolumeSnapshotWithContext(ctx context.Context, volumeSnapshotOptions *VolumeSnapshotOptions) (result *Snapshot, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(volumeSnapshotOptions, "volumeSnapshotOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(volumeSnapshotOptions, "volumeSnapshotOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"snap_id": *volumeSnapshotOptions.SnapID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/snapshots/{snap_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range volumeSnapshotOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshot")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = sdsaas.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "volume_snapshot", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSnapshot)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// VolumeSnapshotUpdate : Update a snapshot
+// This request updates a snapshot with the information in a provided snapshot patch.
+func (sdsaas *SdsaasV1) VolumeSnapshotUpdate(volumeSnapshotUpdateOptions *VolumeSnapshotUpdateOptions) (result *Snapshot, response *core.DetailedResponse, err error) {
+	result, response, err = sdsaas.VolumeSnapshotUpdateWithContext(context.Background(), volumeSnapshotUpdateOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// VolumeSnapshotUpdateWithContext is an alternate form of the VolumeSnapshotUpdate method which supports a Context parameter
+func (sdsaas *SdsaasV1) VolumeSnapshotUpdateWithContext(ctx context.Context, volumeSnapshotUpdateOptions *VolumeSnapshotUpdateOptions) (result *Snapshot, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(volumeSnapshotUpdateOptions, "volumeSnapshotUpdateOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(volumeSnapshotUpdateOptions, "volumeSnapshotUpdateOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"snap_id": *volumeSnapshotUpdateOptions.SnapID,
+	}
+
+	builder := core.NewRequestBuilder(core.PATCH)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/snapshots/{snap_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range volumeSnapshotUpdateOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotUpdate")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
+
+	_, err = builder.SetBodyContentJSON(volumeSnapshotUpdateOptions.SnapshotPatch)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = sdsaas.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "volume_snapshot_update", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSnapshot)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// VolumeSnapshotDelete : Delete a single snapshot
+// This request deletes a snapshot by ID.
+func (sdsaas *SdsaasV1) VolumeSnapshotDelete(volumeSnapshotDeleteOptions *VolumeSnapshotDeleteOptions) (response *core.DetailedResponse, err error) {
+	response, err = sdsaas.VolumeSnapshotDeleteWithContext(context.Background(), volumeSnapshotDeleteOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// VolumeSnapshotDeleteWithContext is an alternate form of the VolumeSnapshotDelete method which supports a Context parameter
+func (sdsaas *SdsaasV1) VolumeSnapshotDeleteWithContext(ctx context.Context, volumeSnapshotDeleteOptions *VolumeSnapshotDeleteOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(volumeSnapshotDeleteOptions, "volumeSnapshotDeleteOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(volumeSnapshotDeleteOptions, "volumeSnapshotDeleteOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"snap_id": *volumeSnapshotDeleteOptions.SnapID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = sdsaas.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(sdsaas.Service.Options.URL, `/snapshots/{snap_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range volumeSnapshotDeleteOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotDelete")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = sdsaas.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "volume_snapshot_delete", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
 	}
 
 	return
@@ -1177,6 +1594,9 @@ func (sdsaas *SdsaasV1) HostCreateWithContext(ctx context.Context, hostCreateOpt
 	if hostCreateOptions.VolumeMappings != nil {
 		body["volume_mappings"] = hostCreateOptions.VolumeMappings
 	}
+	if hostCreateOptions.Psk != nil {
+		body["psk"] = hostCreateOptions.Psk
+	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
@@ -1645,7 +2065,7 @@ func (sdsaas *SdsaasV1) HostMappingWithContext(ctx context.Context, hostMappingO
 	}
 
 	pathParamsMap := map[string]string{
-		"host_id":           *hostMappingOptions.HostID,
+		"host_id": *hostMappingOptions.HostID,
 		"volume_mapping_id": *hostMappingOptions.VolumeMappingID,
 	}
 
@@ -1715,7 +2135,7 @@ func (sdsaas *SdsaasV1) HostMappingDeleteWithContext(ctx context.Context, hostMa
 	}
 
 	pathParamsMap := map[string]string{
-		"host_id":           *hostMappingDeleteOptions.HostID,
+		"host_id": *hostMappingDeleteOptions.HostID,
 		"volume_mapping_id": *hostMappingDeleteOptions.VolumeMappingID,
 	}
 
@@ -1970,7 +2390,7 @@ type CertificateUpdated struct {
 	Trace *string `json:"trace,omitempty"`
 
 	// An array of certificate error codes and their descriptions.
-	Errors []map[string]string `json:"errors,omitempty"`
+	Errors []map[string]string `json:"errors" validate:"required"`
 
 	// The boolean valid status of the certificate.
 	ValidCertificate *bool `json:"valid_certificate,omitempty"`
@@ -2070,7 +2490,7 @@ func (options *CredDeleteOptions) SetHeaders(param map[string]string) *CredDelet
 // CredentialsFound : The response object for credential GET operations.
 type CredentialsFound struct {
 	// Collection of access keys.
-	S3Credentials []string `json:"s3_credentials,omitempty"`
+	S3Credentials []string `json:"s3_credentials" validate:"required"`
 }
 
 // UnmarshalCredentialsFound unmarshals an instance of CredentialsFound from the specified map of raw messages.
@@ -2163,14 +2583,17 @@ type Host struct {
 	// The URL for this resource.
 	Href *string `json:"href" validate:"required"`
 
-	// Unique identifer of the host.
+	// Unique identifier of the resource.
 	ID *string `json:"id" validate:"required"`
 
-	// Unique name of the host.
+	// Unique name of the resource.
 	Name *string `json:"name" validate:"required"`
 
 	// The NQN (NVMe Qualified Name) as configured on the initiator (compute/host) accessing the storage.
 	Nqn *string `json:"nqn" validate:"required"`
+
+	// If the PSK is specified while creating the host then the value will be true.
+	PskEnabled *bool `json:"psk_enabled,omitempty"`
 
 	// The host-to-volume map.
 	VolumeMappings []VolumeMapping `json:"volume_mappings" validate:"required"`
@@ -2202,6 +2625,11 @@ func UnmarshalHost(m map[string]json.RawMessage, result interface{}) (err error)
 	err = core.UnmarshalPrimitive(m, "nqn", &obj.Nqn)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "nqn-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "psk_enabled", &obj.PskEnabled)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "psk_enabled-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "volume_mappings", &obj.VolumeMappings, UnmarshalVolumeMapping)
@@ -2276,6 +2704,10 @@ type HostCreateOptions struct {
 	// List of volume IDs to be mapped to the host.
 	VolumeMappings []VolumeMappingPrototype `json:"volume_mappings,omitempty"`
 
+	// Transport Layer Security pre-shared key ciphersuites (TLS-PSK) is a set of cryptographic protocols that provide
+	// secure communication based on pre-shared keys (PSKs).
+	Psk *string `json:"psk,omitempty"`
+
 	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
@@ -2302,6 +2734,12 @@ func (_options *HostCreateOptions) SetName(name string) *HostCreateOptions {
 // SetVolumeMappings : Allow user to set VolumeMappings
 func (_options *HostCreateOptions) SetVolumeMappings(volumeMappings []VolumeMappingPrototype) *HostCreateOptions {
 	_options.VolumeMappings = volumeMappings
+	return _options
+}
+
+// SetPsk : Allow user to set Psk
+func (_options *HostCreateOptions) SetPsk(psk string) *HostCreateOptions {
+	_options.Psk = core.StringPtr(psk)
 	return _options
 }
 
@@ -2420,7 +2858,7 @@ type HostMappingDeleteOptions struct {
 // NewHostMappingDeleteOptions : Instantiate HostMappingDeleteOptions
 func (*SdsaasV1) NewHostMappingDeleteOptions(hostID string, volumeMappingID string) *HostMappingDeleteOptions {
 	return &HostMappingDeleteOptions{
-		HostID:          core.StringPtr(hostID),
+		HostID: core.StringPtr(hostID),
 		VolumeMappingID: core.StringPtr(volumeMappingID),
 	}
 }
@@ -2458,7 +2896,7 @@ type HostMappingOptions struct {
 // NewHostMappingOptions : Instantiate HostMappingOptions
 func (*SdsaasV1) NewHostMappingOptions(hostID string, volumeMappingID string) *HostMappingOptions {
 	return &HostMappingOptions{
-		HostID:          core.StringPtr(hostID),
+		HostID: core.StringPtr(hostID),
 		VolumeMappingID: core.StringPtr(volumeMappingID),
 	}
 }
@@ -2539,8 +2977,12 @@ func (options *HostOptions) SetHeaders(param map[string]string) *HostOptions {
 
 // HostPatch : The host PATCH request body.
 type HostPatch struct {
-	// Unique name of the host.
+	// Unique name of the resource.
 	Name *string `json:"name,omitempty"`
+
+	// Transport Layer Security pre-shared key ciphersuites (TLS-PSK) is a set of cryptographic protocols that provide
+	// secure communication based on pre-shared keys (PSKs).
+	Psk *string `json:"psk,omitempty"`
 }
 
 // UnmarshalHostPatch unmarshals an instance of HostPatch from the specified map of raw messages.
@@ -2549,6 +2991,11 @@ func UnmarshalHostPatch(m map[string]json.RawMessage, result interface{}) (err e
 	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "psk", &obj.Psk)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "psk-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -2561,16 +3008,19 @@ func (hostPatch *HostPatch) AsPatch() (_patch map[string]interface{}, err error)
 	if !core.IsNil(hostPatch.Name) {
 		_patch["name"] = hostPatch.Name
 	}
+	if !core.IsNil(hostPatch.Psk) {
+		_patch["psk"] = hostPatch.Psk
+	}
 
 	return
 }
 
 // HostReference : Host mapping schema.
 type HostReference struct {
-	// Unique identifer of the host.
+	// Unique identifier of the resource.
 	ID *string `json:"id" validate:"required"`
 
-	// Unique name of the host.
+	// Unique name of the resource.
 	Name *string `json:"name" validate:"required"`
 
 	// The NQN (NVMe Qualified Name) as configured on the initiator (compute/host) accessing the storage.
@@ -2715,6 +3165,291 @@ func UnmarshalPageLink(m map[string]json.RawMessage, result interface{}) (err er
 	return
 }
 
+// Snapshot : The snapshot object.
+type Snapshot struct {
+	// Unique identifier of the resource.
+	ID *string `json:"id" validate:"required"`
+
+	// The URL for this resource.
+	Href *string `json:"href" validate:"required"`
+
+	// Unique name of the resource.
+	Name *string `json:"name" validate:"required"`
+
+	// The date and time when the resource was created.
+	CreatedAt *strfmt.DateTime `json:"created_at" validate:"required"`
+
+	// The type of this resource.
+	ResourceType *string `json:"resource_type" validate:"required"`
+
+	// The lifecycle state of this snapshot.
+	LifecycleState *string `json:"lifecycle_state" validate:"required"`
+
+	// The size of the snapshot (in gigabytes).
+	Size *int64 `json:"size" validate:"required"`
+
+	// The capacity of the source volume.
+	MinimumCapacity *int64 `json:"minimum_capacity" validate:"required"`
+
+	// Boolean value of snapshot can be deletable or not.
+	Deletable *bool `json:"deletable" validate:"required"`
+
+	// The source volume this snapshot was created from (may be deleted).
+	SourceVolume *SourceVolume `json:"source_volume" validate:"required"`
+}
+
+// UnmarshalSnapshot unmarshals an instance of Snapshot from the specified map of raw messages.
+func UnmarshalSnapshot(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Snapshot)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "href", &obj.Href)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "href-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "created_at", &obj.CreatedAt)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "created_at-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "resource_type", &obj.ResourceType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "lifecycle_state", &obj.LifecycleState)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "lifecycle_state-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "size", &obj.Size)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "size-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "minimum_capacity", &obj.MinimumCapacity)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "minimum_capacity-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "deletable", &obj.Deletable)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "deletable-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "source_volume", &obj.SourceVolume, UnmarshalSourceVolume)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "source_volume-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SnapshotCollection : A page of snapshots.
+type SnapshotCollection struct {
+	// Collection of snapshots.
+	Snapshots []Snapshot `json:"snapshots" validate:"required"`
+
+	// A link to the first page of resources.
+	First *PageLink `json:"first" validate:"required"`
+
+	// The maximum number of resources that can be returned by the request.
+	Limit *int64 `json:"limit" validate:"required"`
+
+	// A link to the next page of resources. This property is present for all pages except the last page.
+	Next *PageLink `json:"next,omitempty"`
+
+	// The total number of resources across all pages.
+	TotalCount *int64 `json:"total_count" validate:"required"`
+}
+
+// UnmarshalSnapshotCollection unmarshals an instance of SnapshotCollection from the specified map of raw messages.
+func UnmarshalSnapshotCollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SnapshotCollection)
+	err = core.UnmarshalModel(m, "snapshots", &obj.Snapshots, UnmarshalSnapshot)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "snapshots-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "first", &obj.First, UnmarshalPageLink)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "first-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "limit", &obj.Limit)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "limit-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "next", &obj.Next, UnmarshalPageLink)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "next-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_count", &obj.TotalCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_count-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// Retrieve the value to be passed to a request to access the next page of results
+func (resp *SnapshotCollection) GetNextStart() (*string, error) {
+	if core.IsNil(resp.Next) {
+		return nil, nil
+	}
+	start, err := core.GetQueryParam(resp.Next.Href, "start")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "read-query-param-error", common.GetComponentInfo())
+		return nil, err
+	} else if start == nil {
+		return nil, nil
+	}
+	return start, nil
+}
+
+// SnapshotPatch : The snapshot patch.
+type SnapshotPatch struct {
+	// Unique name of the resource.
+	Name *string `json:"name,omitempty"`
+}
+
+// UnmarshalSnapshotPatch unmarshals an instance of SnapshotPatch from the specified map of raw messages.
+func UnmarshalSnapshotPatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SnapshotPatch)
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the SnapshotPatch
+func (snapshotPatch *SnapshotPatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(snapshotPatch.Name) {
+		_patch["name"] = snapshotPatch.Name
+	}
+
+	return
+}
+
+// SourceSnapshot : The source snapshot this volume was created from.
+type SourceSnapshot struct {
+	// Unique identifier of the resource.
+	ID *string `json:"id" validate:"required"`
+}
+
+// NewSourceSnapshot : Instantiate SourceSnapshot (Generic Model Constructor)
+func (*SdsaasV1) NewSourceSnapshot(id string) (_model *SourceSnapshot, err error) {
+	_model = &SourceSnapshot{
+		ID: core.StringPtr(id),
+	}
+	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
+	return
+}
+
+// UnmarshalSourceSnapshot unmarshals an instance of SourceSnapshot from the specified map of raw messages.
+func UnmarshalSourceSnapshot(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SourceSnapshot)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SourceVolume : The source volume this snapshot was created from (may be deleted).
+type SourceVolume struct {
+	// Unique identifier of the resource.
+	ID *string `json:"id" validate:"required"`
+
+	// The URL for this resource.
+	Href *string `json:"href,omitempty"`
+
+	// Unique name of the resource.
+	Name *string `json:"name,omitempty"`
+
+	// The type of this resource.
+	ResourceType *string `json:"resource_type,omitempty"`
+}
+
+// UnmarshalSourceVolume unmarshals an instance of SourceVolume from the specified map of raw messages.
+func UnmarshalSourceVolume(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SourceVolume)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "href", &obj.Href)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "href-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "resource_type", &obj.ResourceType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_type-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SourceVolumePrototype : The source volume this snapshot was created from (may be deleted).
+type SourceVolumePrototype struct {
+	// Unique identifier of the resource.
+	ID *string `json:"id" validate:"required"`
+}
+
+// NewSourceVolumePrototype : Instantiate SourceVolumePrototype (Generic Model Constructor)
+func (*SdsaasV1) NewSourceVolumePrototype(id string) (_model *SourceVolumePrototype, err error) {
+	_model = &SourceVolumePrototype{
+		ID: core.StringPtr(id),
+	}
+	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
+	return
+}
+
+// UnmarshalSourceVolumePrototype unmarshals an instance of SourceVolumePrototype from the specified map of raw messages.
+func UnmarshalSourceVolumePrototype(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SourceVolumePrototype)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // StorageIdentifier : Storage network and ID information associated with a volume/host mapping.
 type StorageIdentifier struct {
 	// The NVMe target subsystem NQN (NVMe Qualified Name) that can be used for doing NVMe connect by the initiator.
@@ -2777,7 +3512,7 @@ type Volume struct {
 	// Iops The maximum I/O operations per second (IOPS) for this volume.
 	Iops *int64 `json:"iops" validate:"required"`
 
-	// Unique name of the host.
+	// Unique name of the resource.
 	Name *string `json:"name" validate:"required"`
 
 	// The resource type of the volume.
@@ -2786,13 +3521,19 @@ type Volume struct {
 	// The status of the volume resource. The enumerated values for this property will expand in the future. When
 	// processing this property, check for and log unknown values. Optionally halt processing and surface the error, or
 	// bypass the resource on which the unexpected property value was encountered.
-	Status *string `json:"status,omitempty"`
+	Status *string `json:"status" validate:"required"`
 
 	// The reasons for the current status (if any).
-	StatusReasons []VolumeStatusReason `json:"status_reasons,omitempty"`
+	StatusReasons []VolumeStatusReason `json:"status_reasons" validate:"required"`
 
 	// List of volume mappings for this volume.
 	VolumeMappings []VolumeMapping `json:"volume_mappings" validate:"required"`
+
+	// Total number snapshots created from this volume.
+	SnapshotCount *int64 `json:"snapshot_count,omitempty"`
+
+	// The source snapshot this volume was created from.
+	SourceSnapshot *SourceSnapshot `json:"source_snapshot" validate:"required"`
 }
 
 // Constants associated with the Volume.Status property.
@@ -2800,10 +3541,10 @@ type Volume struct {
 // this property, check for and log unknown values. Optionally halt processing and surface the error, or bypass the
 // resource on which the unexpected property value was encountered.
 const (
-	VolumeStatusAvailableConst       = "available"
-	VolumeStatusPendingConst         = "pending"
+	VolumeStatusAvailableConst = "available"
+	VolumeStatusPendingConst = "pending"
 	VolumeStatusPendingDeletionConst = "pending_deletion"
-	VolumeStatusUpdatingConst        = "updating"
+	VolumeStatusUpdatingConst = "updating"
 )
 
 // UnmarshalVolume unmarshals an instance of Volume from the specified map of raw messages.
@@ -2864,6 +3605,16 @@ func UnmarshalVolume(m map[string]json.RawMessage, result interface{}) (err erro
 		err = core.SDKErrorf(err, "", "volume_mappings-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalPrimitive(m, "snapshot_count", &obj.SnapshotCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "snapshot_count-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "source_snapshot", &obj.SourceSnapshot, UnmarshalSourceSnapshot)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "source_snapshot-error", common.GetComponentInfo())
+		return
+	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
@@ -2883,7 +3634,7 @@ type VolumeCollection struct {
 	TotalCount *int64 `json:"total_count" validate:"required"`
 
 	// List of volumes retrieved.
-	Volumes []Volume `json:"volumes,omitempty"`
+	Volumes []Volume `json:"volumes" validate:"required"`
 }
 
 // UnmarshalVolumeCollection unmarshals an instance of VolumeCollection from the specified map of raw messages.
@@ -2918,6 +3669,21 @@ func UnmarshalVolumeCollection(m map[string]json.RawMessage, result interface{})
 	return
 }
 
+// Retrieve the value to be passed to a request to access the next page of results
+func (resp *VolumeCollection) GetNextStart() (*string, error) {
+	if core.IsNil(resp.Next) {
+		return nil, nil
+	}
+	start, err := core.GetQueryParam(resp.Next.Href, "start")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "read-query-param-error", common.GetComponentInfo())
+		return nil, err
+	} else if start == nil {
+		return nil, nil
+	}
+	return start, nil
+}
+
 // VolumeCreateOptions : The VolumeCreate options.
 type VolumeCreateOptions struct {
 	// The capacity to use for the volume (in gigabytes). The specified value must be within the capacity range of the
@@ -2927,6 +3693,9 @@ type VolumeCreateOptions struct {
 	// The name for this volume. The name must not be used by another volume. If unspecified, the name will be a hyphenated
 	// list of randomly-selected words.
 	Name *string `json:"name,omitempty"`
+
+	// The source snapshot this volume was created from.
+	SourceSnapshot *SourceSnapshot `json:"source_snapshot,omitempty"`
 
 	// Allows users to set headers on API requests.
 	Headers map[string]string
@@ -2948,6 +3717,12 @@ func (_options *VolumeCreateOptions) SetCapacity(capacity int64) *VolumeCreateOp
 // SetName : Allow user to set Name
 func (_options *VolumeCreateOptions) SetName(name string) *VolumeCreateOptions {
 	_options.Name = core.StringPtr(name)
+	return _options
+}
+
+// SetSourceSnapshot : Allow user to set SourceSnapshot
+func (_options *VolumeCreateOptions) SetSourceSnapshot(sourceSnapshot *SourceSnapshot) *VolumeCreateOptions {
+	_options.SourceSnapshot = sourceSnapshot
 	return _options
 }
 
@@ -2987,7 +3762,7 @@ func (options *VolumeDeleteOptions) SetHeaders(param map[string]string) *VolumeD
 
 // VolumeIdentity : Volume identifier.
 type VolumeIdentity struct {
-	// Unique identifer of the host.
+	// Unique identifier of the resource.
 	ID *string `json:"id" validate:"required"`
 }
 
@@ -3044,7 +3819,7 @@ type VolumeMapping struct {
 	Namespace *Namespace `json:"namespace,omitempty"`
 
 	// List of NVMe gateways.
-	Gateways []Gateway `json:"gateways,omitempty"`
+	Gateways []Gateway `json:"gateways" validate:"required"`
 }
 
 // Constants associated with the VolumeMapping.Status property.
@@ -3052,9 +3827,9 @@ type VolumeMapping struct {
 // this property, check for and log unknown values. Optionally halt processing and surface the error, or bypass the
 // resource on which the unexpected property value was encountered.
 const (
-	VolumeMappingStatusMappedConst           = "mapped"
-	VolumeMappingStatusMappingFailedConst    = "mapping_failed"
-	VolumeMappingStatusPendingConst          = "pending"
+	VolumeMappingStatusMappedConst = "mapped"
+	VolumeMappingStatusMappingFailedConst = "mapping_failed"
+	VolumeMappingStatusPendingConst = "pending"
 	VolumeMappingStatusPendingUnmappingConst = "pending_unmapping"
 )
 
@@ -3260,10 +4035,10 @@ func (volumePatch *VolumePatch) AsPatch() (_patch map[string]interface{}, err er
 
 // VolumeReference : The volume reference.
 type VolumeReference struct {
-	// Unique identifer of the host.
+	// Unique identifier of the resource.
 	ID *string `json:"id" validate:"required"`
 
-	// Unique name of the host.
+	// Unique name of the resource.
 	Name *string `json:"name" validate:"required"`
 }
 
@@ -3282,6 +4057,216 @@ func UnmarshalVolumeReference(m map[string]json.RawMessage, result interface{}) 
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
+}
+
+// VolumeSnapshotCreateOptions : The VolumeSnapshotCreate options.
+type VolumeSnapshotCreateOptions struct {
+	// The source volume this snapshot was created from (may be deleted).
+	SourceVolume *SourceVolumePrototype `json:"source_volume" validate:"required"`
+
+	// The unique name for this snapshot. If unspecified, the name will be a hyphenated list of randomly-selected words.
+	Name *string `json:"name,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewVolumeSnapshotCreateOptions : Instantiate VolumeSnapshotCreateOptions
+func (*SdsaasV1) NewVolumeSnapshotCreateOptions(sourceVolume *SourceVolumePrototype) *VolumeSnapshotCreateOptions {
+	return &VolumeSnapshotCreateOptions{
+		SourceVolume: sourceVolume,
+	}
+}
+
+// SetSourceVolume : Allow user to set SourceVolume
+func (_options *VolumeSnapshotCreateOptions) SetSourceVolume(sourceVolume *SourceVolumePrototype) *VolumeSnapshotCreateOptions {
+	_options.SourceVolume = sourceVolume
+	return _options
+}
+
+// SetName : Allow user to set Name
+func (_options *VolumeSnapshotCreateOptions) SetName(name string) *VolumeSnapshotCreateOptions {
+	_options.Name = core.StringPtr(name)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *VolumeSnapshotCreateOptions) SetHeaders(param map[string]string) *VolumeSnapshotCreateOptions {
+	options.Headers = param
+	return options
+}
+
+// VolumeSnapshotDeleteOptions : The VolumeSnapshotDelete options.
+type VolumeSnapshotDeleteOptions struct {
+	// The snapshot identifier.
+	SnapID *string `json:"snap_id" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewVolumeSnapshotDeleteOptions : Instantiate VolumeSnapshotDeleteOptions
+func (*SdsaasV1) NewVolumeSnapshotDeleteOptions(snapID string) *VolumeSnapshotDeleteOptions {
+	return &VolumeSnapshotDeleteOptions{
+		SnapID: core.StringPtr(snapID),
+	}
+}
+
+// SetSnapID : Allow user to set SnapID
+func (_options *VolumeSnapshotDeleteOptions) SetSnapID(snapID string) *VolumeSnapshotDeleteOptions {
+	_options.SnapID = core.StringPtr(snapID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *VolumeSnapshotDeleteOptions) SetHeaders(param map[string]string) *VolumeSnapshotDeleteOptions {
+	options.Headers = param
+	return options
+}
+
+// VolumeSnapshotOptions : The VolumeSnapshot options.
+type VolumeSnapshotOptions struct {
+	// The snapshot identifier.
+	SnapID *string `json:"snap_id" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewVolumeSnapshotOptions : Instantiate VolumeSnapshotOptions
+func (*SdsaasV1) NewVolumeSnapshotOptions(snapID string) *VolumeSnapshotOptions {
+	return &VolumeSnapshotOptions{
+		SnapID: core.StringPtr(snapID),
+	}
+}
+
+// SetSnapID : Allow user to set SnapID
+func (_options *VolumeSnapshotOptions) SetSnapID(snapID string) *VolumeSnapshotOptions {
+	_options.SnapID = core.StringPtr(snapID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *VolumeSnapshotOptions) SetHeaders(param map[string]string) *VolumeSnapshotOptions {
+	options.Headers = param
+	return options
+}
+
+// VolumeSnapshotUpdateOptions : The VolumeSnapshotUpdate options.
+type VolumeSnapshotUpdateOptions struct {
+	// The snapshot identifier.
+	SnapID *string `json:"snap_id" validate:"required,ne="`
+
+	// JSON Merge-Patch content for volume_snapshot_update.
+	SnapshotPatch map[string]interface{} `json:"Snapshot_patch" validate:"required"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewVolumeSnapshotUpdateOptions : Instantiate VolumeSnapshotUpdateOptions
+func (*SdsaasV1) NewVolumeSnapshotUpdateOptions(snapID string, snapshotPatch map[string]interface{}) *VolumeSnapshotUpdateOptions {
+	return &VolumeSnapshotUpdateOptions{
+		SnapID: core.StringPtr(snapID),
+		SnapshotPatch: snapshotPatch,
+	}
+}
+
+// SetSnapID : Allow user to set SnapID
+func (_options *VolumeSnapshotUpdateOptions) SetSnapID(snapID string) *VolumeSnapshotUpdateOptions {
+	_options.SnapID = core.StringPtr(snapID)
+	return _options
+}
+
+// SetSnapshotPatch : Allow user to set SnapshotPatch
+func (_options *VolumeSnapshotUpdateOptions) SetSnapshotPatch(snapshotPatch map[string]interface{}) *VolumeSnapshotUpdateOptions {
+	_options.SnapshotPatch = snapshotPatch
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *VolumeSnapshotUpdateOptions) SetHeaders(param map[string]string) *VolumeSnapshotUpdateOptions {
+	options.Headers = param
+	return options
+}
+
+// VolumeSnapshotsDeleteOptions : The VolumeSnapshotsDelete options.
+type VolumeSnapshotsDeleteOptions struct {
+	// Filters the collection to resources with a source_volume.id property matching the specified identifier.
+	SourceVolumeID *string `json:"source_volume.id,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewVolumeSnapshotsDeleteOptions : Instantiate VolumeSnapshotsDeleteOptions
+func (*SdsaasV1) NewVolumeSnapshotsDeleteOptions() *VolumeSnapshotsDeleteOptions {
+	return &VolumeSnapshotsDeleteOptions{}
+}
+
+// SetSourceVolumeID : Allow user to set SourceVolumeID
+func (_options *VolumeSnapshotsDeleteOptions) SetSourceVolumeID(sourceVolumeID string) *VolumeSnapshotsDeleteOptions {
+	_options.SourceVolumeID = core.StringPtr(sourceVolumeID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *VolumeSnapshotsDeleteOptions) SetHeaders(param map[string]string) *VolumeSnapshotsDeleteOptions {
+	options.Headers = param
+	return options
+}
+
+// VolumeSnapshotsOptions : The VolumeSnapshots options.
+type VolumeSnapshotsOptions struct {
+	// A resource ID determining what resource to start the page on.
+	Start *string `json:"start,omitempty"`
+
+	// The number of resources to return on a page.
+	Limit *int64 `json:"limit,omitempty"`
+
+	// Filters the collection of resources by name.
+	Name *string `json:"name,omitempty"`
+
+	// Filters the collection to resources with a source_volume.id property matching the specified identifier.
+	SourceVolumeID *string `json:"source_volume.id,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewVolumeSnapshotsOptions : Instantiate VolumeSnapshotsOptions
+func (*SdsaasV1) NewVolumeSnapshotsOptions() *VolumeSnapshotsOptions {
+	return &VolumeSnapshotsOptions{}
+}
+
+// SetStart : Allow user to set Start
+func (_options *VolumeSnapshotsOptions) SetStart(start string) *VolumeSnapshotsOptions {
+	_options.Start = core.StringPtr(start)
+	return _options
+}
+
+// SetLimit : Allow user to set Limit
+func (_options *VolumeSnapshotsOptions) SetLimit(limit int64) *VolumeSnapshotsOptions {
+	_options.Limit = core.Int64Ptr(limit)
+	return _options
+}
+
+// SetName : Allow user to set Name
+func (_options *VolumeSnapshotsOptions) SetName(name string) *VolumeSnapshotsOptions {
+	_options.Name = core.StringPtr(name)
+	return _options
+}
+
+// SetSourceVolumeID : Allow user to set SourceVolumeID
+func (_options *VolumeSnapshotsOptions) SetSourceVolumeID(sourceVolumeID string) *VolumeSnapshotsOptions {
+	_options.SourceVolumeID = core.StringPtr(sourceVolumeID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *VolumeSnapshotsOptions) SetHeaders(param map[string]string) *VolumeSnapshotsOptions {
+	options.Headers = param
+	return options
 }
 
 // VolumeStatusReason : The reason for the current status (if any).
@@ -3363,6 +4348,9 @@ type VolumesOptions struct {
 	// Filters the collection of resources by name.
 	Name *string `json:"name,omitempty"`
 
+	// A resource ID determining what resource to start the page on.
+	Start *string `json:"start,omitempty"`
+
 	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
@@ -3384,8 +4372,202 @@ func (_options *VolumesOptions) SetName(name string) *VolumesOptions {
 	return _options
 }
 
+// SetStart : Allow user to set Start
+func (_options *VolumesOptions) SetStart(start string) *VolumesOptions {
+	_options.Start = core.StringPtr(start)
+	return _options
+}
+
 // SetHeaders : Allow user to set Headers
 func (options *VolumesOptions) SetHeaders(param map[string]string) *VolumesOptions {
 	options.Headers = param
 	return options
+}
+
+//
+// VolumesPager can be used to simplify the use of the "Volumes" method.
+//
+type VolumesPager struct {
+	hasNext bool
+	options *VolumesOptions
+	client  *SdsaasV1
+	pageContext struct {
+		next *string
+	}
+}
+
+// NewVolumesPager returns a new VolumesPager instance.
+func (sdsaas *SdsaasV1) NewVolumesPager(options *VolumesOptions) (pager *VolumesPager, err error) {
+	if options.Start != nil && *options.Start != "" {
+		err = core.SDKErrorf(nil, "the 'options.Start' field should not be set", "no-query-setting", common.GetComponentInfo())
+		return
+	}
+
+	var optionsCopy VolumesOptions = *options
+	pager = &VolumesPager{
+		hasNext: true,
+		options: &optionsCopy,
+		client:  sdsaas,
+	}
+	return
+}
+
+// HasNext returns true if there are potentially more results to be retrieved.
+func (pager *VolumesPager) HasNext() bool {
+	return pager.hasNext
+}
+
+// GetNextWithContext returns the next page of results using the specified Context.
+func (pager *VolumesPager) GetNextWithContext(ctx context.Context) (page []Volume, err error) {
+	if !pager.HasNext() {
+		return nil, fmt.Errorf("no more results available")
+	}
+
+	pager.options.Start = pager.pageContext.next
+
+	result, _, err := pager.client.VolumesWithContext(ctx, pager.options)
+	if err != nil {
+		err = core.RepurposeSDKProblem(err, "error-getting-next-page")
+		return
+	}
+
+	var next *string
+	if result.Next != nil {
+		var start *string
+		start, err = core.GetQueryParam(result.Next.Href, "start")
+		if err != nil {
+			errMsg := fmt.Sprintf("error retrieving 'start' query parameter from URL '%s': %s", *result.Next.Href, err.Error())
+			err = core.SDKErrorf(err, errMsg, "get-query-error", common.GetComponentInfo())
+			return
+		}
+		next = start
+	}
+	pager.pageContext.next = next
+	pager.hasNext = (pager.pageContext.next != nil)
+	page = result.Volumes
+
+	return
+}
+
+// GetAllWithContext returns all results by invoking GetNextWithContext() repeatedly
+// until all pages of results have been retrieved.
+func (pager *VolumesPager) GetAllWithContext(ctx context.Context) (allItems []Volume, err error) {
+	for pager.HasNext() {
+		var nextPage []Volume
+		nextPage, err = pager.GetNextWithContext(ctx)
+		if err != nil {
+			err = core.RepurposeSDKProblem(err, "error-getting-next-page")
+			return
+		}
+		allItems = append(allItems, nextPage...)
+	}
+	return
+}
+
+// GetNext invokes GetNextWithContext() using context.Background() as the Context parameter.
+func (pager *VolumesPager) GetNext() (page []Volume, err error) {
+	page, err = pager.GetNextWithContext(context.Background())
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetAll invokes GetAllWithContext() using context.Background() as the Context parameter.
+func (pager *VolumesPager) GetAll() (allItems []Volume, err error) {
+	allItems, err = pager.GetAllWithContext(context.Background())
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+//
+// VolumeSnapshotsPager can be used to simplify the use of the "VolumeSnapshots" method.
+//
+type VolumeSnapshotsPager struct {
+	hasNext bool
+	options *VolumeSnapshotsOptions
+	client  *SdsaasV1
+	pageContext struct {
+		next *string
+	}
+}
+
+// NewVolumeSnapshotsPager returns a new VolumeSnapshotsPager instance.
+func (sdsaas *SdsaasV1) NewVolumeSnapshotsPager(options *VolumeSnapshotsOptions) (pager *VolumeSnapshotsPager, err error) {
+	if options.Start != nil && *options.Start != "" {
+		err = core.SDKErrorf(nil, "the 'options.Start' field should not be set", "no-query-setting", common.GetComponentInfo())
+		return
+	}
+
+	var optionsCopy VolumeSnapshotsOptions = *options
+	pager = &VolumeSnapshotsPager{
+		hasNext: true,
+		options: &optionsCopy,
+		client:  sdsaas,
+	}
+	return
+}
+
+// HasNext returns true if there are potentially more results to be retrieved.
+func (pager *VolumeSnapshotsPager) HasNext() bool {
+	return pager.hasNext
+}
+
+// GetNextWithContext returns the next page of results using the specified Context.
+func (pager *VolumeSnapshotsPager) GetNextWithContext(ctx context.Context) (page []Snapshot, err error) {
+	if !pager.HasNext() {
+		return nil, fmt.Errorf("no more results available")
+	}
+
+	pager.options.Start = pager.pageContext.next
+
+	result, _, err := pager.client.VolumeSnapshotsWithContext(ctx, pager.options)
+	if err != nil {
+		err = core.RepurposeSDKProblem(err, "error-getting-next-page")
+		return
+	}
+
+	var next *string
+	if result.Next != nil {
+		var start *string
+		start, err = core.GetQueryParam(result.Next.Href, "start")
+		if err != nil {
+			errMsg := fmt.Sprintf("error retrieving 'start' query parameter from URL '%s': %s", *result.Next.Href, err.Error())
+			err = core.SDKErrorf(err, errMsg, "get-query-error", common.GetComponentInfo())
+			return
+		}
+		next = start
+	}
+	pager.pageContext.next = next
+	pager.hasNext = (pager.pageContext.next != nil)
+	page = result.Snapshots
+
+	return
+}
+
+// GetAllWithContext returns all results by invoking GetNextWithContext() repeatedly
+// until all pages of results have been retrieved.
+func (pager *VolumeSnapshotsPager) GetAllWithContext(ctx context.Context) (allItems []Snapshot, err error) {
+	for pager.HasNext() {
+		var nextPage []Snapshot
+		nextPage, err = pager.GetNextWithContext(ctx)
+		if err != nil {
+			err = core.RepurposeSDKProblem(err, "error-getting-next-page")
+			return
+		}
+		allItems = append(allItems, nextPage...)
+	}
+	return
+}
+
+// GetNext invokes GetNextWithContext() using context.Background() as the Context parameter.
+func (pager *VolumeSnapshotsPager) GetNext() (page []Snapshot, err error) {
+	page, err = pager.GetNextWithContext(context.Background())
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetAll invokes GetAllWithContext() using context.Background() as the Context parameter.
+func (pager *VolumeSnapshotsPager) GetAll() (allItems []Snapshot, err error) {
+	allItems, err = pager.GetAllWithContext(context.Background())
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
