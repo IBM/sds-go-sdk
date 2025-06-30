@@ -25,9 +25,9 @@ import (
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
+	"github.com/IBM/sds-go-sdk/sdsaasv1"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.ibm.com/SDSaaS/sds-go-sdk/sdsaasv1"
 )
 
 // This file provides an example of how to use the sdsaas service.

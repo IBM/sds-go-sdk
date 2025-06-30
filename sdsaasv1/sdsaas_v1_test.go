@@ -29,10 +29,10 @@ import (
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
+	"github.com/IBM/sds-go-sdk/sdsaasv1"
 	"github.com/go-openapi/strfmt"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.ibm.com/SDSaaS/sds-go-sdk/sdsaasv1"
 )
 
 var _ = Describe(`SdsaasV1`, func() {
@@ -4778,7 +4778,6 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
-				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -4853,7 +4852,6 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
-				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -4936,7 +4934,6 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
-				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -4964,7 +4961,6 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
-				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -5013,7 +5009,6 @@ var _ = Describe(`SdsaasV1`, func() {
 				// Construct an instance of the HostPatch model
 				hostPatchModel := new(sdsaasv1.HostPatch)
 				hostPatchModel.Name = core.StringPtr("testString")
-				hostPatchModel.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 				hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -6332,7 +6327,6 @@ var _ = Describe(`SdsaasV1`, func() {
 			// Construct an instance of the model.
 			model := new(sdsaasv1.HostPatch)
 			model.Name = core.StringPtr("testString")
-			model.Psk = core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:")
 
 			b, err := json.Marshal(model)
 			Expect(err).To(BeNil())

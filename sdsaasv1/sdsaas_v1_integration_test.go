@@ -25,9 +25,9 @@ import (
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
+	"github.com/IBM/sds-go-sdk/sdsaasv1"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.ibm.com/SDSaaS/sds-go-sdk/sdsaasv1"
 )
 
 /**
@@ -636,7 +636,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
 
-			time.Sleep(10 * time.Second)
+			time.Sleep(40 * time.Second)
 		})
 	})
 
@@ -670,7 +670,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
 
-			time.Sleep(5 * time.Second) // Wait for the snapshot to delete before deleting the volume
+			time.Sleep(10 * time.Second) // Wait for the snapshot to delete before deleting the volume
 		})
 	})
 
