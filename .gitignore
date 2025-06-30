@@ -22,5 +22,4 @@ coverage.txt
 cover.html
 
 # files produced by "npm install" commands during build
-package-lock.json
 node_modules/

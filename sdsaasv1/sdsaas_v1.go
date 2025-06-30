@@ -15,7 +15,7 @@
  */
 
 /*
- * IBM OpenAPI SDK Code Generator Version: 3.104.0-b4a47c49-20250418-184351
+ * IBM OpenAPI SDK Code Generator Version: 3.105.1-067d600b-20250616-154447
  */
 
 // Package sdsaasv1 : Operations and models for the SdsaasV1 service
@@ -31,8 +31,8 @@ import (
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
+	common "github.com/IBM/sds-go-sdk/common"
 	"github.com/go-openapi/strfmt"
-	common "github.ibm.com/SDSaaS/sds-go-sdk/common"
 )
 
 // SdsaasV1 : OpenAPI definition for SDSaaS
@@ -203,12 +203,12 @@ func (sdsaas *SdsaasV1) VolumesWithContext(ctx context.Context, volumesOptions *
 		return
 	}
 
-	for headerName, headerValue := range volumesOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Volumes")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Volumes")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumesOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -278,12 +278,12 @@ func (sdsaas *SdsaasV1) VolumeCreateWithContext(ctx context.Context, volumeCreat
 		return
 	}
 
-	for headerName, headerValue := range volumeCreateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeCreate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeCreate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeCreateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -364,12 +364,12 @@ func (sdsaas *SdsaasV1) VolumeWithContext(ctx context.Context, volumeOptions *Vo
 		return
 	}
 
-	for headerName, headerValue := range volumeOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Volume")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Volume")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -433,12 +433,12 @@ func (sdsaas *SdsaasV1) VolumeDeleteWithContext(ctx context.Context, volumeDelet
 		return
 	}
 
-	for headerName, headerValue := range volumeDeleteOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeDelete")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeDelete")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeDeleteOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
@@ -492,12 +492,12 @@ func (sdsaas *SdsaasV1) VolumeUpdateWithContext(ctx context.Context, volumeUpdat
 		return
 	}
 
-	for headerName, headerValue := range volumeUpdateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeUpdate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeUpdate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeUpdateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -562,12 +562,12 @@ func (sdsaas *SdsaasV1) VolumeSnapshotsWithContext(ctx context.Context, volumeSn
 		return
 	}
 
-	for headerName, headerValue := range volumeSnapshotsOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshots")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshots")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeSnapshotsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -640,12 +640,12 @@ func (sdsaas *SdsaasV1) VolumeSnapshotCreateWithContext(ctx context.Context, vol
 		return
 	}
 
-	for headerName, headerValue := range volumeSnapshotCreateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotCreate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotCreate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeSnapshotCreateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -714,12 +714,12 @@ func (sdsaas *SdsaasV1) VolumeSnapshotsDeleteWithContext(ctx context.Context, vo
 		return
 	}
 
-	for headerName, headerValue := range volumeSnapshotsDeleteOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotsDelete")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotsDelete")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeSnapshotsDeleteOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
@@ -777,12 +777,12 @@ func (sdsaas *SdsaasV1) VolumeSnapshotWithContext(ctx context.Context, volumeSna
 		return
 	}
 
-	for headerName, headerValue := range volumeSnapshotOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshot")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshot")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeSnapshotOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -846,12 +846,12 @@ func (sdsaas *SdsaasV1) VolumeSnapshotUpdateWithContext(ctx context.Context, vol
 		return
 	}
 
-	for headerName, headerValue := range volumeSnapshotUpdateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotUpdate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotUpdate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeSnapshotUpdateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -922,12 +922,12 @@ func (sdsaas *SdsaasV1) VolumeSnapshotDeleteWithContext(ctx context.Context, vol
 		return
 	}
 
-	for headerName, headerValue := range volumeSnapshotDeleteOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotDelete")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "VolumeSnapshotDelete")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range volumeSnapshotDeleteOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
@@ -972,12 +972,12 @@ func (sdsaas *SdsaasV1) CredsWithContext(ctx context.Context, credsOptions *Cred
 		return
 	}
 
-	for headerName, headerValue := range credsOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Creds")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Creds")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range credsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1041,12 +1041,12 @@ func (sdsaas *SdsaasV1) CredCreateWithContext(ctx context.Context, credCreateOpt
 		return
 	}
 
-	for headerName, headerValue := range credCreateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CredCreate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CredCreate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range credCreateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1110,12 +1110,12 @@ func (sdsaas *SdsaasV1) CredDeleteWithContext(ctx context.Context, credDeleteOpt
 		return
 	}
 
-	for headerName, headerValue := range credDeleteOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CredDelete")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CredDelete")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range credDeleteOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
@@ -1160,12 +1160,12 @@ func (sdsaas *SdsaasV1) CertTypesWithContext(ctx context.Context, certTypesOptio
 		return
 	}
 
-	for headerName, headerValue := range certTypesOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertTypes")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertTypes")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range certTypesOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1229,12 +1229,12 @@ func (sdsaas *SdsaasV1) CertWithContext(ctx context.Context, certOptions *CertOp
 		return
 	}
 
-	for headerName, headerValue := range certOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Cert")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Cert")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range certOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1298,12 +1298,12 @@ func (sdsaas *SdsaasV1) CertDeleteWithContext(ctx context.Context, certDeleteOpt
 		return
 	}
 
-	for headerName, headerValue := range certDeleteOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertDelete")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertDelete")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range certDeleteOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
@@ -1357,12 +1357,12 @@ func (sdsaas *SdsaasV1) CertCreateWithContext(ctx context.Context, certCreateOpt
 		return
 	}
 
-	for headerName, headerValue := range certCreateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertCreate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertCreate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range certCreateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1433,12 +1433,12 @@ func (sdsaas *SdsaasV1) CertUpdateWithContext(ctx context.Context, certUpdateOpt
 		return
 	}
 
-	for headerName, headerValue := range certUpdateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertUpdate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "CertUpdate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range certUpdateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1501,12 +1501,12 @@ func (sdsaas *SdsaasV1) HostsWithContext(ctx context.Context, hostsOptions *Host
 		return
 	}
 
-	for headerName, headerValue := range hostsOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Hosts")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Hosts")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1573,12 +1573,12 @@ func (sdsaas *SdsaasV1) HostCreateWithContext(ctx context.Context, hostCreateOpt
 		return
 	}
 
-	for headerName, headerValue := range hostCreateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostCreate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostCreate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostCreateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1662,12 +1662,12 @@ func (sdsaas *SdsaasV1) HostWithContext(ctx context.Context, hostOptions *HostOp
 		return
 	}
 
-	for headerName, headerValue := range hostOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Host")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "Host")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1732,12 +1732,12 @@ func (sdsaas *SdsaasV1) HostUpdateWithContext(ctx context.Context, hostUpdateOpt
 		return
 	}
 
-	for headerName, headerValue := range hostUpdateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostUpdate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostUpdate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostUpdateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1810,12 +1810,12 @@ func (sdsaas *SdsaasV1) HostDeleteWithContext(ctx context.Context, hostDeleteOpt
 		return
 	}
 
-	for headerName, headerValue := range hostDeleteOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostDelete")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostDelete")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostDeleteOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
@@ -1869,12 +1869,12 @@ func (sdsaas *SdsaasV1) HostMappingsWithContext(ctx context.Context, hostMapping
 		return
 	}
 
-	for headerName, headerValue := range hostMappingsOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappings")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappings")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostMappingsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -1938,12 +1938,12 @@ func (sdsaas *SdsaasV1) HostMappingCreateWithContext(ctx context.Context, hostMa
 		return
 	}
 
-	for headerName, headerValue := range hostMappingCreateOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingCreate")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingCreate")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostMappingCreateOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -2018,12 +2018,12 @@ func (sdsaas *SdsaasV1) HostMappingDeleteAllWithContext(ctx context.Context, hos
 		return
 	}
 
-	for headerName, headerValue := range hostMappingDeleteAllOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingDeleteAll")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingDeleteAll")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostMappingDeleteAllOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
@@ -2065,7 +2065,7 @@ func (sdsaas *SdsaasV1) HostMappingWithContext(ctx context.Context, hostMappingO
 	}
 
 	pathParamsMap := map[string]string{
-		"host_id": *hostMappingOptions.HostID,
+		"host_id":           *hostMappingOptions.HostID,
 		"volume_mapping_id": *hostMappingOptions.VolumeMappingID,
 	}
 
@@ -2078,12 +2078,12 @@ func (sdsaas *SdsaasV1) HostMappingWithContext(ctx context.Context, hostMappingO
 		return
 	}
 
-	for headerName, headerValue := range hostMappingOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMapping")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMapping")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostMappingOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -2135,7 +2135,7 @@ func (sdsaas *SdsaasV1) HostMappingDeleteWithContext(ctx context.Context, hostMa
 	}
 
 	pathParamsMap := map[string]string{
-		"host_id": *hostMappingDeleteOptions.HostID,
+		"host_id":           *hostMappingDeleteOptions.HostID,
 		"volume_mapping_id": *hostMappingDeleteOptions.VolumeMappingID,
 	}
 
@@ -2148,12 +2148,12 @@ func (sdsaas *SdsaasV1) HostMappingDeleteWithContext(ctx context.Context, hostMa
 		return
 	}
 
-	for headerName, headerValue := range hostMappingDeleteOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingDelete")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("sdsaas", "V1", "HostMappingDelete")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range hostMappingDeleteOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
@@ -2858,7 +2858,7 @@ type HostMappingDeleteOptions struct {
 // NewHostMappingDeleteOptions : Instantiate HostMappingDeleteOptions
 func (*SdsaasV1) NewHostMappingDeleteOptions(hostID string, volumeMappingID string) *HostMappingDeleteOptions {
 	return &HostMappingDeleteOptions{
-		HostID: core.StringPtr(hostID),
+		HostID:          core.StringPtr(hostID),
 		VolumeMappingID: core.StringPtr(volumeMappingID),
 	}
 }
@@ -2896,7 +2896,7 @@ type HostMappingOptions struct {
 // NewHostMappingOptions : Instantiate HostMappingOptions
 func (*SdsaasV1) NewHostMappingOptions(hostID string, volumeMappingID string) *HostMappingOptions {
 	return &HostMappingOptions{
-		HostID: core.StringPtr(hostID),
+		HostID:          core.StringPtr(hostID),
 		VolumeMappingID: core.StringPtr(volumeMappingID),
 	}
 }
@@ -2979,10 +2979,6 @@ func (options *HostOptions) SetHeaders(param map[string]string) *HostOptions {
 type HostPatch struct {
 	// Unique name of the resource.
 	Name *string `json:"name,omitempty"`
-
-	// Transport Layer Security pre-shared key ciphersuites (TLS-PSK) is a set of cryptographic protocols that provide
-	// secure communication based on pre-shared keys (PSKs).
-	Psk *string `json:"psk,omitempty"`
 }
 
 // UnmarshalHostPatch unmarshals an instance of HostPatch from the specified map of raw messages.
@@ -2991,11 +2987,6 @@ func UnmarshalHostPatch(m map[string]json.RawMessage, result interface{}) (err e
 	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "psk", &obj.Psk)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "psk-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -3007,9 +2998,6 @@ func (hostPatch *HostPatch) AsPatch() (_patch map[string]interface{}, err error)
 	_patch = map[string]interface{}{}
 	if !core.IsNil(hostPatch.Name) {
 		_patch["name"] = hostPatch.Name
-	}
-	if !core.IsNil(hostPatch.Psk) {
-		_patch["psk"] = hostPatch.Psk
 	}
 
 	return
@@ -3541,10 +3529,10 @@ type Volume struct {
 // this property, check for and log unknown values. Optionally halt processing and surface the error, or bypass the
 // resource on which the unexpected property value was encountered.
 const (
-	VolumeStatusAvailableConst = "available"
-	VolumeStatusPendingConst = "pending"
+	VolumeStatusAvailableConst       = "available"
+	VolumeStatusPendingConst         = "pending"
 	VolumeStatusPendingDeletionConst = "pending_deletion"
-	VolumeStatusUpdatingConst = "updating"
+	VolumeStatusUpdatingConst        = "updating"
 )
 
 // UnmarshalVolume unmarshals an instance of Volume from the specified map of raw messages.
@@ -3827,9 +3815,9 @@ type VolumeMapping struct {
 // this property, check for and log unknown values. Optionally halt processing and surface the error, or bypass the
 // resource on which the unexpected property value was encountered.
 const (
-	VolumeMappingStatusMappedConst = "mapped"
-	VolumeMappingStatusMappingFailedConst = "mapping_failed"
-	VolumeMappingStatusPendingConst = "pending"
+	VolumeMappingStatusMappedConst           = "mapped"
+	VolumeMappingStatusMappingFailedConst    = "mapping_failed"
+	VolumeMappingStatusPendingConst          = "pending"
 	VolumeMappingStatusPendingUnmappingConst = "pending_unmapping"
 )
 
@@ -4167,7 +4155,7 @@ type VolumeSnapshotUpdateOptions struct {
 // NewVolumeSnapshotUpdateOptions : Instantiate VolumeSnapshotUpdateOptions
 func (*SdsaasV1) NewVolumeSnapshotUpdateOptions(snapID string, snapshotPatch map[string]interface{}) *VolumeSnapshotUpdateOptions {
 	return &VolumeSnapshotUpdateOptions{
-		SnapID: core.StringPtr(snapID),
+		SnapID:        core.StringPtr(snapID),
 		SnapshotPatch: snapshotPatch,
 	}
 }
@@ -4384,13 +4372,11 @@ func (options *VolumesOptions) SetHeaders(param map[string]string) *VolumesOptio
 	return options
 }
 
-//
 // VolumesPager can be used to simplify the use of the "Volumes" method.
-//
 type VolumesPager struct {
-	hasNext bool
-	options *VolumesOptions
-	client  *SdsaasV1
+	hasNext     bool
+	options     *VolumesOptions
+	client      *SdsaasV1
 	pageContext struct {
 		next *string
 	}
@@ -4478,13 +4464,11 @@ func (pager *VolumesPager) GetAll() (allItems []Volume, err error) {
 	return
 }
 
-//
 // VolumeSnapshotsPager can be used to simplify the use of the "VolumeSnapshots" method.
-//
 type VolumeSnapshotsPager struct {
-	hasNext bool
-	options *VolumeSnapshotsOptions
-	client  *SdsaasV1
+	hasNext     bool
+	options     *VolumeSnapshotsOptions
+	client      *SdsaasV1
 	pageContext struct {
 		next *string
 	}
