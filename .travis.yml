@@ -3,12 +3,11 @@ language: go
 dist: jammy
 
 go:
-- 1.21.x
-- 1.22.x
 - 1.23.x
+- 1.24.x
 
 install:
-  - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(go env GOPATH)/bin v1.61.0
+  - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(go env GOPATH)/bin v1.64.4
 script:
   - make travis-ci
   - make test

@@ -26,7 +26,7 @@ import (
 
 	"github.com/IBM/go-sdk-core/v5/core"
 	"github.com/IBM/sds-go-sdk/sdsaasv1"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -52,6 +52,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		volumeIDLink           string
 		volumeIDLinkTwo        string
 		volumeMappingIDLinkOne string
+		snapIDLink             string
 	)
 
 	var shouldSkipTest = func() {
@@ -97,18 +98,18 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`VolumeCreate - Create a new volume`, func() {
+	Describe(`VolumeCreate - Create a new volume`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
 		It(`VolumeCreate(volumeCreateOptions *VolumeCreateOptions)`, func() {
 			volumeCreateOptions := &sdsaasv1.VolumeCreateOptions{
-				Capacity: core.Int64Ptr(int64(10)),
+				Capacity: core.Int64Ptr(int64(2)),
 				Name:     core.StringPtr("my-volume-one"),
 			}
 
 			volumeCreateOptionsTwo := &sdsaasv1.VolumeCreateOptions{
-				Capacity: core.Int64Ptr(int64(10)),
+				Capacity: core.Int64Ptr(int64(2)),
 				Name:     core.StringPtr("my-volume-two"),
 			}
 
@@ -131,7 +132,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`HostCreate - Creates a host`, func() {
+	Describe(`HostCreate - Creates a host`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -145,9 +146,10 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			}
 
 			hostCreateOptions := &sdsaasv1.HostCreateOptions{
-				Name:           core.StringPtr("my-host"),
 				Nqn:            core.StringPtr("nqn.2014-06.org:9345"),
+				Name:           core.StringPtr("my-host"),
 				VolumeMappings: []sdsaasv1.VolumeMappingPrototype{*volumeMappingPrototypeModel},
+				Psk:            core.StringPtr("NVMeTLSkey-1:01:5CBxDU8ejK+PrqIjTau0yDHnBV2CdfvP6hGmqnPdKhJ9tfi2:"),
 			}
 
 			host, response, err := sdsaasService.HostCreate(hostCreateOptions)
@@ -164,24 +166,70 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`Volumes - This request lists all volumes in the region`, func() {
+	Describe(`Volumes - This request lists all volumes in the region`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
-		It(`Volumes(volumesOptions *VolumesOptions)`, func() {
+		It(`Volumes(volumesOptions *VolumesOptions) with pagination`, func() {
 			volumesOptions := &sdsaasv1.VolumesOptions{
 				Limit: core.Int64Ptr(int64(20)),
-				Name:  core.StringPtr("my-volume"),
+				Name:  core.StringPtr("my-volume-one"),
 			}
 
-			volumeCollection, response, err := sdsaasService.Volumes(volumesOptions)
+			volumesOptions.Start = nil
+			volumesOptions.Limit = core.Int64Ptr(1)
+
+			var allResults []sdsaasv1.Volume
+			for {
+				volumeCollection, response, err := sdsaasService.Volumes(volumesOptions)
+				Expect(err).To(BeNil())
+				Expect(response.StatusCode).To(Equal(200))
+				Expect(volumeCollection).ToNot(BeNil())
+				allResults = append(allResults, volumeCollection.Volumes...)
+
+				volumesOptions.Start, err = volumeCollection.GetNextStart()
+				Expect(err).To(BeNil())
+
+				if volumesOptions.Start == nil {
+					break
+				}
+			}
+			fmt.Fprintf(GinkgoWriter, "Retrieved a total of %d item(s) with pagination.\n", len(allResults))
+		})
+		It(`Volumes(volumesOptions *VolumesOptions) using VolumesPager`, func() {
+			volumesOptions := &sdsaasv1.VolumesOptions{
+				Limit: core.Int64Ptr(int64(20)),
+				// Name:  core.StringPtr("my-volume"),
+			}
+
+			// Test GetNext().
+			pager, err := sdsaasService.NewVolumesPager(volumesOptions)
 			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(200))
-			Expect(volumeCollection).ToNot(BeNil())
+			Expect(pager).ToNot(BeNil())
+
+			var allResults []sdsaasv1.Volume
+			for pager.HasNext() {
+				nextPage, err := pager.GetNext()
+				Expect(err).To(BeNil())
+				Expect(nextPage).ToNot(BeNil())
+				allResults = append(allResults, nextPage...)
+			}
+
+			// Test GetAll().
+			pager, err = sdsaasService.NewVolumesPager(volumesOptions)
+			Expect(err).To(BeNil())
+			Expect(pager).ToNot(BeNil())
+
+			allItems, err := pager.GetAll()
+			Expect(err).To(BeNil())
+			Expect(allItems).ToNot(BeNil())
+
+			Expect(len(allItems)).To(Equal(len(allResults)))
+			fmt.Fprintf(GinkgoWriter, "Volumes() returned a total of %d item(s) using VolumesPager.\n", len(allResults))
 		})
 	})
 
-	Describe(`Volume - Retrieve a volume profile`, func() {
+	Describe(`Volume - Retrieve a volume profile`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -197,7 +245,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`VolumeUpdate - Update a volume`, func() {
+	Describe(`VolumeUpdate - Update a volume`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -222,7 +270,135 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`Creds - List storage account credentials`, func() {
+	Describe(`VolumeSnapshotCreate - Create a snapshot`, Label("block"), func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`VolumeSnapshotCreate(volumeSnapshotCreateOptions *VolumeSnapshotCreateOptions)`, func() {
+			SourceVolumePrototype := &sdsaasv1.SourceVolumePrototype{
+				ID: core.StringPtr(volumeIDLink),
+			}
+
+			volumeSnapshotCreateOptions := &sdsaasv1.VolumeSnapshotCreateOptions{
+				SourceVolume: SourceVolumePrototype,
+				Name:         core.StringPtr("my-snapshot"),
+			}
+
+			snapshot, response, err := sdsaasService.VolumeSnapshotCreate(volumeSnapshotCreateOptions)
+
+			snapIDLink = *snapshot.ID
+
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(201))
+			Expect(snapshot).ToNot(BeNil())
+		})
+	})
+
+	Describe(`VolumeSnapshots - List all snapshots`, Label("block"), func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`VolumeSnapshots(volumeSnapshotsOptions *VolumeSnapshotsOptions) with pagination`, func() {
+			volumeSnapshotsOptions := &sdsaasv1.VolumeSnapshotsOptions{
+				Limit:          core.Int64Ptr(int64(20)),
+				Name:           core.StringPtr("my-snapshot"),
+				SourceVolumeID: core.StringPtr(volumeIDLink),
+			}
+
+			volumeSnapshotsOptions.Start = nil
+			volumeSnapshotsOptions.Limit = core.Int64Ptr(1)
+
+			var allResults []sdsaasv1.Snapshot
+			for {
+				snapshotCollection, response, err := sdsaasService.VolumeSnapshots(volumeSnapshotsOptions)
+				Expect(err).To(BeNil())
+				Expect(response.StatusCode).To(Equal(200))
+				Expect(snapshotCollection).ToNot(BeNil())
+				allResults = append(allResults, snapshotCollection.Snapshots...)
+
+				volumeSnapshotsOptions.Start, err = snapshotCollection.GetNextStart()
+				Expect(err).To(BeNil())
+
+				if volumeSnapshotsOptions.Start == nil {
+					break
+				}
+			}
+			fmt.Fprintf(GinkgoWriter, "Retrieved a total of %d item(s) with pagination.\n", len(allResults))
+		})
+		It(`VolumeSnapshots(volumeSnapshotsOptions *VolumeSnapshotsOptions) using VolumeSnapshotsPager`, Label("block"), func() {
+			volumeSnapshotsOptions := &sdsaasv1.VolumeSnapshotsOptions{
+				Limit:          core.Int64Ptr(int64(20)),
+				Name:           core.StringPtr("my-snapshot"),
+				SourceVolumeID: core.StringPtr(volumeIDLink),
+			}
+
+			// Test GetNext().
+			pager, err := sdsaasService.NewVolumeSnapshotsPager(volumeSnapshotsOptions)
+			Expect(err).To(BeNil())
+			Expect(pager).ToNot(BeNil())
+
+			var allResults []sdsaasv1.Snapshot
+			for pager.HasNext() {
+				nextPage, err := pager.GetNext()
+				Expect(err).To(BeNil())
+				Expect(nextPage).ToNot(BeNil())
+				allResults = append(allResults, nextPage...)
+			}
+
+			// Test GetAll().
+			pager, err = sdsaasService.NewVolumeSnapshotsPager(volumeSnapshotsOptions)
+			Expect(err).To(BeNil())
+			Expect(pager).ToNot(BeNil())
+
+			allItems, err := pager.GetAll()
+			Expect(err).To(BeNil())
+			Expect(allItems).ToNot(BeNil())
+
+			Expect(len(allItems)).To(Equal(len(allResults)))
+			fmt.Fprintf(GinkgoWriter, "VolumeSnapshots() returned a total of %d item(s) using VolumeSnapshotsPager.\n", len(allResults))
+		})
+	})
+
+	Describe(`VolumeSnapshot - Retrieve a single snapshot`, Label("block"), func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`VolumeSnapshot(volumeSnapshotOptions *VolumeSnapshotOptions)`, func() {
+			volumeSnapshotOptions := &sdsaasv1.VolumeSnapshotOptions{
+				SnapID: core.StringPtr(snapIDLink),
+			}
+
+			snapshot, response, err := sdsaasService.VolumeSnapshot(volumeSnapshotOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(snapshot).ToNot(BeNil())
+		})
+	})
+
+	Describe(`VolumeSnapshotUpdate - Update a snapshot`, Label("block"), func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`VolumeSnapshotUpdate(volumeSnapshotUpdateOptions *VolumeSnapshotUpdateOptions)`, func() {
+			snapshotPatchModel := &sdsaasv1.SnapshotPatch{
+				Name: core.StringPtr("my-snapshot-updated"),
+			}
+			snapshotPatchModelAsPatch, asPatchErr := snapshotPatchModel.AsPatch()
+			Expect(asPatchErr).To(BeNil())
+
+			volumeSnapshotUpdateOptions := &sdsaasv1.VolumeSnapshotUpdateOptions{
+				SnapID:        core.StringPtr(snapIDLink),
+				SnapshotPatch: snapshotPatchModelAsPatch,
+			}
+
+			snapshot, response, err := sdsaasService.VolumeSnapshotUpdate(volumeSnapshotUpdateOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(snapshot).ToNot(BeNil())
+		})
+	})
+
+	Describe(`Creds - List storage account credentials`, Label("object"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -236,7 +412,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`CredCreate - Create or modify storage account credentials`, func() {
+	Describe(`CredCreate - Create or modify storage account credentials`, Label("object"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -254,7 +430,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`CertTypes - List the allowed certificate types`, func() {
+	Describe(`CertTypes - List the allowed certificate types`, Label("object"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -268,7 +444,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`Cert - Retrieves the SSL certificate expiration date and status`, func() {
+	Describe(`Cert - Retrieves the SSL certificate expiration date and status`, Pending, Label("object"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -283,41 +459,41 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			Expect(certificateFound).ToNot(BeNil())
 		})
 	})
-	// Describe(`CertCreate - Creates a new SSL Certificate`, func() {
-	// 	BeforeEach(func() {
-	// 		shouldSkipTest()
-	// 	})
-	// 	It(`CertCreate(certCreateOptions *CertCreateOptions)`, func() {
-	// 		certCreateOptions := &sdsaasv1.CertCreateOptions{
-	// 			Cert: core.StringPtr("s3"),
-	// 			Body: CreateMockReader("This is a mock file."),
-	// 		}
+	Describe(`CertCreate - Creates a new SSL Certificate`, Pending, Label("object"), func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`CertCreate(certCreateOptions *CertCreateOptions)`, func() {
+			certCreateOptions := &sdsaasv1.CertCreateOptions{
+				Cert: core.StringPtr("s3"),
+				Body: CreateMockReader("This is a mock file."),
+			}
 
-	// 		certificateUpdated, response, err := sdsaasService.CertCreate(certCreateOptions)
-	// 		Expect(err).To(BeNil())
-	// 		Expect(response.StatusCode).To(Equal(202))
-	// 		Expect(certificateUpdated).ToNot(BeNil())
-	// 	})
-	// })
+			certificateUpdated, response, err := sdsaasService.CertCreate(certCreateOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(202))
+			Expect(certificateUpdated).ToNot(BeNil())
+		})
+	})
 
-	// Describe(`CertUpdate - Updates the SSL Certificate`, func() {
-	// 	BeforeEach(func() {
-	// 		shouldSkipTest()
-	// 	})
-	// 	It(`CertUpdate(certUpdateOptions *CertUpdateOptions)`, func() {
-	// 		certUpdateOptions := &sdsaasv1.CertUpdateOptions{
-	// 			Cert: core.StringPtr("s3"),
-	// 			Body: CreateMockReader("This is a mock file."),
-	// 		}
+	Describe(`CertUpdate - Updates the SSL Certificate`, Pending, Label("object"), func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`CertUpdate(certUpdateOptions *CertUpdateOptions)`, func() {
+			certUpdateOptions := &sdsaasv1.CertUpdateOptions{
+				Cert: core.StringPtr("s3"),
+				Body: CreateMockReader("This is a mock file."),
+			}
 
-	// 		certificateUpdated, response, err := sdsaasService.CertUpdate(certUpdateOptions)
-	// 		Expect(err).To(BeNil())
-	// 		Expect(response.StatusCode).To(Equal(202))
-	// 		Expect(certificateUpdated).ToNot(BeNil())
-	// 	})
-	// })
+			certificateUpdated, response, err := sdsaasService.CertUpdate(certUpdateOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(202))
+			Expect(certificateUpdated).ToNot(BeNil())
+		})
+	})
 
-	Describe(`Hosts - Lists all hosts and all host IDs`, func() {
+	Describe(`Hosts - Lists all hosts and all host IDs`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -334,7 +510,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`Host - Retrieve a host by ID`, func() {
+	Describe(`Host - Retrieve a host by ID`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -350,7 +526,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`HostUpdate - Update a host`, func() {
+	Describe(`HostUpdate - Update a host`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -375,7 +551,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`HostMappings - List all volume mappings for a host`, func() {
+	Describe(`HostMappings - List all volume mappings for a host`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -391,7 +567,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`HostMappingCreate - Create a Volume mapping for a host`, func() {
+	Describe(`HostMappingCreate - Create a Volume mapping for a host`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -414,7 +590,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`HostMapping - Retrieve a volume mapping`, func() {
+	Describe(`HostMapping - Retrieve a volume mapping`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -431,7 +607,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`HostMappingDelete - Deletes the given volume mapping for a specific host`, func() {
+	Describe(`HostMappingDelete - Deletes the given volume mapping for a specific host`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -447,7 +623,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`HostMappingDeleteAll - Deletes all the volume mappings for a given host`, func() {
+	Describe(`HostMappingDeleteAll - Deletes all the volume mappings for a given host`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -460,11 +636,11 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
 
-			time.Sleep(10 * time.Second)
+			time.Sleep(40 * time.Second)
 		})
 	})
 
-	Describe(`HostDelete - Delete a specific host`, func() {
+	Describe(`HostDelete - Delete a specific host`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -481,7 +657,24 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`VolumeDelete - Delete a volume`, func() {
+	Describe(`VolumeSnapshotDelete - Delete a single snapshot`, Label("block"), func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`VolumeSnapshotDelete(volumeSnapshotDeleteOptions *VolumeSnapshotDeleteOptions)`, func() {
+			volumeSnapshotDeleteOptions := &sdsaasv1.VolumeSnapshotDeleteOptions{
+				SnapID: core.StringPtr(snapIDLink),
+			}
+
+			response, err := sdsaasService.VolumeSnapshotDelete(volumeSnapshotDeleteOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(204))
+
+			time.Sleep(10 * time.Second) // Wait for the snapshot to delete before deleting the volume
+		})
+	})
+
+	Describe(`VolumeDelete - Delete a volume`, Label("block"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -504,7 +697,7 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`CredDelete - Delete storage account credentials`, func() {
+	Describe(`CredDelete - Delete storage account credentials`, Label("object"), func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
@@ -519,20 +712,20 @@ var _ = Describe(`SdsaasV1 Integration Tests`, func() {
 		})
 	})
 
-	// Describe(`CertDelete - Delete SSL certificate`, func() {
-	// 	BeforeEach(func() {
-	// 		shouldSkipTest()
-	// 	})
-	// 	It(`CertDelete(certDeleteOptions *CertDeleteOptions)`, func() {
-	// 		certDeleteOptions := &sdsaasv1.CertDeleteOptions{
-	// 			Cert: core.StringPtr("s3"),
-	// 		}
+	Describe(`CertDelete - Delete SSL certificate`, Pending, Label("object"), func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`CertDelete(certDeleteOptions *CertDeleteOptions)`, func() {
+			certDeleteOptions := &sdsaasv1.CertDeleteOptions{
+				Cert: core.StringPtr("s3"),
+			}
 
-	// 		response, err := sdsaasService.CertDelete(certDeleteOptions)
-	// 		Expect(err).To(BeNil())
-	// 		Expect(response.StatusCode).To(Equal(204))
-	// 	})
-	// })
+			response, err := sdsaasService.CertDelete(certDeleteOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(204))
+		})
+	})
 })
 
 //
