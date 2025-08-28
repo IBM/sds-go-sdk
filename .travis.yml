@@ -37,5 +37,6 @@ deploy:
     script: npm run semantic-release
     skip_cleanup: true
     on:
-      go: '1.23.x'
+      # Using "go: '1.23.x'" here was not working. Using below condition instead from https://docs.travis-ci.com/user/languages/go/#environment-variable
+      condition: $TRAVIS_GO_VERSION =~ ^1\.23
       branch: main
