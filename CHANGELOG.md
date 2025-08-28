@@ -1,3 +1,13 @@
+## [1.0.2](https://github.com/IBM/sds-go-sdk/compare/v1.0.1...v1.0.2) (2025-08-28)
+
+
+### Bug Fixes
+
+* **deps:** Up deps and travis file ([429b05f](https://github.com/IBM/sds-go-sdk/commit/429b05f0e98f601cde7d643dd23821dea9be8962))
+* **deps:** update module github.com/ibm/go-sdk-core/v5 to v5.21.0 ([4853f38](https://github.com/IBM/sds-go-sdk/commit/4853f38e29f5c186fa72f9b09deaa3107135d006))
+* **deps:** update module github.com/onsi/gomega to v1.38.2 ([1da3e29](https://github.com/IBM/sds-go-sdk/commit/1da3e295b106a174728d80baa3bf3026b765254f))
+* **deps:** update module github.com/stretchr/testify to v1.11.1 ([9ebf289](https://github.com/IBM/sds-go-sdk/commit/9ebf28975732b4aa5cbd658eb0d1fc8c87fc177b))
+
 ## [0.1.1](https://github.com/IBM/sds-go-sdk/compare/v0.1.0...v0.1.1) (2025-03-05)
 
 
