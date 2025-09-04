@@ -8,6 +8,7 @@ require (
 	github.com/IBM/go-sdk-core/v5 v5.21.0
 	github.com/go-openapi/strfmt v0.23.0
 	github.com/onsi/ginkgo v1.16.5
+	github.com/onsi/ginkgo/v2 v2.25.3
 	github.com/onsi/gomega v1.38.2
 	github.com/stretchr/testify v1.11.1
 )
