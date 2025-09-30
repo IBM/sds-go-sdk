@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/IBM/sds-go-sdk/compare/v1.0.3...v1.1.0) (2025-09-30)
+
+
+### Features
+
+* **snapshots:** Add snapshots ([19d0938](https://github.com/IBM/sds-go-sdk/commit/19d0938770d5b669a5768853459df5320c7b9837))
+
 ## [1.0.3](https://github.com/IBM/sds-go-sdk/compare/v1.0.2...v1.0.3) (2025-09-29)
 
 
