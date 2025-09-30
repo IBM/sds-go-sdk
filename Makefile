@@ -14,14 +14,20 @@ test:
 test-cov:
 	${GO} test ./... ${TEST_TAGS} ${COVERAGE}
 
-test-int:
-	${GO} test ./... -tags=integration
-
 test-int-cov:
 	${GO} test ./... -tags=integration ${COVERAGE}
 
-test-examples:
-	${GO} test ./... -tags=examples
+test-examples-block:
+	go test ./sdsaasv1/... -tags=examples -ginkgo.label-filter="!object" -v
+
+test-examples-object:
+	go test ./sdsaasv1/... -tags=examples -ginkgo.label-filter="!block" -v
+
+test-integration-block:
+	go test ./sdsaasv1/... -tags=integration -ginkgo.label-filter="!object" -v
+
+test-integration-object:
+	go test ./sdsaasv1/... -tags=integration -ginkgo.label-filter="!block" -v
 
 lint:
 	${LINT} run --build-tags=integration,examples ${LINTOPTS}
