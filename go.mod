@@ -7,7 +7,7 @@ toolchain go1.24.5
 require (
 	github.com/IBM/go-sdk-core/v5 v5.21.0
 	github.com/go-openapi/strfmt v0.24.0
-	github.com/onsi/ginkgo/v2 v2.26.0
+	github.com/onsi/ginkgo/v2 v2.27.2
 	github.com/onsi/gomega v1.38.2
 	github.com/stretchr/testify v1.11.1
 )
