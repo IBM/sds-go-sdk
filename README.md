@@ -1,4 +1,4 @@
-# sds-go-sdk
+# IBM Storage Ceph as a Service SDK
 
 [![Build Status](https://app.travis-ci.com/IBM/sds-go-sdk.svg?branch=main)](https://app.travis-ci.com/IBM/sds-go-sdk)
 [![Release](https://img.shields.io/github/v/release/IBM/sds-go-sdk)](https://github.com/IBM/sds-go-sdk/releases/latest)
@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-# sdsaas 1.1.3
+# IBM Storage Ceph as a Service SDK - 1.1.3
 Go client library to interact with the various [IBM Cloud Sds Sdk APIs](https://cloud.ibm.com/apidocs?category=sds-go-sdk).
 
 Disclaimer: this SDK is being released initially as a **pre-release** version.
@@ -26,8 +26,8 @@ Changes might occur which impact applications that use this SDK.
 
 <!-- toc -->
 
-- [sds-go-sdk](#sds-go-sdk)
-- [sdsaas 1.1.3](#sdsaas-101)
+- [IBM Storage Ceph as a Service SDK](#ibm-storage-ceph-as-a-service-sdk)
+- [IBM Storage Ceph as a Service SDK - 1.1.3](#ibm-storage-ceph-as-a-service-sdk---113)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Prerequisites](#prerequisites)
