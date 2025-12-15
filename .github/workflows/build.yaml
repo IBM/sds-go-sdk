@@ -37,16 +37,6 @@ jobs:
           detect-secrets scan --update .secrets.baseline
           detect-secrets -v audit --report --fail-on-unaudited --fail-on-live --fail-on-audited-real .secrets.baseline
 
-  test:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    name: test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: test
-        run: |
-          make test
-
   build:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     name: build-test (go v${{ matrix.go-version }})
@@ -73,6 +63,18 @@ jobs:
 
       - name: Build/Test Project
         run: make travis-ci
+
+  test:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: test
+        run: make test
 
   publish-release:
     if: "github.ref_name == 'main' && github.event_name != 'pull_request'"
