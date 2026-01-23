@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/IBM/sds-go-sdk/compare/v1.1.8...v1.1.9) (2026-01-23)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/onsi/ginkgo/v2 to v2.27.5 ([51d17f5](https://github.com/IBM/sds-go-sdk/commit/51d17f5df25e3c43025f99767ac415e133f36e5d))
+
 ## [1.1.8](https://github.com/IBM/sds-go-sdk/compare/v1.1.7...v1.1.8) (2026-01-23)
 
 
