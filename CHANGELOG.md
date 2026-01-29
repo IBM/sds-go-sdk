@@ -1,3 +1,10 @@
+## [1.1.11](https://github.com/IBM/sds-go-sdk/compare/v1.1.10...v1.1.11) (2026-01-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency glob to v13 ([96dea29](https://github.com/IBM/sds-go-sdk/commit/96dea2945c2b97026fb64dd285066d2b01ad0787))
+
 ## [1.1.10](https://github.com/IBM/sds-go-sdk/compare/v1.1.9...v1.1.10) (2026-01-29)
 
 
