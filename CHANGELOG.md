@@ -1,3 +1,10 @@
+## [1.1.10](https://github.com/IBM/sds-go-sdk/compare/v1.1.9...v1.1.10) (2026-01-29)
+
+
+### Bug Fixes
+
+* **deps:** up deps ([5039c61](https://github.com/IBM/sds-go-sdk/commit/5039c610d1ea5669ca427d6c7cb925761ad5d88e))
+
 ## [1.1.9](https://github.com/IBM/sds-go-sdk/compare/v1.1.8...v1.1.9) (2026-01-23)
 
 
