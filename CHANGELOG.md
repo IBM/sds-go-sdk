@@ -1,3 +1,10 @@
+## [1.1.12](https://github.com/IBM/sds-go-sdk/compare/v1.1.11...v1.1.12) (2026-02-11)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/onsi/gomega to v1.39.1 ([c307f80](https://github.com/IBM/sds-go-sdk/commit/c307f800b5911071af945066aced8f57c96c7b39))
+
 ## [1.1.11](https://github.com/IBM/sds-go-sdk/compare/v1.1.10...v1.1.11) (2026-01-29)
 
 
