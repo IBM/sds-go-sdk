@@ -1,3 +1,10 @@
+## [1.1.14](https://github.com/IBM/sds-go-sdk/compare/v1.1.13...v1.1.14) (2026-03-17)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/go-openapi/strfmt to v0.26.1 ([277b969](https://github.com/IBM/sds-go-sdk/commit/277b9693f29f52e0dd876617ca266f052a990b60))
+
 ## [1.1.13](https://github.com/IBM/sds-go-sdk/compare/v1.1.12...v1.1.13) (2026-02-18)
 
 
