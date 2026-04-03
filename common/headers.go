@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2019, 2025.
+ * (C) Copyright IBM Corp. 2019, 2026.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,5 +95,5 @@ func GetSystemInfo() string {
 
 func GetComponentInfo() *core.ProblemComponent {
 	// This should match the module name in go.mod.
-	return core.NewProblemComponent("github.com/IBM/sds-go-sdk", Version)
+	return core.NewProblemComponent("github.com/IBM/sds-go-sdk/v2", Version)
 }
