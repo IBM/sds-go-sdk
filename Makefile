@@ -18,19 +18,24 @@ test-int-cov:
 	${GO} test ./... -tags=integration ${COVERAGE}
 
 test-examples-block:
-	go test ./sdsaasv1/... -tags=examples -ginkgo.label-filter="!object" -v
+	go test ./sdsaasv2/... -tags=examples -ginkgo.label-filter="!object" -v
 
 test-examples-object:
-	go test ./sdsaasv1/... -tags=examples -ginkgo.label-filter="!block" -v
+	go test ./sdsaasv2/... -tags=examples -ginkgo.label-filter="!block" -v
 
 test-integration-block:
-	go test ./sdsaasv1/... -tags=integration -ginkgo.label-filter="!object" -v
+	go test ./sdsaasv2/... -tags=integration -ginkgo.label-filter="!object" -v
 
 test-integration-object:
-	go test ./sdsaasv1/... -tags=integration -ginkgo.label-filter="!block" -v
+	go test ./sdsaasv2/... -tags=integration -ginkgo.label-filter="!block" -v
 
 lint:
 	${LINT} run --build-tags=integration,examples ${LINTOPTS}
 
 tidy:
-	${GO} mod tidy
+	${GO} mod
+
+.PHONY: detect-secrets
+detect-secrets:
+	detect-secrets scan --update .secrets.baseline
+	detect-secrets audit .secrets.baseline
