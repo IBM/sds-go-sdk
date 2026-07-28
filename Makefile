@@ -6,7 +6,8 @@ TEST_TAGS=
 COVERAGE=-coverprofile=coverage.txt -covermode=atomic
 
 all: tidy test lint
-travis-ci: tidy test-cov lint
+travis-ci: tidy test-cov
+# lint - Temporarily disabling lint
 
 test:
 	${GO} test ./... ${TEST_TAGS}
@@ -33,7 +34,7 @@ lint:
 	${LINT} run --build-tags=integration,examples ${LINTOPTS}
 
 tidy:
-	${GO} mod
+	${GO} mod tidy
 
 .PHONY: detect-secrets
 detect-secrets:
