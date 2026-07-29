@@ -1,3 +1,11 @@
+## [1.1.15](https://github.com/IBM/sds-go-sdk/compare/v1.1.14...v1.1.15) (2026-07-29)
+
+
+### Performance Improvements
+
+* **sdk:** BREAKING CHANGE, Updates to new backing API definitions ([9f3c7a9](https://github.com/IBM/sds-go-sdk/commit/9f3c7a969a8a13361539b8515bc16842bed6cdf2))
+* **sdk:** BREAKING CHANGE. Updates to new backing API definitions ([07ff3e6](https://github.com/IBM/sds-go-sdk/commit/07ff3e6221aaeaa862e45eb496fa53aab6b8ffb0))
+
 ## [1.1.14](https://github.com/IBM/sds-go-sdk/compare/v1.1.13...v1.1.14) (2026-03-17)
 
 
