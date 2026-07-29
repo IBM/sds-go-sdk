@@ -141,7 +141,7 @@ var _ = Describe(`SdsaasV2 Examples Tests`, func() {
 			// begin-create_host
 
 			createHostOptions := sdsaasService.NewCreateHostOptions(
-				"nqn.2014-08.org.nvmexpress:uuid:12345678-4444-1234-1234-123456789abd",
+				"nqn.2014-08.org.nvmexpress:uuid:12345678-4444-1234-1234-123456789abf",
 			)
 			createHostOptions.SetName("my-host")
 

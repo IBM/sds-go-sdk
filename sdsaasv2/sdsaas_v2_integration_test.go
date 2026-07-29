@@ -128,7 +128,7 @@ var _ = Describe(`SdsaasV2 Integration Tests`, func() {
 		})
 		It(`CreateHost(createHostOptions *CreateHostOptions)`, func() {
 			createHostOptions := &sdsaasv2.CreateHostOptions{
-				Nqn:  core.StringPtr("nqn.2014-08.org.nvmexpress:uuid:12345678-4444-1234-1234-123456789abd"),
+				Nqn:  core.StringPtr("nqn.2014-08.org.nvmexpress:uuid:12345678-4444-1234-1234-123456789abf"),
 				Name: core.StringPtr("my-host"),
 			}
 
@@ -329,7 +329,7 @@ var _ = Describe(`SdsaasV2 Integration Tests`, func() {
 		})
 		It(`UpdateHost(updateHostOptions *UpdateHostOptions)`, func() {
 			hostPatchModel := &sdsaasv2.HostPatch{
-				Name: core.StringPtr("my-resource"),
+				Name: core.StringPtr("my-host-updated"),
 			}
 			hostPatchModelAsPatch, asPatchErr := hostPatchModel.AsPatch()
 			Expect(asPatchErr).To(BeNil())
@@ -407,7 +407,7 @@ var _ = Describe(`SdsaasV2 Integration Tests`, func() {
 			listVolumeMappingsOptions := &sdsaasv2.ListVolumeMappingsOptions{
 				ID:    core.StringPtr(hostIDLink),
 				Limit: core.Int64Ptr(int64(20)),
-				Name:  core.StringPtr("my-resource"),
+				Name:  core.StringPtr("my-host"),
 			}
 
 			// Test GetNext().
