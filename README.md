@@ -27,7 +27,7 @@ Changes might occur which impact applications that use this SDK.
 <!-- toc -->
 
 - [IBM Storage Ceph as a Service SDK](#ibm-storage-ceph-as-a-service-sdk)
-- [IBM Storage Ceph as a Service SDK - 1.1.14](#ibm-storage-ceph-as-a-service-sdk---113)
+- [IBM Storage Ceph as a Service SDK - 1.1.14](#ibm-storage-ceph-as-a-service-sdk---1114)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Prerequisites](#prerequisites)
@@ -49,7 +49,7 @@ The IBM Cloud SDS Go SDK allows developers to programmatically interact with the
 
 Service Name | Package name
 --- | ---
-[Ceph as a service](https://cloud.ibm.com/docs/cephaas) | sdsaasv1
+[Ceph as a service](https://cloud.ibm.com/docs/cephaas) | sdsaasv2
 
 ## Prerequisites
 
@@ -70,21 +70,21 @@ Here is an example:
 
 ```go
 import (
-	"github.com/IBM/sds-go-sdk/sdsaasv1"
+	"github.com/IBM/sds-go-sdk/v2/sdsaasv2"
 )
 ```
 
 Next, run `go build` or `go mod tidy` to download and install the new dependencies and update your application's
 `go.mod` file.
 
-In the example above, the `sdsaasv1` part of the import path is the package name
+In the example above, the `sdsaasv2` part of the import path is the package name
 associated with the Example Service service.
 See the service table above to find the approprate package name for the services used by your application.
 
 ### `go get` command
 Alternatively, you can use the `go get` command to download and install the appropriate packages needed by your application:
 ```
-go get -u github.com/IBM/sds-go-sdk/sdsaasv1
+go get -u github.com/IBM/sds-go-sdk/v2/sdsaasv2
 ```
 Be sure to use the appropriate package name from the service table above for the services used by your application.
 
