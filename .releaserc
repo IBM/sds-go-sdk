@@ -2,7 +2,23 @@
   "debug": true,
   "branches": [ "main" ],
   "plugins": [
-    "@semantic-release/commit-analyzer",
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "releaseRules": [
+          { "breaking": true, "release": "major" },
+          { "type": "feat", "release": "minor" },
+          { "type": "fix", "release": "patch" },
+          { "type": "perf", "release": "patch" }
+        ],
+        "parserOpts": {
+          "headerPattern": "^(\\w*)(?:\\(([\\w\\$\\.\\-\\* ]*)\\))?(!)?: (.*)$",
+          "headerCorrespondence": ["type", "scope", "breaking", "subject"],
+          "noteKeywords": ["BREAKING CHANGE", "BREAKING-CHANGE"],
+          "breakingHeaderPattern": "^(\\w*)(?:\\(([\\w\\$\\.\\-\\* ]*)\\))?!: (.*)$"
+        }
+      }
+    ],
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
     [
