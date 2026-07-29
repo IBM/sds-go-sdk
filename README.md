@@ -27,7 +27,7 @@ Changes might occur which impact applications that use this SDK.
 <!-- toc -->
 
 - [IBM Storage Ceph as a Service SDK](#ibm-storage-ceph-as-a-service-sdk)
-- [IBM Storage Ceph as a Service SDK - 1.1.15](#ibm-storage-ceph-as-a-service-sdk---1114)
+- [IBM Storage Ceph as a Service SDK - 1.1.15](#ibm-storage-ceph-as-a-service-sdk---1115)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Prerequisites](#prerequisites)
