@@ -1,3 +1,5 @@
+# [2.0.0](https://github.com/IBM/sds-go-sdk/compare/v1.1.15...v2.0.0) (2026-07-29)
+
 ## [1.1.15](https://github.com/IBM/sds-go-sdk/compare/v1.1.14...v1.1.15) (2026-07-29)
 
 
