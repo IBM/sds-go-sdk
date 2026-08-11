@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/IBM/sds-go-sdk/compare/v2.0.0...v2.0.1) (2026-08-11)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/ibm/go-sdk-core/v5 to v5.23.2 ([9ee4f9d](https://github.com/IBM/sds-go-sdk/commit/9ee4f9d755ce4a78f36ded19e7306688635a85d6))
+
 # [2.0.0](https://github.com/IBM/sds-go-sdk/compare/v1.1.15...v2.0.0) (2026-07-29)
 
 ## [1.1.15](https://github.com/IBM/sds-go-sdk/compare/v1.1.14...v1.1.15) (2026-07-29)
