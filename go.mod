@@ -6,7 +6,7 @@ toolchain go1.25.12
 
 require (
 	github.com/IBM/go-sdk-core/v5 v5.23.2
-	github.com/IBM/sds-go-sdk v1.1.14
+	github.com/IBM/sds-go-sdk/v2 v2.0.1
 	github.com/go-openapi/strfmt v0.27.0
 	github.com/onsi/ginkgo/v2 v2.28.1
 	github.com/onsi/gomega v1.39.1
