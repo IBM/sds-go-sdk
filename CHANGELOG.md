@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/IBM/sds-go-sdk/compare/v2.0.1...v2.0.2) (2026-09-09)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/stretchr/testify to v1.12.1 ([f4bdb36](https://github.com/IBM/sds-go-sdk/commit/f4bdb362726405ec0b05b96849ceec72f62a7368))
+
 ## [2.0.1](https://github.com/IBM/sds-go-sdk/compare/v2.0.0...v2.0.1) (2026-08-11)
 
 
