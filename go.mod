@@ -2,7 +2,7 @@ module github.com/IBM/sds-go-sdk/v2
 
 go 1.25.0
 
-toolchain go1.25.12
+toolchain go1.27.1
 
 require (
 	github.com/IBM/go-sdk-core/v5 v5.23.2
